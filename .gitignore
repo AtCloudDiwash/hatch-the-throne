@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.hypothesis/
+.DS_Store
+.coverage*
+demo/billing-api/
+eval/work/
+eval/results/raw/
+*.egg-info/

@@ -1,0 +1,68 @@
+# PROGRESS
+
+Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
+
+- **Current milestone and task:** M0 / T0.1
+- **Next step:** Run the django-oscar SQLite spike.
+
+## Status
+
+| Task | Milestone | Status | Title | Dev log | Commit |
+| --- | --- | --- | --- | --- | --- |
+| T0.0 | M0 | done | [x] Setup: docs, progress, dev log tools, default decisions | DL-001 DL-002 DL-003 DL-004 DL-005 DL-006 DL-007 DL-008 DL-009 DL-010 DL-011 DL-012 DL-013 DL-014 DL-015 |  |
+| T0.1 | M0 | pending | [ ] django-oscar on SQLite (OQ-B1) |  |  |
+| T0.2 | M0 | pending | [ ] Runnable-function share (OQ-B1) |  |  |
+| T0.3 | M0 | pending | [ ] Hook behavior check (OQ-B5, NFR-10) |  |  |
+| T0.4 | M0 | pending | [ ] Plan usage of headless runs (OQ-N6) |  |  |
+| T1.1 | M1 | pending | [ ] Manifest and wiring |  |  |
+| T1.2 | M1 | pending | [ ] Shared hook runtime |  |  |
+| T1.3 | M1 | pending | [ ] Bootstrap (FR-03) |  |  |
+| T1.4 | M1 | pending | [ ] SessionStart basics (FR-10 steps 5-6) |  |  |
+| T2.1 | M2 | pending | [ ] billing-api service |  |  |
+| T2.2 | M2 | pending | [ ] Planted traps |  |  |
+| T2.3 | M2 | pending | [ ] Planted history |  |  |
+| T2.4 | M2 | pending | [ ] A/B task set |  |  |
+| T3.1 | M3 | pending | [ ] Names table (FR-04) |  |  |
+| T3.2 | M3 | pending | [ ] Coverage map (FR-05) |  |  |
+| T3.3 | M3 | pending | [ ] Routes and contracts (FR-06) |  |  |
+| T3.4 | M3 | pending | [ ] Co-change (FR-07) |  |  |
+| T3.5 | M3 | pending | [ ] Incremental re-index (FR-08) |  |  |
+| T3.6 | M3 | pending | [ ] Impact library (FR-09) |  |  |
+| T3.7 | M3 | pending | [ ] MCP impact tool and index/impact skills (FR-21, FR-22) |  |  |
+| T4.1 | M4 | pending | [ ] Baseline worktree and session state (FR-10) |  |  |
+| T4.2 | M4 | pending | [ ] UserPromptSubmit context (FR-11) |  |  |
+| T4.3 | M4 | pending | [ ] Virtual apply and symbol diff (FR-12) |  |  |
+| T4.4 | M4 | pending | [ ] Contract and test-integrity checks (FR-12, FR-17) |  |  |
+| T4.5 | M4 | pending | [ ] Decision policy, modes, budget (FR-12, FR-20, FR-23) |  |  |
+| T4.6 | M4 | pending | [ ] Frozen and scope rules |  |  |
+| T5.1 | M5 | pending | [ ] Runner subprocesses (FR-14) |  |  |
+| T5.2 | M5 | pending | [ ] Network block (FR-14) |  |  |
+| T5.3 | M5 | pending | [ ] Input sources (FR-14) |  |  |
+| T5.4 | M5 | pending | [ ] Self-diff filter (FR-14) |  |  |
+| T5.5 | M5 | pending | [ ] Untested classification (FR-14) |  |  |
+| T5.6 | M5 | pending | [ ] PostToolUse wake-up (FR-15, FR-16) |  |  |
+| T6.1 | M6 | pending | [ ] Stop audit (FR-18) |  |  |
+| T6.2 | M6 | pending | [ ] Report (FR-19) |  |  |
+| T6.3 | M6 | pending | [ ] Waive and mode skills (FR-24, FR-23) |  |  |
+| T6.4 | M6 | pending | [ ] Pin (FR-25) |  |  |
+| T6.5 | M6 | pending | [ ] Status skill and remaining MCP tools (FR-21, FR-22) |  |  |
+| T7.1 | M7 | pending | [ ] Backtest harness (FR-28) |  |  |
+| T7.2 | M7 | pending | [ ] Seeded bugs (FR-28) |  |  |
+| T7.3 | M7 | pending | [ ] Guard on/off (FR-29) |  |  |
+| T7.4 | M7 | pending | [ ] Budget check (D-013) |  |  |
+| T8.1 | M8 | pending | [ ] Pin minimum Claude Code version (NFR-10) |  |  |
+| T8.2 | M8 | pending | [ ] Live E2E-1 to E2E-8 |  |  |
+| T8.3 | M8 | pending | [ ] Dry-run steps, backup video, names and roles |  |  |
+| T8.4 | M8 | pending | [ ] Final report |  |  |
+
+## Evidence
+
+### T0.0 Setup: docs, progress, dev log tools, default decisions (done)
+
+```text
+$ .venv/bin/pytest -q tests/tools
+....                                                                     [100%]
+4 passed in 0.47s
+(exit 0)
+```
+
