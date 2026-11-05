@@ -38,6 +38,9 @@ flowchart LR
     DL025["DL-025 Hooks never switched into the venv after a …"]
     DL026["DL-026 SessionStart warns about API keys and gives…"]
   end
+  subgraph M2
+    DL027["DL-027 billing-api: FastAPI and SQLite demo service"]
+  end
 ```
 
 ## Summary
@@ -46,13 +49,36 @@ flowchart LR
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | M0 | 1 | 0 | 0 | 14 | 0 | 0 | 4 | 19 |
 | M1 | 4 | 2 | 1 | 0 | 0 | 0 | 0 | 7 |
-| **All** | **5** | **2** | **1** | **14** | **0** | **0** | **4** | **26** |
+| M2 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| **All** | **6** | **2** | **1** | **14** | **0** | **0** | **4** | **27** |
 
 ## Entries, newest first
 
+### DL-027 · billing-api: FastAPI and SQLite demo service
+
+**feature** · M2 · T2.1 · 2026-11-05T11:38-06:00 · commit `pending`
+
+- **Context:** The live demo needs a deterministic service with a real contract, tests and history.
+- **What:** 12 API paths, business rules, jobs, reports, 6 SQL migrations, 2 event schemas, an openapi.yaml generated from the live routes, and 45 tests.
+- **Why:** A real working service makes the traps realistic. A test keeps openapi.yaml equal to the routes.
+- **Impact:** About 2,400 lines against the plan's around 3,000 (deviation from IMPLEMENTATION_PLAN.md T2.1 and FR-27). The missing lines would be padding, and no check depends on the count.
+- **Files:** `demo/billing-api-src/billing/fees.py`, `demo/billing-api-src/billing/invoices.py`, `demo/billing-api-src/openapi.yaml`, `demo/billing-api-src/tests/test_api.py`
+- **Requirements:** `FR-27`
+- **Decisions:** `D-014`, `D-036`
+- **Open questions:** `OQ-N15`
+- **Tests:** `demo/billing-api-src/tests/test_api.py::test_openapi_file_matches_routes`
+- **Evidence:**
+
+```text
+$ cd demo/billing-api && PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p no:cacheprovider 2>&1 | tail -1; find . -path ./.venv -prune -o -path ./.git -prune -o \( -name '*.py' -o -name '*.sql' -o -name '*.json' -o -name '*.yaml' -o -name '*.md' \) -print | xargs wc -l | tail -1
+45 passed, 1 warning in 0.23s
+    2383 total
+(exit 0)
+```
+
 ### DL-026 · SessionStart warns about API keys and gives Claude a summary
 
-**feature** · M1 · T1.4 · 2026-11-05T11:31-06:00 · commit `pending`
+**feature** · M1 · T1.4 · 2026-11-05T11:31-06:00 · commit `91c211e`
 
 - **Context:** FR-10 steps 5 and 6: warn if ANTHROPIC_API_KEY would bill per token, and tell Claude the guard's settings.
 - **What:** session_start.py emits a systemMessage warning when the key is set and a factual summary of scope, mode, contracts, frozen files and tools. A missing or invalid config gives a setup notice and no block.

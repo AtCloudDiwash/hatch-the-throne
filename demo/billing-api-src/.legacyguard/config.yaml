@@ -1,0 +1,19 @@
+scope: ./
+language: python
+mode: guarded
+app: billing.api.app:app
+contracts:
+  http: openapi.yaml
+  db: migrations/
+  messages: schemas/events/
+frozen:
+  - legacy/ledger_v1.py
+behavioral_diff:
+  network: blocked
+  max_inputs: 500
+  timeout_s: 60
+  self_diff: true
+alarm_budget:
+  max_prompts_per_session: 3
+  may_interrupt: [frozen, contract_break, behavior_difference]
+  context_only: [many_callers, history_coupling, untested]

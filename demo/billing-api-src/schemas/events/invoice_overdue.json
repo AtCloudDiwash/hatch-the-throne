@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "invoice.overdue",
+  "type": "object",
+  "required": ["invoice_number", "customer_email", "days_overdue", "dunning_level"],
+  "properties": {
+    "invoice_number": { "type": "string" },
+    "customer_email": { "type": "string" },
+    "days_overdue": { "type": "integer" },
+    "dunning_level": { "type": "integer" }
+  }
+}

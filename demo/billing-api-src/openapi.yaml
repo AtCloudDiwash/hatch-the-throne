@@ -1,0 +1,819 @@
+openapi: 3.1.0
+info:
+  title: billing-api
+  version: 1.4.0
+paths:
+  /customers:
+    post:
+      tags:
+      - customers
+      summary: Create Customer
+      operationId: create_customer_customers_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomerIn'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - customers
+      summary: List Customers
+      operationId: list_customers_customers_get
+      parameters:
+      - name: tier
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Tier
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomerOut'
+                title: Response List Customers Customers Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /customers/{customer_id}:
+    get:
+      tags:
+      - customers
+      summary: Get Customer
+      operationId: get_customer_customers__customer_id__get
+      parameters:
+      - name: customer_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Customer Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomerOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /customers/{customer_id}/statement:
+    get:
+      tags:
+      - customers
+      summary: Get Statement
+      operationId: get_statement_customers__customer_id__statement_get
+      parameters:
+      - name: customer_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Customer Id
+      - name: as_of
+        in: query
+        required: true
+        schema:
+          type: string
+          title: As Of
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatementOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /invoices:
+    post:
+      tags:
+      - invoices
+      summary: Create Invoice
+      operationId: create_invoice_invoices_post
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InvoiceIn'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - invoices
+      summary: List Invoices
+      operationId: list_invoices_invoices_get
+      parameters:
+      - name: customer_id
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: integer
+          - type: 'null'
+          title: Customer Id
+      - name: status
+        in: query
+        required: false
+        schema:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Status
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InvoiceOut'
+                title: Response List Invoices Invoices Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /invoices/{invoice_id}:
+    get:
+      tags:
+      - invoices
+      summary: Get Invoice
+      operationId: get_invoice_invoices__invoice_id__get
+      parameters:
+      - name: invoice_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Invoice Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /invoices/{invoice_id}/settle:
+    post:
+      tags:
+      - invoices
+      summary: Settle Invoice
+      operationId: settle_invoice_invoices__invoice_id__settle_post
+      parameters:
+      - name: invoice_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Invoice Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SettleIn'
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /invoices/{invoice_id}/void:
+    post:
+      tags:
+      - invoices
+      summary: Void Invoice
+      operationId: void_invoice_invoices__invoice_id__void_post
+      parameters:
+      - name: invoice_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Invoice Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /invoices/{invoice_id}/payments:
+    post:
+      tags:
+      - invoices
+      summary: Add Payment
+      operationId: add_payment_invoices__invoice_id__payments_post
+      parameters:
+      - name: invoice_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Invoice Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentIn'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InvoiceOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+    get:
+      tags:
+      - invoices
+      summary: List Payments
+      operationId: list_payments_invoices__invoice_id__payments_get
+      parameters:
+      - name: invoice_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Invoice Id
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PaymentOut'
+                title: Response List Payments Invoices  Invoice Id  Payments Get
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /invoices/{invoice_id}/credits:
+    post:
+      tags:
+      - invoices
+      summary: Add Credit
+      operationId: add_credit_invoices__invoice_id__credits_post
+      parameters:
+      - name: invoice_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Invoice Id
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreditIn'
+      responses:
+        '201':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreditOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /reports/aging/{invoice_id}:
+    get:
+      tags:
+      - reports
+      summary: Invoice Aging
+      operationId: invoice_aging_reports_aging__invoice_id__get
+      parameters:
+      - name: invoice_id
+        in: path
+        required: true
+        schema:
+          type: integer
+          title: Invoice Id
+      - name: as_of
+        in: query
+        required: true
+        schema:
+          type: string
+          title: As Of
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgingOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /reports/revenue:
+    get:
+      tags:
+      - reports
+      summary: Month Revenue
+      operationId: month_revenue_reports_revenue_get
+      parameters:
+      - name: day
+        in: query
+        required: true
+        schema:
+          type: string
+          title: Day
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RevenueOut'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HTTPValidationError'
+  /health:
+    get:
+      summary: Health
+      operationId: health_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema: {}
+components:
+  schemas:
+    AgingOut:
+      properties:
+        bucket:
+          type: string
+          title: Bucket
+        balance:
+          type: string
+          title: Balance
+        projected_fee:
+          type: string
+          title: Projected Fee
+      type: object
+      required:
+      - bucket
+      - balance
+      - projected_fee
+      title: AgingOut
+    CreditIn:
+      properties:
+        amount:
+          type: string
+          title: Amount
+        reason:
+          type: string
+          title: Reason
+        issued_on:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Issued On
+      type: object
+      required:
+      - amount
+      - reason
+      title: CreditIn
+    CreditOut:
+      properties:
+        id:
+          type: integer
+          title: Id
+        invoice_id:
+          type: integer
+          title: Invoice Id
+        amount:
+          type: string
+          title: Amount
+        reason:
+          type: string
+          title: Reason
+        issued_on:
+          type: string
+          title: Issued On
+      type: object
+      required:
+      - id
+      - invoice_id
+      - amount
+      - reason
+      - issued_on
+      title: CreditOut
+    CustomerIn:
+      properties:
+        name:
+          type: string
+          title: Name
+        email:
+          type: string
+          title: Email
+        tier:
+          type: string
+          title: Tier
+          default: standard
+        region:
+          type: string
+          title: Region
+          default: NONE
+        payment_terms_days:
+          type: integer
+          maximum: 120.0
+          minimum: 0.0
+          title: Payment Terms Days
+          default: 30
+      type: object
+      required:
+      - name
+      - email
+      title: CustomerIn
+    CustomerOut:
+      properties:
+        id:
+          type: integer
+          title: Id
+        name:
+          type: string
+          title: Name
+        email:
+          type: string
+          title: Email
+        tier:
+          type: string
+          title: Tier
+        region:
+          type: string
+          title: Region
+        payment_terms_days:
+          type: integer
+          title: Payment Terms Days
+      type: object
+      required:
+      - id
+      - name
+      - email
+      - tier
+      - region
+      - payment_terms_days
+      title: CustomerOut
+    HTTPValidationError:
+      properties:
+        detail:
+          items:
+            $ref: '#/components/schemas/ValidationError'
+          type: array
+          title: Detail
+      type: object
+      title: HTTPValidationError
+    InvoiceIn:
+      properties:
+        customer_id:
+          type: integer
+          title: Customer Id
+        lines:
+          items:
+            $ref: '#/components/schemas/LineIn'
+          type: array
+          title: Lines
+        issue_date:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Issue Date
+        currency:
+          type: string
+          title: Currency
+          default: USD
+      type: object
+      required:
+      - customer_id
+      - lines
+      title: InvoiceIn
+    InvoiceOut:
+      properties:
+        id:
+          type: integer
+          title: Id
+        number:
+          type: string
+          title: Number
+        customer_id:
+          type: integer
+          title: Customer Id
+        issue_date:
+          type: string
+          title: Issue Date
+        due_date:
+          type: string
+          title: Due Date
+        subtotal:
+          type: string
+          title: Subtotal
+        discount:
+          type: string
+          title: Discount
+        tax:
+          type: string
+          title: Tax
+        late_fee:
+          type: string
+          title: Late Fee
+        total:
+          type: string
+          title: Total
+        paid:
+          type: string
+          title: Paid
+        balance:
+          type: string
+          title: Balance
+        currency:
+          type: string
+          title: Currency
+        status:
+          type: string
+          title: Status
+      type: object
+      required:
+      - id
+      - number
+      - customer_id
+      - issue_date
+      - due_date
+      - subtotal
+      - discount
+      - tax
+      - late_fee
+      - total
+      - paid
+      - balance
+      - currency
+      - status
+      title: InvoiceOut
+    LineIn:
+      properties:
+        description:
+          type: string
+          title: Description
+        quantity:
+          type: integer
+          exclusiveMinimum: 0.0
+          title: Quantity
+        unit_price:
+          type: string
+          title: Unit Price
+      type: object
+      required:
+      - description
+      - quantity
+      - unit_price
+      title: LineIn
+    PaymentIn:
+      properties:
+        amount:
+          type: string
+          title: Amount
+        method:
+          type: string
+          title: Method
+          default: card
+        received_on:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Received On
+      type: object
+      required:
+      - amount
+      title: PaymentIn
+    PaymentOut:
+      properties:
+        id:
+          type: integer
+          title: Id
+        invoice_id:
+          type: integer
+          title: Invoice Id
+        amount:
+          type: string
+          title: Amount
+        method:
+          type: string
+          title: Method
+        received_on:
+          type: string
+          title: Received On
+      type: object
+      required:
+      - id
+      - invoice_id
+      - amount
+      - method
+      - received_on
+      title: PaymentOut
+    RevenueOut:
+      properties:
+        month:
+          type: string
+          title: Month
+        invoices:
+          type: integer
+          title: Invoices
+        net:
+          type: string
+          title: Net
+        tax:
+          type: string
+          title: Tax
+        late_fees:
+          type: string
+          title: Late Fees
+      type: object
+      required:
+      - month
+      - invoices
+      - net
+      - tax
+      - late_fees
+      title: RevenueOut
+    SettleIn:
+      properties:
+        amount:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: Amount
+        method:
+          type: string
+          title: Method
+          default: card
+        as_of:
+          anyOf:
+          - type: string
+          - type: 'null'
+          title: As Of
+      type: object
+      title: SettleIn
+    StatementLine:
+      properties:
+        number:
+          type: string
+          title: Number
+        due_date:
+          type: string
+          title: Due Date
+        total:
+          type: string
+          title: Total
+        balance:
+          type: string
+          title: Balance
+        days_overdue:
+          type: integer
+          title: Days Overdue
+      type: object
+      required:
+      - number
+      - due_date
+      - total
+      - balance
+      - days_overdue
+      title: StatementLine
+    StatementOut:
+      properties:
+        customer:
+          type: string
+          title: Customer
+        as_of:
+          type: string
+          title: As Of
+        lines:
+          items:
+            $ref: '#/components/schemas/StatementLine'
+          type: array
+          title: Lines
+        outstanding:
+          type: string
+          title: Outstanding
+        in_arrears:
+          type: boolean
+          title: In Arrears
+      type: object
+      required:
+      - customer
+      - as_of
+      - lines
+      - outstanding
+      - in_arrears
+      title: StatementOut
+    ValidationError:
+      properties:
+        loc:
+          items:
+            anyOf:
+            - type: string
+            - type: integer
+          type: array
+          title: Location
+        msg:
+          type: string
+          title: Message
+        type:
+          type: string
+          title: Error Type
+        input:
+          title: Input
+        ctx:
+          type: object
+          title: Context
+      type: object
+      required:
+      - loc
+      - msg
+      - type
+      title: ValidationError

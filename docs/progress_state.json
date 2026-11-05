@@ -1,6 +1,6 @@
 {
- "current": "M1 / live check",
- "next": "Verify the plugin live, then start M2.",
+ "current": "M2 / T2.2",
+ "next": "Planted traps.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -106,12 +106,17 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_session_start.py\n......                                                                   [100%]\n6 passed in 1.99s\n(exit 0)",
    "dl": [
     "DL-026"
-   ]
+   ],
+   "commit": "91c211e"
   },
   "T2.1": {
    "milestone": "M2",
    "title": "billing-api service",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ cd demo/billing-api && PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p no:cacheprovider 2>&1 | tail -1; find . -path ./.venv -prune -o -path ./.git -prune -o \\( -name '*.py' -o -name '*.sql' -o -name '*.json' -o -name '*.yaml' -o -name '*.md' \\) -print | xargs wc -l | tail -1\n45 passed, 1 warning in 0.23s\n    2383 total\n(exit 0)",
+   "dl": [
+    "DL-027"
+   ]
   },
   "T2.2": {
    "milestone": "M2",
@@ -290,6 +295,7 @@
   }
  },
  "summaries": {
-  "M0": "1. django-oscar runs on SQLite: 1,803 passed, 7 failed, 70 s, none of the failures in pricing code.\n2. Only 7.6% of 367 offer/basket functions return a value in isolation; 38.7% run at all.\n3. Every headless-testable hook behavior was confirmed on v2.1.318, so no fallback triggered.\n4. A/B estimate is about $10 notional for 20 Sonnet runs; plugin eval works but the custom harness stays.\n5. The prompt label needs a person, so it is MC-1 in MANUAL_CHECKS.md."
+  "M0": "1. django-oscar runs on SQLite: 1,803 passed, 7 failed, 70 s, none of the failures in pricing code.\n2. Only 7.6% of 367 offer/basket functions return a value in isolation; 38.7% run at all.\n3. Every headless-testable hook behavior was confirmed on v2.1.318, so no fallback triggered.\n4. A/B estimate is about $10 notional for 20 Sonnet runs; plugin eval works but the custom harness stays.\n5. The prompt label needs a person, so it is MC-1 in MANUAL_CHECKS.md.",
+  "M1": "1. The plugin validates and loads; all five hooks and the MCP server are wired in exec form.\n2. Hook runtime fails open, prints one JSON object, and clips context to 1,500 characters.\n3. A real clean install takes one session start; the symlink re-exec bug was found and fixed by that test.\n4. SessionStart warns about ANTHROPIC_API_KEY and gives Claude a summary.\n5. Allow is expressed by omitting permissionDecision, so the guard never auto-approves (a logged deviation from FR-12)."
  }
 }

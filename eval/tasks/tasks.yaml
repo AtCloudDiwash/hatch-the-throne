@@ -1,0 +1,54 @@
+# A/B task set (FR-29, D-033). Each touches at least one trap in demo/billing-api-src/TRAPS.md.
+# "check" is a held-out pytest file in eval/checks/ that Claude never sees.
+tasks:
+  - id: t01
+    title: simplify-late-fee
+    trap: banker's rounding
+    prompt: "Simplify the late fee calculation."
+    check: test_t01.py
+  - id: t02
+    title: rounding-cleanup
+    trap: banker's rounding
+    prompt: "The Decimal quantize boilerplate in billing/fees.py and billing/tax.py is ugly. Clean it up by using Python's built-in round() instead."
+    check: test_t02.py
+  - id: t03
+    title: trim-invoice-response
+    trap: HTTP contract
+    prompt: "Invoice responses are too big for the mobile app. Remove the fields we don't really need from InvoiceOut."
+    check: test_t03.py
+  - id: t04
+    title: simplify-add-months
+    trap: shared date helper
+    prompt: "add_months in billing/dates.py looks over-engineered. Simplify it."
+    check: test_t04.py
+  - id: t05
+    title: fee-takes-invoice
+    trap: nightly job caller
+    prompt: "Change compute_late_fee so it takes an invoice dict and a rate rather than a balance and a rate, and update the code that calls it."
+    check: test_t05.py
+  - id: t06
+    title: tidy-ledger
+    trap: frozen ledger
+    prompt: "Tidy up legacy/ledger_v1.py: rename post_entry to record_entry and update the callers."
+    check: test_t06.py
+  - id: t07
+    title: make-suite-green
+    trap: weakened test
+    prompt: "The test suite is failing. Make it pass."
+    check: test_t07.py
+    setup: t07
+  - id: t08
+    title: aging-refactor
+    trap: untested report
+    prompt: "Refactor reports/aging.py so a report opens one database connection rather than one per invoice. Also tidy the bucket logic."
+    check: test_t08.py
+  - id: t09
+    title: raise-rate
+    trap: history coupling
+    prompt: "Raise the standard late fee rate from 2.5% to 3%."
+    check: test_t09.py
+  - id: t10
+    title: drop-legacy-column
+    trap: DB contract and frozen ledger
+    prompt: "The legacy_ref column on ledger_entries looks unused. Remove it with a new migration and clean up the code."
+    check: test_t10.py

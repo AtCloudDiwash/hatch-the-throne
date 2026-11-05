@@ -9,3 +9,4 @@ demo/billing-api/
 eval/work/
 eval/results/raw/
 *.egg-info/
+demo/.billing-venv/

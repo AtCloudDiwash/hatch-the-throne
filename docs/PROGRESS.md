@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M1 / live check
-- **Next step:** Verify the plugin live, then start M2.
+- **Current milestone and task:** M2 / T2.2
+- **Next step:** Planted traps.
 
 ## Status
 
@@ -17,8 +17,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T1.1 | M1 | done | [x] Manifest and wiring | DL-020 DL-021 | 3e3cf94 |
 | T1.2 | M1 | done | [x] Shared hook runtime | DL-022 DL-023 | baea1b9 |
 | T1.3 | M1 | done | [x] Bootstrap (FR-03) | DL-024 DL-025 | 90c960c |
-| T1.4 | M1 | done | [x] SessionStart basics (FR-10 steps 5-6) | DL-026 |  |
-| T2.1 | M2 | pending | [ ] billing-api service |  |  |
+| T1.4 | M1 | done | [x] SessionStart basics (FR-10 steps 5-6) | DL-026 | 91c211e |
+| T2.1 | M2 | done | [x] billing-api service | DL-027 |  |
 | T2.2 | M2 | pending | [ ] Planted traps |  |  |
 | T2.3 | M2 | pending | [ ] Planted history |  |  |
 | T2.4 | M2 | pending | [ ] A/B task set |  |  |
@@ -64,6 +64,14 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 3. Every headless-testable hook behavior was confirmed on v2.1.318, so no fallback triggered.
 4. A/B estimate is about $10 notional for 20 Sonnet runs; plugin eval works but the custom harness stays.
 5. The prompt label needs a person, so it is MC-1 in MANUAL_CHECKS.md.
+
+### M1
+
+1. The plugin validates and loads; all five hooks and the MCP server are wired in exec form.
+2. Hook runtime fails open, prints one JSON object, and clips context to 1,500 characters.
+3. A real clean install takes one session start; the symlink re-exec bug was found and fixed by that test.
+4. SessionStart warns about ANTHROPIC_API_KEY and gives Claude a summary.
+5. Allow is expressed by omitting permissionDecision, so the guard never auto-approves (a logged deviation from FR-12).
 
 
 ## Evidence
@@ -157,6 +165,15 @@ $ cat /tmp/lg_t13.txt && .venv/bin/pytest -q tests/test_bootstrap.py tests/test_
 $ .venv/bin/pytest -q tests/test_session_start.py
 ......                                                                   [100%]
 6 passed in 1.99s
+(exit 0)
+```
+
+### T2.1 billing-api service (done)
+
+```text
+$ cd demo/billing-api && PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p no:cacheprovider 2>&1 | tail -1; find . -path ./.venv -prune -o -path ./.git -prune -o \( -name '*.py' -o -name '*.sql' -o -name '*.json' -o -name '*.yaml' -o -name '*.md' \) -print | xargs wc -l | tail -1
+45 passed, 1 warning in 0.23s
+    2383 total
 (exit 0)
 ```
 

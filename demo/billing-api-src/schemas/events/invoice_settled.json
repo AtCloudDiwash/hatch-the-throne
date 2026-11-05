@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "invoice.settled",
+  "type": "object",
+  "required": ["invoice_number", "customer_email", "amount", "currency", "settled_on"],
+  "properties": {
+    "invoice_number": { "type": "string" },
+    "customer_email": { "type": "string" },
+    "amount": { "type": "string" },
+    "late_fee": { "type": "string" },
+    "currency": { "type": "string" },
+    "settled_on": { "type": "string" }
+  }
+}
