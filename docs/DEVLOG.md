@@ -56,6 +56,7 @@ flowchart LR
   subgraph M4
     DL038["DL-038 Session baseline worktree and findings ledg…"]
     DL039["DL-039 Compact and resume of the same session keep…"]
+    DL040["DL-040 Blast-radius context for what the prompt na…"]
   end
 ```
 
@@ -67,14 +68,36 @@ flowchart LR
 | M1 | 4 | 2 | 1 | 0 | 0 | 0 | 0 | 7 |
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | M3 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
-| M4 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 2 |
-| **All** | **17** | **3** | **1** | **14** | **0** | **0** | **4** | **39** |
+| M4 | 2 | 1 | 0 | 0 | 0 | 0 | 0 | 3 |
+| **All** | **18** | **3** | **1** | **14** | **0** | **0** | **4** | **40** |
 
 ## Entries, newest first
 
+### DL-040 · Blast-radius context for what the prompt names
+
+**feature** · M4 · T4.2 · 2026-11-05T11:51-06:00 · commit `pending`
+
+- **Context:** FR-11: Claude should know the dependents before planning, and the prompt must never be changed.
+- **What:** prompt_context.py finds indexed files and functions named in the prompt, adds their impact, and stores the prompt text. Two consecutive words of a function name also match, so 'late fee' finds compute_late_fee.
+- **Why:** Developers write in plain words. The match is only context and cannot interrupt anyone, so over-matching costs little.
+- **Impact:** Runs in well under 2 seconds on billing-api.
+- **Files:** `legacyguard/scripts/prompt_context.py`
+- **Requirements:** `FR-11`, `NFR-03`
+- **Decisions:** none
+- **Open questions:** none
+- **Tests:** `tests/test_pre_edit.py::test_prompt_words_find_function`, `tests/test_pre_edit.py::test_prompt_naming_file_gets_callers_routes_tests`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'prompt_naming or prompt_words or prompt_stored'
+...                                                                      [100%]
+3 passed, 44 deselected in 4.62s
+(exit 0)
+```
+
 ### DL-039 · Compact and resume of the same session keep the baseline
 
-**change** · M4 · T4.1 · 2026-11-05T11:51-06:00 · commit `pending`
+**change** · M4 · T4.1 · 2026-11-05T11:51-06:00 · commit `e6c6ef6`
 
 - **Context:** D-035 says remove and recreate at each SessionStart, but SessionStart also fires on compaction and resume within one session.
 - **What:** Recreate only for a new session or a startup or clear source. A resume or compact with the same session ID and an existing baseline keeps both baseline and ledger.
@@ -96,7 +119,7 @@ $ .venv/bin/pytest -q tests/test_pre_edit.py -k 'baseline or compact or git_repo
 
 ### DL-038 · Session baseline worktree and findings ledger
 
-**feature** · M4 · T4.1 · 2026-11-05T11:51-06:00 · commit `pending`
+**feature** · M4 · T4.1 · 2026-11-05T11:51-06:00 · commit `e6c6ef6`
 
 - **Context:** D-025 and D-035: compare against the state at session start, including dirty files, and recreate it each session.
 - **What:** guardlib/baseline.py makes a detached worktree at HEAD and copies in dirty or untracked in-scope files. guardlib/ledger.py keeps session.json under a file lock, because hooks are separate processes. .legacyguard/.gitignore keeps runtime files out of git while config.yaml and waivers.json stay committable.

@@ -1,6 +1,6 @@
 {
- "current": "M4 / T4.2",
- "next": "Prompt context.",
+ "current": "M4 / T4.3",
+ "next": "Virtual apply and symbol diff.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -227,12 +227,17 @@
    "dl": [
     "DL-038",
     "DL-039"
-   ]
+   ],
+   "commit": "e6c6ef6"
   },
   "T4.2": {
    "milestone": "M4",
    "title": "UserPromptSubmit context (FR-11)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'prompt_naming or prompt_words or prompt_stored'\n...                                                                      [100%]\n3 passed, 44 deselected in 4.62s\n(exit 0)",
+   "dl": [
+    "DL-040"
+   ]
   },
   "T4.3": {
    "milestone": "M4",
