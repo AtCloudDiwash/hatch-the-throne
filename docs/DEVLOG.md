@@ -48,6 +48,7 @@ flowchart LR
     DL031["DL-031 Names table from tree-sitter, with incremen…"]
     DL032["DL-032 Test map from coverage contexts, plus a har…"]
     DL033["DL-033 Routes from the framework; HTTP, DB and eve…"]
+    DL034["DL-034 Git co-change with support and confidence"]
   end
 ```
 
@@ -58,14 +59,36 @@ flowchart LR
 | M0 | 1 | 0 | 0 | 14 | 0 | 0 | 4 | 19 |
 | M1 | 4 | 2 | 1 | 0 | 0 | 0 | 0 | 7 |
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| M3 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
-| **All** | **12** | **2** | **1** | **14** | **0** | **0** | **4** | **33** |
+| M3 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| **All** | **13** | **2** | **1** | **14** | **0** | **0** | **4** | **34** |
 
 ## Entries, newest first
 
+### DL-034 · Git co-change with support and confidence
+
+**feature** · M3 · T3.4 · 2026-11-05T11:45-06:00 · commit `pending`
+
+- **Context:** FR-07: tell Claude which files usually change together.
+- **What:** history.py mines git log, ignores commits touching more than 30 files, and keeps pairs with at least 3 shared commits.
+- **Why:** Bulk commits say nothing about coupling and would otherwise swamp the table.
+- **Impact:** The planted pair is reported as db/rates.sql 82% and jobs/close_month.py 71%.
+- **Files:** `legacyguard/indexer/history.py`
+- **Requirements:** `FR-07`
+- **Decisions:** `D-005`
+- **Open questions:** none
+- **Tests:** `tests/test_index_parts.py::test_billing_planted_pair_reported`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_index_parts.py -k 'cochange or planted'
+..                                                                       [100%]
+2 passed, 18 deselected in 3.00s
+(exit 0)
+```
+
 ### DL-033 · Routes from the framework; HTTP, DB and event contracts as comparable items
 
-**feature** · M3 · T3.3 · 2026-11-05T11:44-06:00 · commit `pending`
+**feature** · M3 · T3.3 · 2026-11-05T11:44-06:00 · commit `337ad6a`
 
 - **Context:** FR-06: map routes to handlers using the framework itself, and read contracts named in config.
 - **What:** routes.py imports the app in the target interpreter with blocks in place and walks its routes, falling back to decorators. contracts_parse.py turns openapi.yaml, SQL migrations and JSON Schemas into item maps. SQL runs in a private in-memory database to get the real resulting columns.
