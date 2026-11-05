@@ -77,6 +77,7 @@ flowchart LR
     DL054["DL-054 Session report with one honest status per f…"]
     DL055["DL-055 Waive and mode commands, reserved for the d…"]
     DL056["DL-056 Pin writes a regression test, only on the d…"]
+    DL057["DL-057 Status skill plus contract and diff_report …"]
   end
 ```
 
@@ -90,14 +91,37 @@ flowchart LR
 | M3 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | M4 | 6 | 2 | 0 | 0 | 0 | 0 | 0 | 8 |
 | M5 | 6 | 0 | 0 | 1 | 0 | 0 | 0 | 7 |
-| M6 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| **All** | **32** | **4** | **1** | **15** | **0** | **0** | **4** | **56** |
+| M6 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| **All** | **33** | **4** | **1** | **15** | **0** | **0** | **4** | **57** |
 
 ## Entries, newest first
 
+### DL-057 · Status skill plus contract and diff_report MCP tools
+
+**feature** · M6 · T6.5 · 2026-11-05T12:02-06:00 · commit `pending`
+
+- **Context:** FR-21 and FR-22 complete the pull channel and the developer's mid-session view.
+- **What:** lg.py status renders the current report. MCP contract lists a file's items from the index, and diff_report returns this session's results for a function.
+- **Why:** Status is how a developer sees async results before Stop, since async output goes only to Claude.
+- **Impact:** All six skills and three tools exist.
+- **Files:** `legacyguard/skills/status/SKILL.md`, `legacyguard/mcp_server/server.py`
+- **Requirements:** `FR-21`, `FR-22`
+- **Decisions:** none
+- **Open questions:** none
+- **Tests:** `tests/test_stop_controls.py::test_contract_and_diff_report_tools`, `tests/test_stop_controls.py::test_status_lists_findings_mode_prompts`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_stop_controls.py -k 'status_lists or contract_and_diff'; claude plugin validate ./legacyguard | tail -1
+..                                                                       [100%]
+2 passed, 24 deselected in 5.45s
+✔ Validation passed
+(exit 0)
+```
+
 ### DL-056 · Pin writes a regression test, only on the developer's command
 
-**feature** · M6 · T6.4 · 2026-11-05T12:01-06:00 · commit `pending`
+**feature** · M6 · T6.4 · 2026-11-05T12:01-06:00 · commit `f36de53`
 
 - **Context:** FR-25 and D-028: never take that road again.
 - **What:** lg.py pin generates tests/legacyguard/test_pinned_<id>.py from a counterexample, expecting the baseline result, including exception type and message. Objects without a literal form are refused with a reason.
