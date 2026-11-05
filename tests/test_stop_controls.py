@@ -323,3 +323,14 @@ def test_contract_and_diff_report_tools(bill):
 def test_skills_for_developer_actions_cannot_be_invoked_by_claude():
     for name in ("waive", "pin", "mode", "index"):
         assert "disable-model-invocation: true" in (PLUGIN / "skills" / name / "SKILL.md").read_text()
+
+
+def test_skill_mode_shows_the_message_without_a_shell_error(bill):
+    r = lg(bill, "--skill", "waive", "LG-99", "x")
+    assert r.returncode == 0 and "no such finding" in r.stdout
+    assert lg(bill, "waive", "LG-99", "x").returncode != 0, "the plain CLI still signals failure"
+
+
+def test_every_skill_uses_skill_mode():
+    for skill in (PLUGIN / "skills").glob("*/SKILL.md"):
+        assert 'lg.py" --skill ' in skill.read_text(), skill

@@ -42,6 +42,7 @@ def main() -> int:
     ap.add_argument("--current", default="", help="task now in progress")
     ap.add_argument("--next", default="", dest="next_step", help="next step in plain words")
     ap.add_argument("--tail", type=int, default=20)
+    ap.add_argument("--final", action="store_true", help="last commit: a commit cannot contain its own hash, so leave the tree clean")
     a = ap.parse_args()
 
     evidence = a.evidence_text
@@ -66,7 +67,7 @@ def main() -> int:
              "type": item["type"], "title": item["title"], "context": item.get("context", ""),
              "what": item.get("what", ""), "why": item.get("why", ""), "root_cause": item.get("root_cause", ""),
              "impact": item.get("impact", ""), "files": item.get("files", []), "refs": refs, "links": links,
-             "commit": "", "evidence": item.get("evidence") or evidence}
+             "commit": "this commit is the last one; see git log -1" if a.final else "", "evidence": item.get("evidence") or evidence}
         entries.append(e)
     with LOG.open("a") as fh:
         for e in entries:
@@ -91,6 +92,9 @@ def main() -> int:
     subprocess.run(["git", "commit", "-q", "-F", "-"], cwd=ROOT, input=message, text=True, check=True)
     sha = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()
 
+    if a.final:
+        print(f"{subject}  [{sha}]")
+        return 0
     lines = LOG.read_text().splitlines()
     out = []
     for line in lines:

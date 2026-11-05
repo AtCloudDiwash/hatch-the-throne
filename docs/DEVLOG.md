@@ -96,6 +96,8 @@ flowchart LR
     DL067["DL-067 Timeline lanes position dots per milestone;…"]
     DL068["DL-068 E2E-1 to E2E-7 pass live through claude -p"]
     DL071["DL-071 Interactive-terminal checks moved to MANUAL…"]
+    DL072["DL-072 Skills show the guard's message rather than…"]
+    DL073["DL-073 Three acceptance items need a person at a t…"]
   end
   DL015 -->|caused| DL060
   DL058 -->|caused| DL060
@@ -110,6 +112,8 @@ flowchart LR
   DL070 -.- DL061
   DL070 -.- DL064
   DL071 -.- DL018
+  DL055 -->|caused| DL072
+  DL073 -.- DL071
 ```
 
 ## Summary
@@ -124,14 +128,58 @@ flowchart LR
 | M5 | 6 | 0 | 0 | 1 | 0 | 0 | 0 | 7 |
 | M6 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | M7 | 2 | 2 | 1 | 1 | 0 | 0 | 3 | 9 |
-| M8 | 1 | 2 | 0 | 1 | 1 | 0 | 0 | 5 |
-| **All** | **36** | **8** | **2** | **17** | **1** | **0** | **7** | **71** |
+| M8 | 1 | 2 | 1 | 1 | 1 | 1 | 0 | 7 |
+| **All** | **36** | **8** | **3** | **17** | **1** | **1** | **7** | **73** |
 
 ## Entries, newest first
 
+### DL-073 · Three acceptance items need a person at a terminal
+
+**blocked** · M8 · T8.4 · 2026-11-05T12:28-06:00 · commit `pending`
+
+- **Context:** TESTING.md section 10 requires E2E-1 to E2E-8 to pass. Headless runs cannot show the permission prompt, and the build rules forbid setting ANTHROPIC_API_KEY on a Claude session.
+- **What:** Open: the [plugin:legacyguard] prompt label in E2E-2 (MC-1); the live API key warning in E2E-8 (MC-3; offline test passes); the plugin panels (MC-2). Also not done: timed rehearsal and backup video (MC-6).
+- **Why:** Recording them as blocked is what the done rule asks for, rather than calling them passes.
+- **Impact:** Evidence that exists: E2E-2's ask fired and Claude read the reason; the documentation states the label format; the hook's API key warning passes offline.
+- **Files:** `docs/MANUAL_CHECKS.md`
+- **Requirements:** `FR-01`, `FR-12`, `FR-10`
+- **Decisions:** none
+- **Open questions:** `OQ-B5`
+- **Tests:** `tests/test_session_start.py::test_api_key_warning`
+- **Related:** `DL-071`
+- **Evidence:**
+
+```text
+eval/results/e2e.json E2E-2: hook ask reason 'Contract break: [LG-1] response field dropped: InvoiceOut.currency'; denial shown to Claude under -p. No interactive prompt was observed.
+```
+
+### DL-072 · Skills show the guard's message rather than a shell failure
+
+**fix** · M8 · T8.4 · 2026-11-05T12:28-06:00 · commit `pending`
+
+- **Context:** A live /legacyguard:waive with an unknown ID displayed Shell command failed, then the message.
+- **What:** Skills call lg.py --skill, which prints the message and exits 0. The plain CLI still exits non-zero.
+- **Why:** A developer's typo is not a shell failure.
+- **Root cause:** lg.py used sys.exit(message), and skill shell injection treats a non-zero exit as a failed command. Introduced by the waive command in DL-055. Offline tests only ran the CLI, so the live check found it.
+- **Impact:** Mistyped IDs read as ordinary messages.
+- **Files:** `legacyguard/scripts/lg.py`, `legacyguard/skills/waive/SKILL.md`
+- **Requirements:** `FR-22`, `FR-24`
+- **Decisions:** none
+- **Open questions:** none
+- **Tests:** `tests/test_stop_controls.py::test_skill_mode_shows_the_message_without_a_shell_error`
+- **Caused by:** `DL-055`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_stop_controls.py -k skill
+...                                                                      [100%]
+3 passed, 25 deselected in 3.40s
+(exit 0)
+```
+
 ### DL-071 · Interactive-terminal checks moved to MANUAL_CHECKS.md
 
-**fallback** · M8 · T8.3 · 2026-11-05T12:26-06:00 · commit `pending`
+**fallback** · M8 · T8.3 · 2026-11-05T12:26-06:00 · commit `87396d3`
 
 - **Context:** The build prompt's fallback: anything that needs a human at an interactive terminal is written as numbered steps, and the run continues.
 - **What:** MC-1 prompt label, MC-2 plugin panels, MC-3 live API key warning, MC-4 visibility of wake-ups, MC-5 waive and pin by hand, MC-6 rehearsal and video, MC-7 team decisions. Commands were also checked live with claude -p where possible: mode changes config, waive reports an unknown ID, status prints.

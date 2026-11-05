@@ -12,7 +12,7 @@ rows = [("Developer prompts per 10 edits", replay["prompt_rate_per_10_edits"], "
         ("Wrong blocks (denies on real commits)", replay["denies"], "0", replay["denies"] == 0)]
 for name, value, target, ok in rows:
     print(f"{name}: {value} (target {target}): {'met' if ok else 'MISSED'}")
-print(f"Prompts per session: most in any A/B or E2E session was {max(r['prompts'] for r in ab['runs'])} (cap 3, enforced by test)")
+print(f"Prompts per session: most in any A/B session was {max(r['prompts'] for r in ab['runs'])} (cap 3, enforced by test)")
 print(f"Catch rate, any status except Verified pass: {planted['catch_rate_any_non_pass']:.0%}; proved by execution: {planted['catch_rate_proved_by_execution']:.0%} (no target, D-033)")
 print(f"Functions: {replay['function_statuses']}")
 print(json.dumps(ab["summary"]))

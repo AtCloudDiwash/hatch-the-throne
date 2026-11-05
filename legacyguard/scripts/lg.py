@@ -49,6 +49,18 @@ def cmd_impact(args) -> int:
 
 def main() -> int:
     bootstrap.reexec_in_venv(PLUGIN_ROOT, ensure=True)
+    if "--skill" in sys.argv:  # a skill shows stdout; a non-zero exit would replace our message with a shell error
+        sys.argv.remove("--skill")
+        try:
+            return _run()
+        except SystemExit as exc:
+            if isinstance(exc.code, str):
+                print(exc.code)
+            return 0
+    return _run()
+
+
+def _run() -> int:
     ap = argparse.ArgumentParser(prog="legacyguard")
     sub = ap.add_subparsers(dest="cmd", required=True)
     p = sub.add_parser("index", help="build or refresh the index")

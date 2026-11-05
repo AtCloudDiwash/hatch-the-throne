@@ -3,7 +3,7 @@
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
 - **Current milestone and task:** M8 / T8.4
-- **Next step:** Final report.
+- **Next step:** Write the final report.
 
 ## Status
 
@@ -52,8 +52,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T7.4 | M7 | done | [x] Budget check (D-013) | DL-063 DL-064 DL-070 | 7f25cbf |
 | T8.1 | M8 | done | [x] Pin minimum Claude Code version (NFR-10) | DL-065 DL-066 DL-067 | 6bf8ad6 |
 | T8.2 | M8 | done | [x] Live E2E-1 to E2E-8 | DL-068 | 5a50665 |
-| T8.3 | M8 | skipped | [-] Dry-run steps, backup video, names and roles | DL-071 |  |
-| T8.4 | M8 | pending | [ ] Final report |  |  |
+| T8.3 | M8 | skipped | [-] Dry-run steps, backup video, names and roles | DL-071 | 87396d3 |
+| T8.4 | M8 | in_progress | [~] Final report | DL-072 DL-073 |  |
 
 ## Milestone summaries
 
@@ -618,5 +618,14 @@ No changes to guarded code were found this session.
 Limits: the behavioral diff compares return values and exception type and message, not side effects such as database or file writes (D-029). Edits made through shell commands are o
 3:mode: strict
 Not done, because each needs a person: timed rehearsal, backup video, pitch lead, team roles, GitHub org (MC-6, MC-7).
+```
+
+### T8.4 Final report (in_progress)
+
+```text
+$ .venv/bin/pytest -q tests/test_stop_controls.py -k skill
+...                                                                      [100%]
+3 passed, 25 deselected in 3.40s
+(exit 0)
 ```
 

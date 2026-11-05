@@ -6,6 +6,6 @@ arguments: symbol
 allowed-tools: Bash(python3 *lg.py*)
 ---
 
-!`python3 "${CLAUDE_PLUGIN_ROOT}/scripts/lg.py" impact "$symbol" 2>&1`
+!`python3 "${CLAUDE_PLUGIN_ROOT}/scripts/lg.py" --skill impact "$symbol" 2>&1`
 
 Show the output above to the developer as it is.
