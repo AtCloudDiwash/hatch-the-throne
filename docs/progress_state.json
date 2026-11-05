@@ -1,6 +1,6 @@
 {
- "current": "M6 / T6.1",
- "next": "Stop audit.",
+ "current": "M6 / T6.2",
+ "next": "Report.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -339,12 +339,17 @@
    "dl": [
     "DL-051",
     "DL-052"
-   ]
+   ],
+   "commit": "db2f382"
   },
   "T6.1": {
    "milestone": "M6",
    "title": "Stop audit (FR-18)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_stop_controls.py -k 'clean_session or bash_ or later_turn or rerun or stale_callers or test_edited or rejected or deleted_assertion or frozen_file or budget_overflow or no_config'\n............                                                             [100%]\n12 passed, 14 deselected in 8.06s\n(exit 0)",
+   "dl": [
+    "DL-053"
+   ]
   },
   "T6.2": {
    "milestone": "M6",

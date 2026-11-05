@@ -72,6 +72,9 @@ flowchart LR
     DL051["DL-051 PostToolUse wakes Claude with a replayable …"]
     DL052["DL-052 Run the A/B and E2E with an activated venv …"]
   end
+  subgraph M6
+    DL053["DL-053 Stop audit reviews the whole session and bl…"]
+  end
 ```
 
 ## Summary
@@ -84,13 +87,36 @@ flowchart LR
 | M3 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | M4 | 6 | 2 | 0 | 0 | 0 | 0 | 0 | 8 |
 | M5 | 6 | 0 | 0 | 1 | 0 | 0 | 0 | 7 |
-| **All** | **28** | **4** | **1** | **15** | **0** | **0** | **4** | **52** |
+| M6 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| **All** | **29** | **4** | **1** | **15** | **0** | **0** | **4** | **53** |
 
 ## Entries, newest first
 
+### DL-053 · Stop audit reviews the whole session and blocks at most once
+
+**feature** · M6 · T6.1 · 2026-11-05T12:01-06:00 · commit `pending`
+
+- **Context:** FR-18: Edit and Write hooks never see shell edits, so a final check must compare the working tree with the baseline.
+- **What:** guardlib/audit.py finds changed files by content, re-runs contract and test checks, runs the diff on functions not yet checked at their current code, and lists callers not updated. stop_audit.py blocks once when unresolved evidence remains, otherwise writes the report.
+- **Why:** Each finding blocks at most once per session, in addition to the stop_hook_active rule, so a later turn does not re-raise what Claude already heard. Stale-caller lists stay in the report only, because they are static (D-013).
+- **Impact:** A shell-made field drop or rounding change is caught with evidence. A rejected edit is shown as not landed. It is also the backstop for -p teardown killing in-flight async hooks.
+- **Files:** `legacyguard/guardlib/audit.py`, `legacyguard/scripts/stop_audit.py`, `tests/test_stop_controls.py`
+- **Requirements:** `FR-17`, `FR-18`
+- **Decisions:** `D-003`, `D-013`
+- **Open questions:** `OQ-B5`
+- **Tests:** `tests/test_stop_controls.py::test_bash_contract_change_caught_block_once_never_twice`, `tests/test_stop_controls.py::test_rejected_edit_is_not_counted_as_landed`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_stop_controls.py -k 'clean_session or bash_ or later_turn or rerun or stale_callers or test_edited or rejected or deleted_assertion or frozen_file or budget_overflow or no_config'
+............                                                             [100%]
+12 passed, 14 deselected in 8.06s
+(exit 0)
+```
+
 ### DL-052 · Run the A/B and E2E with an activated venv and a wider read-only allowlist
 
-**decision** · M5 · T5.6 · 2026-11-05T12:00-06:00 · commit `pending`
+**decision** · M5 · T5.6 · 2026-11-05T12:00-06:00 · commit `db2f382`
 
 - **Context:** In live runs Claude used python -m pytest with no python on PATH, then blocked git diff, and it could not verify its work.
 - **What:** Harness runs put the repo's .venv/bin first on PATH, set VIRTUAL_ENV, and allow python, pytest, git read commands, grep and similar. Runs use --setting-sources project,local, so the developer's own plugins and settings do not affect the comparison.
@@ -115,7 +141,7 @@ The wake-and-revert loop is verified live by E2E-1 in T8.2.
 
 ### DL-051 · PostToolUse wakes Claude with a replayable counterexample
 
-**feature** · M5 · T5.6 · 2026-11-05T12:00-06:00 · commit `pending`
+**feature** · M5 · T5.6 · 2026-11-05T12:00-06:00 · commit `db2f382`
 
 - **Context:** FR-15 and FR-16: a difference wakes Claude before a human sees the diff, and a revert is proved by running it again.
 - **What:** post_edit.py marks approved contract edits as applied, runs the diff on changed functions plus any with an open difference, records findings, and exits 2 with the counterexample. Results from a stale version of the file are dropped.

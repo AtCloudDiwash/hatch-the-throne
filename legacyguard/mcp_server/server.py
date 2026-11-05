@@ -35,5 +35,42 @@ def impact(symbol: str, depth: int = 3) -> str:
         conn.close()
 
 
+@server.tool()
+def contract(path: str) -> str:
+    """Contract items defined by a file (openapi.yaml, a migrations folder, an event schema) from the index."""
+    try:
+        cfg = _load()
+    except (cfgmod.ConfigMissing, cfgmod.ConfigError) as exc:
+        return f"LegacyGuard is inactive here: {exc}"
+    conn = db.connect(cfg.root)
+    try:
+        wanted = path.strip().rstrip("/")
+        rows = conn.execute("SELECT kind, path, item, detail FROM contracts WHERE path = ? OR path = ? OR path LIKE ?", (wanted, wanted + "/", wanted + "/%")).fetchall()
+        if not rows:
+            known = sorted({r["path"] for r in conn.execute("SELECT DISTINCT path FROM contracts")})
+            return f"{path}: no contract items indexed. Contract paths: {', '.join(known) or 'none'}."
+        lines = [f"{r['kind']}  {r['item']}  {r['detail']}" for r in rows]
+        text = "\n".join(lines[:80])
+        return text + (f"\n+{len(lines) - 80} more" if len(lines) > 80 else "")
+    finally:
+        conn.close()
+
+
+@server.tool()
+def diff_report(function: str) -> str:
+    """This session's behavioral diff results for a function: status, inputs compared and counterexamples. Results come from execution."""
+    try:
+        cfg = _load()
+    except (cfgmod.ConfigMissing, cfgmod.ConfigError) as exc:
+        return f"LegacyGuard is inactive here: {exc}"
+    from guardlib import ledger
+    data = ledger.load(cfg.state_dir)
+    name = function.split("::")[-1]
+    rows = [f for f in data["findings"] if f["kind"] in ("behavior_difference", "verified", "untested") and (f["item"] == name or f["item"].rsplit(".", 1)[-1] == name)]
+    if not rows:
+        return f"{function}: no behavioral diff has run for this function in this session."
+    return "\n".join(f"[{f['id']}] {f['status']} ({f['state']}): {f['subject']}. {f['evidence'][:500]}" for f in rows[-5:])
+
+
 def main() -> None:
     server.run("stdio")

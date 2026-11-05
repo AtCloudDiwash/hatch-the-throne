@@ -48,7 +48,7 @@ def run_suite(cfg, timeout: int = 600, extra_args: list[str] | None = None) -> t
         env["PYTHONPATH"] = str(shim_path) + os.pathsep + os.pathsep.join(str(Path(cfg.root) / r) for r in cfg.raw.get("source_roots") or [])
         env.update({"LG_HARVEST_OUT": str(harvest_out), "LG_HARVEST_ROOT": cfg.root})
         cmd = [py, "-m", "coverage", "run", f"--rcfile={rc}", f"--data-file={data_file}", "-m", "pytest", "-q", "-p", "no:cacheprovider",
-               "-p", "legacyguard_harvest", "--no-header", "-x" if False else "-q", *(extra_args or [])]
+               "-p", "legacyguard_harvest", "--no-header", *(extra_args or [])]
         try:
             res = subprocess.run(cmd, cwd=cfg.root, env=env, capture_output=True, text=True, timeout=timeout)
         except subprocess.TimeoutExpired:

@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M6 / T6.1
-- **Next step:** Stop audit.
+- **Current milestone and task:** M6 / T6.2
+- **Next step:** Report.
 
 ## Status
 
@@ -40,8 +40,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T5.3 | M5 | done | [x] Input sources (FR-14) | DL-048 | a9c72a7 |
 | T5.4 | M5 | done | [x] Self-diff filter (FR-14) | DL-049 | d65fb43 |
 | T5.5 | M5 | done | [x] Untested classification (FR-14) | DL-050 | c70a8b8 |
-| T5.6 | M5 | done | [x] PostToolUse wake-up (FR-15, FR-16) | DL-051 DL-052 |  |
-| T6.1 | M6 | pending | [ ] Stop audit (FR-18) |  |  |
+| T5.6 | M5 | done | [x] PostToolUse wake-up (FR-15, FR-16) | DL-051 DL-052 | db2f382 |
+| T6.1 | M6 | done | [x] Stop audit (FR-18) | DL-053 |  |
 | T6.2 | M6 | pending | [ ] Report (FR-19) |  |  |
 | T6.3 | M6 | pending | [ ] Waive and mode skills (FR-24, FR-23) |  |  |
 | T6.4 | M6 | pending | [ ] Pin (FR-25) |  |  |
@@ -433,5 +433,14 @@ $ .venv/bin/pytest -q tests/test_post_edit.py
 Live claude -p run 1 (Sonnet, "Simplify the late fee calculation."): Claude kept ROUND_HALF_UP. Async hook recorded LG-1 Verified pass, 155 inputs compared, 155 returned a value; 0 wakes, 0 prompts (no false alarm).
 Live claude -p run 2 (Sonnet, told to use round(x, 2)): Claude tested rounding itself and declined the edit. No hook fired on an edit.
 The wake-and-revert loop is verified live by E2E-1 in T8.2.
+```
+
+### T6.1 Stop audit (FR-18) (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_stop_controls.py -k 'clean_session or bash_ or later_turn or rerun or stale_callers or test_edited or rejected or deleted_assertion or frozen_file or budget_overflow or no_config'
+............                                                             [100%]
+12 passed, 14 deselected in 8.06s
+(exit 0)
 ```
 
