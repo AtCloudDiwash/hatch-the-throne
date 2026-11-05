@@ -92,6 +92,7 @@ flowchart LR
     DL065["DL-065 Pin Claude Code v2.1.318 as the minimum"]
     DL066["DL-066 Correction: DL-064 replaced DL-063"]
     DL067["DL-067 Timeline lanes position dots per milestone;…"]
+    DL068["DL-068 E2E-1 to E2E-7 pass live through claude -p"]
   end
   DL015 -->|caused| DL060
   DL058 -->|caused| DL060
@@ -100,6 +101,7 @@ flowchart LR
   DL064 -.- DL063
   DL066 -.->|replaces| DL063
   DL066 -.- DL064
+  DL068 -.- DL052
 ```
 
 ## Summary
@@ -114,14 +116,47 @@ flowchart LR
 | M5 | 6 | 0 | 0 | 1 | 0 | 0 | 0 | 7 |
 | M6 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | M7 | 2 | 2 | 1 | 0 | 0 | 0 | 2 | 7 |
-| M8 | 0 | 2 | 0 | 1 | 0 | 0 | 0 | 3 |
-| **All** | **35** | **8** | **2** | **16** | **0** | **0** | **6** | **67** |
+| M8 | 1 | 2 | 0 | 1 | 0 | 0 | 0 | 4 |
+| **All** | **36** | **8** | **2** | **16** | **0** | **0** | **6** | **68** |
 
 ## Entries, newest first
 
+### DL-068 · E2E-1 to E2E-7 pass live through claude -p
+
+**feature** · M8 · T8.2 · 2026-11-05T12:18-06:00 · commit `pending`
+
+- **Context:** TESTING.md section 4 and the build prompt's live verification section.
+- **What:** eval/run_e2e.py runs each scenario on a fresh billing-api, and eval/e2e_verdict.py checks results against the expected behavior. E2E-1 used Sonnet and the rest Haiku. E2E-8 is offline by design: the build rules forbid setting ANTHROPIC_API_KEY on a Claude session, so the hook is tested directly with a dummy value in its own process, and the live view is MC-3.
+- **Why:** E2E ran before the A/B, ahead of plan order, because a broken wake-up loop would have invalidated 20 runs. This is a deviation from IMPLEMENTATION_PLAN.md's M7-then-M8 order.
+- **Impact:** E2E-1 reproduces compute_late_fee(balance=Decimal("40.20"), rate=Decimal("0.025")) before 1.01 after 1.00 live; Claude reverts, Verified pass over 155 inputs, 0 prompts, 1 wake-up. The prompt label stays manual (MC-1). E2E-1 went 1 run over the prompt's cap.
+- **Files:** `eval/run_e2e.py`, `eval/e2e_verdict.py`, `eval/results/e2e.json`, `docs/DEMO_SCRIPT.md`, `docs/MANUAL_CHECKS.md`
+- **Requirements:** `FR-10`, `FR-12`, `FR-15`, `FR-17`, `FR-18`, `FR-19`
+- **Decisions:** `D-004`, `D-013`
+- **Open questions:** `OQ-B5`
+- **Tests:** `tests/test_session_start.py::test_api_key_warning`
+- **Related:** `DL-052`
+- **Evidence:**
+
+```text
+$ python3 eval/e2e_verdict.py; .venv/bin/pytest -q tests/test_session_start.py::test_api_key_warning
+E2E-1 PASS (1 run): exact counterexample, reverted, Verified pass by re-run, 0 prompts, 1 wake-up
+E2E-2 PASS (1 run): ask fired, Claude explained why; the [plugin:legacyguard] label is MC-1
+E2E-3 PASS (1 run): denied, Claude saw the reason
+E2E-4 PASS (1 run): contract-break ask; report lists it
+E2E-5 PASS (1 run): Edit/Write hooks saw nothing; Stop audit caught it, blocked once, report lists it
+E2E-6 PASS (1 run): report says Untested, with no Verified pass for the report module
+E2E-7 PASS (1 run): headless: ask became deny; Claude quoted the reason
+E2E-8 offline: tests/test_session_start.py::test_api_key_warning; live is MC-3
+.                                                                        [100%]
+1 passed in 0.53s
+(exit 0)
+All five hooks fired in the E2E-1 debug log. No guard.log errors in any E2E repo. Largest additionalContext in the E2E debug logs: 1,371 characters.
+E2E-1 total live runs: 3 (2 under T5.6, in which Sonnet avoided the trap, then this one). That is 1 over the cap of 1 run plus 1 retry.
+```
+
 ### DL-067 · Timeline lanes position dots per milestone; titles drop backticks
 
-**change** · M8 · T8.1 · 2026-11-05T12:17-06:00 · commit `pending`
+**change** · M8 · T8.1 · 2026-11-05T12:17-06:00 · commit `6bf8ad6`
 
 - **Context:** Viewing devlog.html in a browser showed M4 to M8 looking empty until the box was scrolled, because all lanes shared one x-axis.
 - **What:** Each lane now places its dots from the left, in time order. Requirement titles drop raw backticks.
@@ -147,7 +182,7 @@ $ claude --version; claude plugin validate . | tail -1; claude plugin validate .
 
 ### DL-066 · Correction: DL-064 replaced DL-063
 
-**change** · M8 · T8.1 · 2026-11-05T12:17-06:00 · commit `pending`
+**change** · M8 · T8.1 · 2026-11-05T12:17-06:00 · commit `6bf8ad6`
 
 - **Context:** The log rules say a replacement must use links.supersedes. DL-064 used related, and past entries are never edited.
 - **What:** This entry records the relationship with the correct link type.
@@ -168,7 +203,7 @@ DL-064 links.related = [DL-063] in docs/devlog.jsonl
 
 ### DL-065 · Pin Claude Code v2.1.318 as the minimum
 
-**decision** · M8 · T8.1 · 2026-11-05T12:17-06:00 · commit `pending`
+**decision** · M8 · T8.1 · 2026-11-05T12:17-06:00 · commit `6bf8ad6`
 
 - **Context:** NFR-10 and OQ-B5: pin a version, and asyncRewake and exec form are recent.
 - **What:** Plugin README and OPEN_QUESTIONS state v2.1.318, the only version verified. Added a root marketplace.json, a constraints test (no Anthropic SDK or API host, key read only for the warning, no prompt hooks) and a latency measurement.

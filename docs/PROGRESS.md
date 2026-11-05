@@ -3,7 +3,7 @@
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
 - **Current milestone and task:** M7 / T7.3
-- **Next step:** A/B is running; then T7.4, T8.2, T8.3, T8.4.
+- **Next step:** A/B running in the background; then T7.4, T8.3, T8.4.
 
 ## Status
 
@@ -50,8 +50,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T7.2 | M7 | done | [x] Seeded bugs (FR-28) | DL-062 | 03e727b |
 | T7.3 | M7 | in_progress | [~] Guard on/off (FR-29) | DL-059 DL-060 | a1ba430 |
 | T7.4 | M7 | in_progress | [~] Budget check (D-013) | DL-063 DL-064 | 0389a9e |
-| T8.1 | M8 | done | [x] Pin minimum Claude Code version (NFR-10) | DL-065 DL-066 DL-067 |  |
-| T8.2 | M8 | pending | [ ] Live E2E-1 to E2E-8 |  |  |
+| T8.1 | M8 | done | [x] Pin minimum Claude Code version (NFR-10) | DL-065 DL-066 DL-067 | 6bf8ad6 |
+| T8.2 | M8 | done | [x] Live E2E-1 to E2E-8 | DL-068 |  |
 | T8.3 | M8 | pending | [ ] Dry-run steps, backup video, names and roles |  |  |
 | T8.4 | M8 | pending | [ ] Final report |  |  |
 
@@ -557,5 +557,24 @@ $ claude --version; claude plugin validate . | tail -1; claude plugin validate .
 9 passed in 0.29s
 {"PreToolUsecontractbreak":{"median_s":0.097,"max_s":0.098,"runs":7},"PreToolUseriskcontext":{"median_s":0.097,"max_s":0.118,"runs":7},"UserPromptSubmit":{"median_s":0.098,"max_s":0.108,"runs":7}}
 (exit 0)
+```
+
+### T8.2 Live E2E-1 to E2E-8 (done)
+
+```text
+$ python3 eval/e2e_verdict.py; .venv/bin/pytest -q tests/test_session_start.py::test_api_key_warning
+E2E-1 PASS (1 run): exact counterexample, reverted, Verified pass by re-run, 0 prompts, 1 wake-up
+E2E-2 PASS (1 run): ask fired, Claude explained why; the [plugin:legacyguard] label is MC-1
+E2E-3 PASS (1 run): denied, Claude saw the reason
+E2E-4 PASS (1 run): contract-break ask; report lists it
+E2E-5 PASS (1 run): Edit/Write hooks saw nothing; Stop audit caught it, blocked once, report lists it
+E2E-6 PASS (1 run): report says Untested, with no Verified pass for the report module
+E2E-7 PASS (1 run): headless: ask became deny; Claude quoted the reason
+E2E-8 offline: tests/test_session_start.py::test_api_key_warning; live is MC-3
+.                                                                        [100%]
+1 passed in 0.53s
+(exit 0)
+All five hooks fired in the E2E-1 debug log. No guard.log errors in any E2E repo. Largest additionalContext in the E2E debug logs: 1,371 characters.
+E2E-1 total live runs: 3 (2 under T5.6, in which Sonnet avoided the trap, then this one). That is 1 over the cap of 1 run plus 1 retry.
 ```
 
