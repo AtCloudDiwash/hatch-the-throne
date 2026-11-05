@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M5 / T5.3
-- **Next step:** Input sources.
+- **Current milestone and task:** M5 / T5.4
+- **Next step:** Self-diff.
 
 ## Status
 
@@ -36,8 +36,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T4.5 | M4 | done | [x] Decision policy, modes, budget (FR-12, FR-20, FR-23) | DL-043 | cb7934b |
 | T4.6 | M4 | done | [x] Frozen and scope rules | DL-044 DL-045 | f51bd50 |
 | T5.1 | M5 | done | [x] Runner subprocesses (FR-14) | DL-046 | a567e30 |
-| T5.2 | M5 | done | [x] Network block (FR-14) | DL-047 |  |
-| T5.3 | M5 | pending | [ ] Input sources (FR-14) |  |  |
+| T5.2 | M5 | done | [x] Network block (FR-14) | DL-047 | b1ec996 |
+| T5.3 | M5 | done | [x] Input sources (FR-14) | DL-048 |  |
 | T5.4 | M5 | pending | [ ] Self-diff filter (FR-14) |  |  |
 | T5.5 | M5 | pending | [ ] Untested classification (FR-14) |  |  |
 | T5.6 | M5 | pending | [ ] PostToolUse wake-up (FR-15, FR-16) |  |  |
@@ -393,6 +393,15 @@ $ .venv/bin/pytest -q tests/test_runner.py -k 'unchanged or known_change or exce
 $ .venv/bin/pytest -q tests/test_runner.py -k 'network or secrets or file_writes or no_pycache'
 ......                                                                   [100%]
 6 passed, 37 deselected in 2.07s
+(exit 0)
+```
+
+### T5.3 Input sources (FR-14) (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_runner.py -k 'generated or harvested or signature_we'
+....                                                                     [100%]
+4 passed, 39 deselected in 1.45s
 (exit 0)
 ```
 

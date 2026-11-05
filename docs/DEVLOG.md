@@ -66,6 +66,7 @@ flowchart LR
   subgraph M5
     DL046["DL-046 Behavioral diff runs old and new code in se…"]
     DL047["DL-047 Runner blocks network, databases, file writ…"]
+    DL048["DL-048 Inputs from real tests first, then Hypothes…"]
   end
 ```
 
@@ -78,14 +79,36 @@ flowchart LR
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | M3 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | M4 | 6 | 2 | 0 | 0 | 0 | 0 | 0 | 8 |
-| M5 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
-| **All** | **24** | **4** | **1** | **14** | **0** | **0** | **4** | **47** |
+| M5 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| **All** | **25** | **4** | **1** | **14** | **0** | **0** | **4** | **48** |
 
 ## Entries, newest first
 
+### DL-048 · Inputs from real tests first, then Hypothesis
+
+**feature** · M5 · T5.3 · 2026-11-05T11:56-06:00 · commit `pending`
+
+- **Context:** FR-14 step 1: at least one harvested and one generated input for compute_late_fee.
+- **What:** runner/inputs.py takes harvested calls first, then derandomized Hypothesis examples from type hints and defaults, capped at max_inputs. Decimal hints get both money-like and rate-like values. Hypothesis's cache stays under .legacyguard/.
+- **Why:** Harvested inputs are realistic and find the counterexample. Generated ones cover code with weak tests. derandomize keeps a demo repeatable.
+- **Impact:** The counterexample shown first comes from a real test call.
+- **Files:** `legacyguard/runner/inputs.py`
+- **Requirements:** `FR-14`
+- **Decisions:** none
+- **Open questions:** none
+- **Tests:** `tests/test_runner.py::test_harvested_counterexample_shows_first`, `tests/test_runner.py::test_generated_inputs_from_hints_are_deterministic`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_runner.py -k 'generated or harvested or signature_we'
+....                                                                     [100%]
+4 passed, 39 deselected in 1.45s
+(exit 0)
+```
+
 ### DL-047 · Runner blocks network, databases, file writes and subprocesses
 
-**feature** · M5 · T5.2 · 2026-11-05T11:55-06:00 · commit `pending`
+**feature** · M5 · T5.2 · 2026-11-05T11:55-06:00 · commit `b1ec996`
 
 - **Context:** NFR-05 and CLAUDE.md constraint 9: the diff never touches real services. The guard must also write only under .legacyguard/.
 - **What:** lg_worker.install_blocks patches socket, sqlite3, open and subprocess before target code loads. Blocks raise a BaseException, and each attempt is recorded even if the target swallows it. The worker gets no environment variables whose names look like secrets, and uses -B so no __pycache__ appears.
