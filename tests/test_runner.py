@@ -352,3 +352,18 @@ def test_module_for_walks_packages(tmp_path):
     assert differ.module_for("src/pkg/sub/m.py", str(tmp_path)) == ("pkg.sub.m", "src")
     assert differ.module_for("top.py", str(tmp_path)) == ("top", "")
     assert differ.module_for("src/pkg/__init__.py", str(tmp_path)) == ("pkg", "src")
+
+
+def test_migration_folder_per_app_is_checked():
+    from guardlib import checks
+    cfg = type("C", (), {"contract_path": lambda self, k: None})()
+    out = checks.run_checks(cfg, "src/app/migrations/0002.py", "", "migrations.RemoveField(model_name='x', name='price')", None)
+    assert out and out[0].kind == "db"
+
+
+def test_library_subclassing_popen_still_imports(svc):
+    src = BASE + "\nimport subprocess\nclass P(subprocess.Popen):\n    pass\n\ndef uses_sub(n: int = 1):\n    subprocess.Popen(['ls'])\n    return n\n"
+    (svc / "svc.py").write_text(src)
+    r = run_diff(svc, src, ["same", "uses_sub"])
+    assert r["same"].status == differ.DONE
+    assert r["uses_sub"].status == differ.UNTESTED and "subprocess" in r["uses_sub"].reason

@@ -232,7 +232,7 @@ def run_checks(cfg, rel: str, before: str | None, after: str, http: dict[str, st
     if rel == cfg.contract_path("http"):
         return check_http_file(rel, before_text, after)
     db_dir = cfg.contract_path("db")
-    if is_under(rel, db_dir):
+    if is_under(rel, db_dir) or ("/migrations/" in rel and rel.endswith(".py")):  # Django keeps a migrations folder per app
         scripts_before, scripts_after = read_migrations(rel, before_text, after) if read_migrations else ([], [])
         return check_migration(rel, scripts_before, scripts_after, before_text, after)
     if is_under(rel, cfg.contract_path("messages")) and rel.endswith(".json"):

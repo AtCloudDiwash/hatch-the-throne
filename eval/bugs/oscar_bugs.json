@@ -1,0 +1,16 @@
+{
+  "note": "Chosen from how pricing bugs look in practice, and committed before any backtest ran. Applied to django-oscar a5ed3c9.",
+  "base_commit": "a5ed3c9",
+  "bugs": [
+    {"id": "B01", "file": "src/oscar/apps/offer/benefits.py", "old": "discount_percent / D(\"100.0\") * price * int(quantity_affected)", "new": "discount_percent / D(\"10.0\") * price * int(quantity_affected)", "what": "Percentage benefit divides by 10, not 100"},
+    {"id": "B02", "file": "src/oscar/apps/offer/benefits.py", "old": "discount_percent = min(discount_percent, D(\"100.0\"))", "new": "discount_percent = discount_percent", "what": "Percentage benefit loses its 100% cap"},
+    {"id": "B03", "file": "src/oscar/apps/offer/benefits.py", "old": "discount = min(discount_amount, affected_items_total)", "new": "discount = discount_amount", "what": "Absolute benefit can exceed the value of the items"},
+    {"id": "B04", "file": "src/oscar/apps/offer/benefits.py", "old": "return min(charge, self.value)", "new": "return self.value", "what": "Absolute shipping discount can exceed the charge"},
+    {"id": "B05", "file": "src/oscar/apps/offer/benefits.py", "old": "return charge - self.value", "new": "return self.value", "what": "Fixed-price shipping returns the price, not the discount"},
+    {"id": "B06", "file": "src/oscar/apps/offer/benefits.py", "old": "return discount.quantize(D(\"0.01\"))", "new": "return discount.quantize(D(\"0.1\"))", "what": "Shipping percentage discount rounds to ten cents"},
+    {"id": "B07", "file": "src/oscar/apps/offer/abstract_models.py", "old": "return amount.quantize(D(\".01\"), round_type)", "new": "return amount.quantize(D(\".1\"), round_type)", "what": "Benefit rounding helper rounds to ten cents"},
+    {"id": "B08", "file": "src/oscar/apps/offer/conditions.py", "old": "if num_matches >= self.value:", "new": "if num_matches > self.value:", "what": "Count condition needs one more item than configured"},
+    {"id": "B09", "file": "src/oscar/apps/shipping/abstract_models.py", "old": "charge += line.quantity * self.price_per_item", "new": "charge += self.price_per_item", "what": "Per-item shipping ignores quantity"},
+    {"id": "B10", "file": "src/oscar/apps/partner/prices.py", "old": "return self.excl_tax + self.tax", "new": "return self.excl_tax", "what": "Fixed price with tax drops the tax"}
+  ]
+}

@@ -1,6 +1,6 @@
 {
  "current": "M7 / T7.1",
- "next": "Backtest harness.",
+ "next": "Run harvest and replay on django-oscar in the background; build the A/B harness.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -389,12 +389,17 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_stop_controls.py -k 'status_lists or contract_and_diff'; claude plugin validate ./legacyguard | tail -1\n..                                                                       [100%]\n2 passed, 24 deselected in 5.45s\n✔ Validation passed\n(exit 0)",
    "dl": [
     "DL-057"
-   ]
+   ],
+   "commit": "f9483e9"
   },
   "T7.1": {
    "milestone": "M7",
    "title": "Backtest harness (FR-28)",
-   "status": "pending"
+   "status": "in_progress",
+   "evidence": "$ .venv/bin/pytest -q tests/test_backtest.py\nF..                                                                      [100%]\n=================================== FAILURES ===================================\n______________________________ test_replay_counts ______________________________\n\nhist = PosixPath('/private/var/folders/dw/qc6ky71119z0qhshhk8rl88r0000gn/T/pytest-of-diwashkuskusmiya/pytest-89/test_replay_counts0/svc')\ntmp_path = PosixPath('/private/var/folders/dw/qc6ky71119z0qhshhk8rl88r0000gn/T/pytest-of-diwashkuskusmiya/pytest-89/test_replay_counts0')\n\n    def test_replay_counts(hist, tmp_path):\n        cfg = cfgmod.load_config(str(hist))\n        r = backtest.replay(cfg, 10, (\"\",), {}, tmp_path / \"r.json\", log=lambda *_: None)\n        s = r[\"summary\"]\n>       assert s[\"edits\"] == 4 and s[\"wake_ups\"] == 1 and s[\"prompts\"] == 1 and s[\"denies\"] == 0\nE       assert (5 == 4)\n\ntests/test_backtest.py:32: AssertionError\n=========================== short test summary info ============================\nFAILED tests/test_backtest.py::test_replay_counts - assert (5 == 4)\n1 failed, 2 passed in 2.41s\n(exit 1)",
+   "dl": [
+    "DL-058"
+   ]
   },
   "T7.2": {
    "milestone": "M7",
@@ -437,6 +442,8 @@
   "M1": "1. The plugin validates and loads; all five hooks and the MCP server are wired in exec form.\n2. Hook runtime fails open, prints one JSON object, and clips context to 1,500 characters.\n3. A real clean install takes one session start; the symlink re-exec bug was found and fixed by that test.\n4. SessionStart warns about ANTHROPIC_API_KEY and gives Claude a summary.\n5. Allow is expressed by omitting permissionDecision, so the guard never auto-approves (a logged deviation from FR-12).",
   "M2": "1. billing-api has 12 API paths, 6 migrations, 2 event schemas, 45 passing tests and about 2,400 lines (the plan said around 3,000).\n2. Five traps are documented in TRAPS.md; the repo's own tests stay green with the rounding trap applied, and a test proves that.\n3. The generator builds 24 commits with planted co-change: 82% with rates.sql and 71% with close_month.py.\n4. Ten A/B tasks exist, and each held-out check is proven to pass clean and fail on a bad edit.\n5. billing-api is generated from tracked source (D-037), so run the build script after cloning.",
   "M3": "1. The four lookup tables build on billing-api: 39 files, 15 routes from the framework, 163 contract items, 6 co-change pairs, 557 test-function pairs.\n2. Harvest captured Decimal(\"40.20\"), Decimal(\"0.025\") from a test that never asserts on the fee.\n3. Impact output reproduces the FR-09 example, under 1,500 characters, with a source on each item.\n4. Live claude -p: MCP server connected, Claude called impact, and the skill ran after adding allowed-tools.\n5. Coverage runs only on /legacyguard:index, not at each session start (logged).",
-  "M4": "1. Baseline worktree with dirty-file copy, locked ledger, prompt context, virtual apply, symbol diff, contract and test checks, policy, and frozen and scope rules all pass their tests.\n2. The TESTING.md decision table passes, including no prompt on the 4th break and waivers that lapse when code changes.\n3. Live claude -p on billing-api: dropping InvoiceOut.currency gave ask, then deny, and Claude quoted the reason; the frozen ledger edit was denied.\n4. Two logged deviations: compact and resume keep the baseline; Claude cannot edit .legacyguard/ state.\n5. PreToolUse runs under 1 second in the test."
+  "M4": "1. Baseline worktree with dirty-file copy, locked ledger, prompt context, virtual apply, symbol diff, contract and test checks, policy, and frozen and scope rules all pass their tests.\n2. The TESTING.md decision table passes, including no prompt on the 4th break and waivers that lapse when code changes.\n3. Live claude -p on billing-api: dropping InvoiceOut.currency gave ask, then deny, and Claude quoted the reason; the frozen ledger edit was denied.\n4. Two logged deviations: compact and resume keep the baseline; Claude cannot edit .legacyguard/ state.\n5. PreToolUse runs under 1 second in the test.",
+  "M6": "1. The Stop audit catches shell-made contract changes, rounding changes and frozen-file edits, and blocks at most once per finding.\n2. The report has one status per finding, an outcome column, prompts x of 3, wake-ups, pin suggestions and a limits footer.\n3. Waive needs a reason and lapses when the code changes; waive, pin, mode and index can't be invoked by Claude.\n4. Pin generates a test proven to fail on the bad version and pass on the good one.\n5. All six skills and three MCP tools exist; plugin validate passes.",
+  "M5": "1. Old code twice and new code once run in separate processes on the same inputs, with network, database, file writes and subprocesses blocked.\n2. Offline on billing-api: compute_late_fee(balance=Decimal(\"40.20\"), rate=Decimal(\"0.025\")) gives before 1.01, after 1.00, and the revert records Verified pass.\n3. Self-diff removes false alarms from time, random and ordering; a test caught a random function passing on one input, which is now Untested.\n4. DB-dependent functions come out Untested with a reason, including when the target swallows the block.\n5. Two live Sonnet runs avoided the trap unaided, so the guard stayed quiet; the live wake-and-revert loop is tested in E2E-1."
  }
 }

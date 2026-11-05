@@ -185,11 +185,13 @@ def compare_one(target: Target, items: list[dict], a: dict | None, b: dict | Non
         return r
     blocked: set[str] = set()
     setup_failures = 0
+    setup_detail = ""
     for item, oa, on, ob in zip(items, a["results"], n["results"], (b or {"results": a["results"]})["results"]):
         blocked.update(oa.get("blocked_kinds", []))
         blocked.update(on.get("blocked_kinds", []))
         if oa["outcome"] == "setup_failed" or on["outcome"] == "setup_failed":
             setup_failures += 1
+            setup_detail = setup_detail or oa.get("detail") or on.get("detail") or ""
             continue
         ca, cn = _comparable(oa), _comparable(on)
         if ca is None or cn is None:
@@ -217,7 +219,7 @@ def compare_one(target: Target, items: list[dict], a: dict | None, b: dict | Non
         r.reason = f"non-deterministic: old code disagreed with itself on {r.dropped_nondeterministic} of {r.dropped_nondeterministic + r.inputs_compared} inputs"
         return r
     if r.inputs_completed == 0:
-        r.reason = "no input ran to completion" if not setup_failures else "recorded inputs could not be restored"
+        r.reason = "no input ran to completion" if not setup_failures else f"inputs could not be set up ({setup_detail[:120]})"
         return r
     r.status = DONE
     return r

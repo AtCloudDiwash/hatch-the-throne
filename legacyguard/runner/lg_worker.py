@@ -66,7 +66,7 @@ def install_blocks() -> None:
     builtins.open = guarded_open
     io.open = guarded_open
     proc = _blocker("subprocess")
-    subprocess.Popen = proc
+    subprocess.Popen.__init__ = proc  # patch the method: libraries subclass Popen at import time
     subprocess.run = proc
     os.system = proc
 

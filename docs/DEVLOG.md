@@ -79,6 +79,9 @@ flowchart LR
     DL056["DL-056 Pin writes a regression test, only on the d…"]
     DL057["DL-057 Status skill plus contract and diff_report …"]
   end
+  subgraph M7
+    DL058["DL-058 Backtest harness replays commits and plante…"]
+  end
 ```
 
 ## Summary
@@ -92,13 +95,52 @@ flowchart LR
 | M4 | 6 | 2 | 0 | 0 | 0 | 0 | 0 | 8 |
 | M5 | 6 | 0 | 0 | 1 | 0 | 0 | 0 | 7 |
 | M6 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
-| **All** | **33** | **4** | **1** | **15** | **0** | **0** | **4** | **57** |
+| M7 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| **All** | **34** | **4** | **1** | **15** | **0** | **0** | **4** | **58** |
 
 ## Entries, newest first
 
+### DL-058 · Backtest harness replays commits and planted bugs without Claude
+
+**feature** · M7 · T7.1 · 2026-11-05T12:06-06:00 · commit `pending`
+
+- **Context:** FR-28: measure false alarms on real commits and catches on known bugs, with no model use.
+- **What:** guardlib/backtest.py and lg.py backtest treat each changed file in a commit as one edit, run the pre-write checks and the behavioral diff between parent and commit in scratch worktrees, count prompts, wake-ups and denies, and save after each commit so a run can resume. Also: a Django app's migrations folder now counts as a migration, and Popen's __init__ is patched so libraries that subclass it still import.
+- **Why:** Reusing the real checks means the numbers describe the shipped guard. Resuming matters because a replay can take a long time.
+- **Impact:** Produces the D-013 rates. The ten planted bugs in eval/bugs/oscar_bugs.json are committed here, before any run, so the choice cannot be fitted to results.
+- **Files:** `legacyguard/guardlib/backtest.py`, `eval/setup_backtest.py`, `eval/bugs/oscar_bugs.json`, `tests/test_backtest.py`
+- **Requirements:** `FR-28`
+- **Decisions:** `D-033`, `D-013`
+- **Open questions:** `OQ-N7`
+- **Tests:** `tests/test_backtest.py::test_replay_counts`, `tests/test_backtest.py::test_planted_bugs`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_backtest.py
+F..                                                                      [100%]
+=================================== FAILURES ===================================
+______________________________ test_replay_counts ______________________________
+
+hist = PosixPath('/private/var/folders/dw/qc6ky71119z0qhshhk8rl88r0000gn/T/pytest-of-diwashkuskusmiya/pytest-89/test_replay_counts0/svc')
+tmp_path = PosixPath('/private/var/folders/dw/qc6ky71119z0qhshhk8rl88r0000gn/T/pytest-of-diwashkuskusmiya/pytest-89/test_replay_counts0')
+
+    def test_replay_counts(hist, tmp_path):
+        cfg = cfgmod.load_config(str(hist))
+        r = backtest.replay(cfg, 10, ("",), {}, tmp_path / "r.json", log=lambda *_: None)
+        s = r["summary"]
+>       assert s["edits"] == 4 and s["wake_ups"] == 1 and s["prompts"] == 1 and s["denies"] == 0
+E       assert (5 == 4)
+
+tests/test_backtest.py:32: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_backtest.py::test_replay_counts - assert (5 == 4)
+1 failed, 2 passed in 2.41s
+(exit 1)
+```
+
 ### DL-057 · Status skill plus contract and diff_report MCP tools
 
-**feature** · M6 · T6.5 · 2026-11-05T12:02-06:00 · commit `pending`
+**feature** · M6 · T6.5 · 2026-11-05T12:02-06:00 · commit `f9483e9`
 
 - **Context:** FR-21 and FR-22 complete the pull channel and the developer's mid-session view.
 - **What:** lg.py status renders the current report. MCP contract lists a file's items from the index, and diff_report returns this session's results for a function.

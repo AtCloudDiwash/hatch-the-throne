@@ -3,7 +3,7 @@
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
 - **Current milestone and task:** M7 / T7.1
-- **Next step:** Backtest harness.
+- **Next step:** Run harvest and replay on django-oscar in the background; build the A/B harness.
 
 ## Status
 
@@ -45,8 +45,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T6.2 | M6 | done | [x] Report (FR-19) | DL-054 | cc8a4cc |
 | T6.3 | M6 | done | [x] Waive and mode skills (FR-24, FR-23) | DL-055 | f1634f9 |
 | T6.4 | M6 | done | [x] Pin (FR-25) | DL-056 | f36de53 |
-| T6.5 | M6 | done | [x] Status skill and remaining MCP tools (FR-21, FR-22) | DL-057 |  |
-| T7.1 | M7 | pending | [ ] Backtest harness (FR-28) |  |  |
+| T6.5 | M6 | done | [x] Status skill and remaining MCP tools (FR-21, FR-22) | DL-057 | f9483e9 |
+| T7.1 | M7 | in_progress | [~] Backtest harness (FR-28) | DL-058 |  |
 | T7.2 | M7 | pending | [ ] Seeded bugs (FR-28) |  |  |
 | T7.3 | M7 | pending | [ ] Guard on/off (FR-29) |  |  |
 | T7.4 | M7 | pending | [ ] Budget check (D-013) |  |  |
@@ -96,6 +96,22 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 3. Live claude -p on billing-api: dropping InvoiceOut.currency gave ask, then deny, and Claude quoted the reason; the frozen ledger edit was denied.
 4. Two logged deviations: compact and resume keep the baseline; Claude cannot edit .legacyguard/ state.
 5. PreToolUse runs under 1 second in the test.
+
+### M6
+
+1. The Stop audit catches shell-made contract changes, rounding changes and frozen-file edits, and blocks at most once per finding.
+2. The report has one status per finding, an outcome column, prompts x of 3, wake-ups, pin suggestions and a limits footer.
+3. Waive needs a reason and lapses when the code changes; waive, pin, mode and index can't be invoked by Claude.
+4. Pin generates a test proven to fail on the bad version and pass on the good one.
+5. All six skills and three MCP tools exist; plugin validate passes.
+
+### M5
+
+1. Old code twice and new code once run in separate processes on the same inputs, with network, database, file writes and subprocesses blocked.
+2. Offline on billing-api: compute_late_fee(balance=Decimal("40.20"), rate=Decimal("0.025")) gives before 1.01, after 1.00, and the revert records Verified pass.
+3. Self-diff removes false alarms from time, random and ordering; a test caught a random function passing on one input, which is now Untested.
+4. DB-dependent functions come out Untested with a reason, including when the target swallows the block.
+5. Two live Sonnet runs avoided the trap unaided, so the guard stayed quiet; the live wake-and-revert loop is tested in E2E-1.
 
 
 ## Evidence
@@ -479,5 +495,30 @@ $ .venv/bin/pytest -q tests/test_stop_controls.py -k 'status_lists or contract_a
 2 passed, 24 deselected in 5.45s
 ✔ Validation passed
 (exit 0)
+```
+
+### T7.1 Backtest harness (FR-28) (in_progress)
+
+```text
+$ .venv/bin/pytest -q tests/test_backtest.py
+F..                                                                      [100%]
+=================================== FAILURES ===================================
+______________________________ test_replay_counts ______________________________
+
+hist = PosixPath('/private/var/folders/dw/qc6ky71119z0qhshhk8rl88r0000gn/T/pytest-of-diwashkuskusmiya/pytest-89/test_replay_counts0/svc')
+tmp_path = PosixPath('/private/var/folders/dw/qc6ky71119z0qhshhk8rl88r0000gn/T/pytest-of-diwashkuskusmiya/pytest-89/test_replay_counts0')
+
+    def test_replay_counts(hist, tmp_path):
+        cfg = cfgmod.load_config(str(hist))
+        r = backtest.replay(cfg, 10, ("",), {}, tmp_path / "r.json", log=lambda *_: None)
+        s = r["summary"]
+>       assert s["edits"] == 4 and s["wake_ups"] == 1 and s["prompts"] == 1 and s["denies"] == 0
+E       assert (5 == 4)
+
+tests/test_backtest.py:32: AssertionError
+=========================== short test summary info ============================
+FAILED tests/test_backtest.py::test_replay_counts - assert (5 == 4)
+1 failed, 2 passed in 2.41s
+(exit 1)
 ```
 

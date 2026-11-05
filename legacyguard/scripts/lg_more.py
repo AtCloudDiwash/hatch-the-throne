@@ -146,7 +146,40 @@ def cmd_pin(args) -> int:
     return 0
 
 
+def cmd_backtest(args) -> int:
+    """No Claude involved: replays real commits and planted bugs through the guard's checks (FR-28)."""
+    import json
+    from guardlib import backtest
+    from indexer.coverage_map import build, load_harvest
+    from indexer import db
+    cfg = _cfg()
+    out = Path(args.out)
+    out.mkdir(parents=True, exist_ok=True)
+    if args.harvest:
+        os.environ["LG_HARVEST_MAX"] = "10"
+        from indexer.coverage_map import run_suite
+        code, tail, _ = run_suite(cfg, timeout=args.harvest_timeout, extra_args=args.harvest)
+        print(f"harvest: tests exit {code}; {tail}")
+    harvest = load_harvest(cfg)
+    print(f"harvest has {len(harvest)} functions, {sum(len(v['inputs']) for v in harvest.values())} calls")
+    if args.bugs:
+        r = backtest.planted(cfg, Path(args.bugs), harvest, out / "planted.json")
+        print(json.dumps({k: v for k, v in r.items() if k != "bugs"}))
+    if args.commits:
+        r = backtest.replay(cfg, args.commits, tuple(args.prefix), harvest, out / "replay.json")
+        print(json.dumps(r["summary"], indent=1))
+    return 0
+
+
 def register(sub) -> None:
+    p = sub.add_parser("backtest", help="replay real commits and planted bugs (no Claude)")
+    p.add_argument("--commits", type=int, default=0)
+    p.add_argument("--prefix", nargs="*", default=["src/", "tests/"])
+    p.add_argument("--bugs")
+    p.add_argument("--out", default="backtest-results")
+    p.add_argument("--harvest", nargs="*")
+    p.add_argument("--harvest-timeout", type=int, default=1500)
+    p.set_defaults(fn=cmd_backtest)
     p = sub.add_parser("status", help="findings, mode and prompts used")
     p.set_defaults(fn=cmd_status)
     p = sub.add_parser("waive", help="accept a finding, with a reason")
