@@ -51,6 +51,7 @@ flowchart LR
     DL034["DL-034 Git co-change with support and confidence"]
     DL035["DL-035 Incremental index refresh"]
     DL036["DL-036 Impact library returns sources per item"]
+    DL037["DL-037 MCP impact tool plus /legacyguard:index and…"]
   end
 ```
 
@@ -61,14 +62,45 @@ flowchart LR
 | M0 | 1 | 0 | 0 | 14 | 0 | 0 | 4 | 19 |
 | M1 | 4 | 2 | 1 | 0 | 0 | 0 | 0 | 7 |
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| M3 | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
-| **All** | **15** | **2** | **1** | **14** | **0** | **0** | **4** | **36** |
+| M3 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
+| **All** | **16** | **2** | **1** | **14** | **0** | **0** | **4** | **37** |
 
 ## Entries, newest first
 
+### DL-037 · MCP impact tool plus /legacyguard:index and /legacyguard:impact
+
+**feature** · M3 · T3.7 · 2026-11-05T11:46-06:00 · commit `pending`
+
+- **Context:** FR-21 and FR-22: Claude and the developer both need to query the index.
+- **What:** MCPServer over stdio exposes impact. Skills call scripts/lg.py with shell injection. scripts/mcp_launch.py starts the server under the guard's venv.
+- **Why:** The pull channel complements push hooks (D-002). index and later waive, pin and mode set disable-model-invocation, because those are developer actions.
+- **Impact:** In a live claude -p run the guard server was connected and Claude called impact. Skills need an allowed-tools line, or their shell injection is refused in headless runs.
+- **Files:** `legacyguard/mcp_server/server.py`, `legacyguard/scripts/lg.py`, `legacyguard/scripts/mcp_launch.py`, `legacyguard/skills/index/SKILL.md`, `legacyguard/skills/impact/SKILL.md`, `tests/test_mcp_server.py`
+- **Requirements:** `FR-21`, `FR-22`
+- **Decisions:** `D-002`, `D-031`
+- **Open questions:** `OQ-N5`
+- **Tests:** `tests/test_mcp_server.py::test_impact_over_stdio`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_mcp_server.py; claude plugin validate ./legacyguard | tail -1; cat /private/tmp/claude-501/-Users-diwashkuskusmiya-Desktop-Life-Lane-Projects-Hatchathon/560ac7f3-e1fe-4a27-8afd-837aa682bbbd/scratchpad/skill.txt
+.                                                                        [100%]
+1 passed in 1.03s
+✔ Validation passed
+```
+compute_late_fee (billing/fees.py)
+callers  fee_for_balance() [names,tests]  accrue_late_fee() [names,tests]  projected_fee() [names,history 71%] no test reaches it  aging_bucket() [names] no test reaches it  settle_invoice() [names,tests]  close_month() 
+routes   GET /reports/aging/{invoice_id} [routes]  POST /invoices/{invoice_id}/settle [routes]
+tests    9 [tests]
+co-change db/rates.sql [history 82%]  jobs/close_month.py [history 71%]
+```
+(exit 0)
+Live claude -p (haiku), init event: MCP plugin:legacyguard:guard status=connected; tools=[mcp__plugin_legacyguard_guard__impact]; skills=[legacyguard:impact, legacyguard:index]. Claude called the tool and printed FR-09 output. SessionStart hook: exit 0, summary delivered.
+```
+
 ### DL-036 · Impact library returns sources per item
 
-**feature** · M3 · T3.6 · 2026-11-05T11:45-06:00 · commit `pending`
+**feature** · M3 · T3.6 · 2026-11-05T11:45-06:00 · commit `9e3b897`
 
 - **Context:** FR-09: answer who depends on a function, with each item labeled so a static guess never poses as proof.
 - **What:** guardlib/impact.py walks callers up to 3 hops by name, adds routes, tests and co-changed files, and renders text capped at 1,500 characters with a truncation count.

@@ -1,6 +1,6 @@
 {
- "current": "M3 / T3.7",
- "next": "MCP tool and skills, live check.",
+ "current": "M4 / T4.1",
+ "next": "Baseline worktree and session state.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -206,12 +206,17 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_impact.py; cd demo/billing-api && CLAUDE_PROJECT_DIR=$PWD ../../.venv/bin/python ../../legacyguard/scripts/lg.py impact compute_late_fee\n........                                                                 [100%]\n8 passed in 3.10s\ncompute_late_fee (billing/fees.py)\ncallers  fee_for_balance() [names,tests]  accrue_late_fee() [names,tests]  projected_fee() [names,history 71%] no test reaches it  aging_bucket() [names] no test reaches it  settle_invoice() [names,tests]  close_month() [names,history 71%] no test reaches it  invoice_aging() [names] no test reaches it  aging_report() [names] no test reaches it  +1 more\nroutes   GET /reports/aging/{invoice_id} [routes]  POST /invoices/{invoice_id}/settle [routes]\ntests    9 [tests]\nco-change db/rates.sql [history 82%]  jobs/close_month.py [history 71%]\n(exit 0)",
    "dl": [
     "DL-036"
-   ]
+   ],
+   "commit": "9e3b897"
   },
   "T3.7": {
    "milestone": "M3",
    "title": "MCP impact tool and index/impact skills (FR-21, FR-22)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_mcp_server.py; claude plugin validate ./legacyguard | tail -1; cat /private/tmp/claude-501/-Users-diwashkuskusmiya-Desktop-Life-Lane-Projects-Hatchathon/560ac7f3-e1fe-4a27-8afd-837aa682bbbd/scratchpad/skill.txt\n.                                                                        [100%]\n1 passed in 1.03s\n✔ Validation passed\n```\ncompute_late_fee (billing/fees.py)\ncallers  fee_for_balance() [names,tests]  accrue_late_fee() [names,tests]  projected_fee() [names,history 71%] no test reaches it  aging_bucket() [names] no test reaches it  settle_invoice() [names,tests]  close_month() \nroutes   GET /reports/aging/{invoice_id} [routes]  POST /invoices/{invoice_id}/settle [routes]\ntests    9 [tests]\nco-change db/rates.sql [history 82%]  jobs/close_month.py [history 71%]\n```\n(exit 0)\nLive claude -p (haiku), init event: MCP plugin:legacyguard:guard status=connected; tools=[mcp__plugin_legacyguard_guard__impact]; skills=[legacyguard:impact, legacyguard:index]. Claude called the tool and printed FR-09 output. SessionStart hook: exit 0, summary delivered.",
+   "dl": [
+    "DL-037"
+   ]
   },
   "T4.1": {
    "milestone": "M4",

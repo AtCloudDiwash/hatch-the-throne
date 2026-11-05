@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M3 / T3.7
-- **Next step:** MCP tool and skills, live check.
+- **Current milestone and task:** M4 / T4.1
+- **Next step:** Baseline worktree and session state.
 
 ## Status
 
@@ -27,8 +27,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T3.3 | M3 | done | [x] Routes and contracts (FR-06) | DL-033 | 337ad6a |
 | T3.4 | M3 | done | [x] Co-change (FR-07) | DL-034 | 46abd2a |
 | T3.5 | M3 | done | [x] Incremental re-index (FR-08) | DL-035 | d684f19 |
-| T3.6 | M3 | done | [x] Impact library (FR-09) | DL-036 |  |
-| T3.7 | M3 | pending | [ ] MCP impact tool and index/impact skills (FR-21, FR-22) |  |  |
+| T3.6 | M3 | done | [x] Impact library (FR-09) | DL-036 | 9e3b897 |
+| T3.7 | M3 | done | [x] MCP impact tool and index/impact skills (FR-21, FR-22) | DL-037 |  |
 | T4.1 | M4 | pending | [ ] Baseline worktree and session state (FR-10) |  |  |
 | T4.2 | M4 | pending | [ ] UserPromptSubmit context (FR-11) |  |  |
 | T4.3 | M4 | pending | [ ] Virtual apply and symbol diff (FR-12) |  |  |
@@ -288,5 +288,23 @@ routes   GET /reports/aging/{invoice_id} [routes]  POST /invoices/{invoice_id}/s
 tests    9 [tests]
 co-change db/rates.sql [history 82%]  jobs/close_month.py [history 71%]
 (exit 0)
+```
+
+### T3.7 MCP impact tool and index/impact skills (FR-21, FR-22) (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_mcp_server.py; claude plugin validate ./legacyguard | tail -1; cat /private/tmp/claude-501/-Users-diwashkuskusmiya-Desktop-Life-Lane-Projects-Hatchathon/560ac7f3-e1fe-4a27-8afd-837aa682bbbd/scratchpad/skill.txt
+.                                                                        [100%]
+1 passed in 1.03s
+✔ Validation passed
+```
+compute_late_fee (billing/fees.py)
+callers  fee_for_balance() [names,tests]  accrue_late_fee() [names,tests]  projected_fee() [names,history 71%] no test reaches it  aging_bucket() [names] no test reaches it  settle_invoice() [names,tests]  close_month() 
+routes   GET /reports/aging/{invoice_id} [routes]  POST /invoices/{invoice_id}/settle [routes]
+tests    9 [tests]
+co-change db/rates.sql [history 82%]  jobs/close_month.py [history 71%]
+```
+(exit 0)
+Live claude -p (haiku), init event: MCP plugin:legacyguard:guard status=connected; tools=[mcp__plugin_legacyguard_guard__impact]; skills=[legacyguard:impact, legacyguard:index]. Claude called the tool and printed FR-09 output. SessionStart hook: exit 0, summary delivered.
 ```
 
