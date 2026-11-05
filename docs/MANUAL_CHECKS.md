@@ -33,6 +33,7 @@ Async output goes to Claude, not the developer (OQ-B5 evidence). So check how vi
 2. Look for: Claude reacting to the counterexample without you typing anything, then the Stop summary line.
 3. Type `/legacyguard:status`. Look for: `turned back` next to `compute_late_fee`.
 4. Decide whether this is visible enough for the demo.
+5. Open the newest file in `.legacyguard/reports/` and time yourself. Look for: you can tell what was checked and what wasn't in about 10 seconds (TESTING.md §10, item 7).
 
 ## MC-5 Waive and pin by hand (FR-24, FR-25)
 

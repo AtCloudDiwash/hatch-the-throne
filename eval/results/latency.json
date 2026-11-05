@@ -1,17 +1,17 @@
 {
  "PreToolUse contract break": {
   "median_s": 0.097,
-  "max_s": 0.098,
+  "max_s": 0.099,
   "runs": 7
  },
  "PreToolUse risk context": {
-  "median_s": 0.097,
+  "median_s": 0.098,
   "max_s": 0.118,
   "runs": 7
  },
  "UserPromptSubmit": {
-  "median_s": 0.098,
-  "max_s": 0.108,
+  "median_s": 0.096,
+  "max_s": 0.097,
   "runs": 7
  }
 }

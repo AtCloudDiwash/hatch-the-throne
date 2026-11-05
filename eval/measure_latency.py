@@ -40,6 +40,8 @@ def main():
             for _ in range(RUNS):
                 t, r = timed(script, event, env)
                 assert r.returncode == 0, r.stderr
+                if name != "PreToolUse risk context":  # risk context is sent once per symbol, so later runs print nothing
+                    assert r.stdout.startswith("{"), f"{name} produced no output, so the timing would measure a fail-open exit"
                 times.append(t)
             out[name] = {"median_s": round(statistics.median(times), 3), "max_s": round(max(times), 3), "runs": RUNS}
         print(json.dumps(out, indent=1))

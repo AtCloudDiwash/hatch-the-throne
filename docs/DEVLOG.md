@@ -98,6 +98,7 @@ flowchart LR
     DL071["DL-071 Interactive-terminal checks moved to MANUAL…"]
     DL072["DL-072 Skills show the guard's message rather than…"]
     DL073["DL-073 Three acceptance items need a person at a t…"]
+    DL074["DL-074 Final report, with two corrections to earli…"]
   end
   DL015 -->|caused| DL060
   DL058 -->|caused| DL060
@@ -114,6 +115,9 @@ flowchart LR
   DL071 -.- DL018
   DL055 -->|caused| DL072
   DL073 -.- DL071
+  DL074 -.- DL024
+  DL074 -.- DL068
+  DL074 -.- DL073
 ```
 
 ## Summary
@@ -128,14 +132,49 @@ flowchart LR
 | M5 | 6 | 0 | 0 | 1 | 0 | 0 | 0 | 7 |
 | M6 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | M7 | 2 | 2 | 1 | 1 | 0 | 0 | 3 | 9 |
-| M8 | 1 | 2 | 1 | 1 | 1 | 1 | 0 | 7 |
-| **All** | **36** | **8** | **3** | **17** | **1** | **1** | **7** | **73** |
+| M8 | 2 | 2 | 1 | 1 | 1 | 1 | 0 | 8 |
+| **All** | **37** | **8** | **3** | **17** | **1** | **1** | **7** | **74** |
 
 ## Entries, newest first
 
+### DL-074 · Final report, with two corrections to earlier entries
+
+**feature** · M8 · T8.4 · 2026-11-05T12:33-06:00 · commit `this commit is the last one; see git log -1`
+
+- **Context:** The build prompt's section 10 asks for docs/FINAL_REPORT.md with criteria, numbers, fallbacks, fixes, manual checks, limits and risks.
+- **What:** Wrote the report from measured results. Corrections, since past entries are never edited: DL-024 says the first session start takes about 30 seconds, but it measured 6.9 s with pip's cache filled. DL-068 gives 1,371 characters as the largest context, but that count included the JSON key; the value itself is 1,333 across all A/B and E2E logs.
+- **Why:** Checking the report's claims against measurements found both.
+- **Impact:** Run complete. Four acceptance checks remain manual (DL-073). This entry's commit field cannot hold its own hash: it is the last commit, shown by git log -1.
+- **Files:** `docs/FINAL_REPORT.md`, `docs/MANUAL_CHECKS.md`
+- **Requirements:** `FR-03`, `NFR-04`
+- **Decisions:** none
+- **Open questions:** none
+- **Tests:** none
+- **Related:** `DL-024`, `DL-068`, `DL-073`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1; python3 tools/devlog_check.py; python3 eval/e2e_verdict.py | cut -c1-40; python3 eval/budget_check.py | head -3
+237 passed in 82.37s (0:01:22)
+✔ Validation passed
+devlog_check OK: 73 entries, every commit carries a known DL ID, links resolve, fixes have root causes
+E2E-1 PASS (1 run): exact counterexample
+E2E-2 PASS (1 run): ask fired, Claude ex
+E2E-3 PASS (1 run): denied, Claude saw t
+E2E-4 PASS (1 run): contract-break ask; 
+E2E-5 PASS (1 run): Edit/Write hooks saw
+E2E-6 PASS (1 run): report says Untested
+E2E-7 PASS (1 run): headless: ask became
+E2E-8 offline: tests/test_session_start.
+Developer prompts per 10 edits: 0.212 (target at most 1): met
+Harmless wake-ups per 20 edits: 1.273 (target at most 1): MISSED
+Wrong blocks (denies on real commits): 0 (target 0): met
+(exit 0)
+```
+
 ### DL-073 · Three acceptance items need a person at a terminal
 
-**blocked** · M8 · T8.4 · 2026-11-05T12:28-06:00 · commit `pending`
+**blocked** · M8 · T8.4 · 2026-11-05T12:28-06:00 · commit `382d096`
 
 - **Context:** TESTING.md section 10 requires E2E-1 to E2E-8 to pass. Headless runs cannot show the permission prompt, and the build rules forbid setting ANTHROPIC_API_KEY on a Claude session.
 - **What:** Open: the [plugin:legacyguard] prompt label in E2E-2 (MC-1); the live API key warning in E2E-8 (MC-3; offline test passes); the plugin panels (MC-2). Also not done: timed rehearsal and backup video (MC-6).
@@ -155,7 +194,7 @@ eval/results/e2e.json E2E-2: hook ask reason 'Contract break: [LG-1] response fi
 
 ### DL-072 · Skills show the guard's message rather than a shell failure
 
-**fix** · M8 · T8.4 · 2026-11-05T12:28-06:00 · commit `pending`
+**fix** · M8 · T8.4 · 2026-11-05T12:28-06:00 · commit `382d096`
 
 - **Context:** A live /legacyguard:waive with an unknown ID displayed Shell command failed, then the message.
 - **What:** Skills call lg.py --skill, which prints the message and exits 0. The plain CLI still exits non-zero.

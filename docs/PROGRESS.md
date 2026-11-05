@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M8 / T8.4
-- **Next step:** Write the final report.
+- **Current milestone and task:** Done: all milestones worked through; see docs/FINAL_REPORT.md
+- **Next step:** The team runs docs/MANUAL_CHECKS.md, starting with MC-1.
 
 ## Status
 
@@ -53,7 +53,7 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T8.1 | M8 | done | [x] Pin minimum Claude Code version (NFR-10) | DL-065 DL-066 DL-067 | 6bf8ad6 |
 | T8.2 | M8 | done | [x] Live E2E-1 to E2E-8 | DL-068 | 5a50665 |
 | T8.3 | M8 | skipped | [-] Dry-run steps, backup video, names and roles | DL-071 | 87396d3 |
-| T8.4 | M8 | in_progress | [~] Final report | DL-072 DL-073 |  |
+| T8.4 | M8 | done | [x] Final report | DL-072 DL-073 DL-074 | 382d096 |
 
 ## Milestone summaries
 
@@ -620,12 +620,24 @@ Limits: the behavioral diff compares return values and exception type and messag
 Not done, because each needs a person: timed rehearsal, backup video, pitch lead, team roles, GitHub org (MC-6, MC-7).
 ```
 
-### T8.4 Final report (in_progress)
+### T8.4 Final report (done)
 
 ```text
-$ .venv/bin/pytest -q tests/test_stop_controls.py -k skill
-...                                                                      [100%]
-3 passed, 25 deselected in 3.40s
+$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1; python3 tools/devlog_check.py; python3 eval/e2e_verdict.py | cut -c1-40; python3 eval/budget_check.py | head -3
+237 passed in 82.37s (0:01:22)
+✔ Validation passed
+devlog_check OK: 73 entries, every commit carries a known DL ID, links resolve, fixes have root causes
+E2E-1 PASS (1 run): exact counterexample
+E2E-2 PASS (1 run): ask fired, Claude ex
+E2E-3 PASS (1 run): denied, Claude saw t
+E2E-4 PASS (1 run): contract-break ask; 
+E2E-5 PASS (1 run): Edit/Write hooks saw
+E2E-6 PASS (1 run): report says Untested
+E2E-7 PASS (1 run): headless: ask became
+E2E-8 offline: tests/test_session_start.
+Developer prompts per 10 edits: 0.212 (target at most 1): met
+Harmless wake-ups per 20 edits: 1.273 (target at most 1): MISSED
+Wrong blocks (denies on real commits): 0 (target 0): met
 (exit 0)
 ```
 

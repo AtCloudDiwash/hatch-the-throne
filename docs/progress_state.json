@@ -1,6 +1,6 @@
 {
- "current": "M8 / T8.4",
- "next": "Write the final report.",
+ "current": "Done: all milestones worked through; see docs/FINAL_REPORT.md",
+ "next": "The team runs docs/MANUAL_CHECKS.md, starting with MC-1.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -472,12 +472,14 @@
   "T8.4": {
    "milestone": "M8",
    "title": "Final report",
-   "status": "in_progress",
-   "evidence": "$ .venv/bin/pytest -q tests/test_stop_controls.py -k skill\n...                                                                      [100%]\n3 passed, 25 deselected in 3.40s\n(exit 0)",
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1; python3 tools/devlog_check.py; python3 eval/e2e_verdict.py | cut -c1-40; python3 eval/budget_check.py | head -3\n237 passed in 82.37s (0:01:22)\n✔ Validation passed\ndevlog_check OK: 73 entries, every commit carries a known DL ID, links resolve, fixes have root causes\nE2E-1 PASS (1 run): exact counterexample\nE2E-2 PASS (1 run): ask fired, Claude ex\nE2E-3 PASS (1 run): denied, Claude saw t\nE2E-4 PASS (1 run): contract-break ask; \nE2E-5 PASS (1 run): Edit/Write hooks saw\nE2E-6 PASS (1 run): report says Untested\nE2E-7 PASS (1 run): headless: ask became\nE2E-8 offline: tests/test_session_start.\nDeveloper prompts per 10 edits: 0.212 (target at most 1): met\nHarmless wake-ups per 20 edits: 1.273 (target at most 1): MISSED\nWrong blocks (denies on real commits): 0 (target 0): met\n(exit 0)",
    "dl": [
     "DL-072",
-    "DL-073"
-   ]
+    "DL-073",
+    "DL-074"
+   ],
+   "commit": "382d096"
   }
  },
  "summaries": {
