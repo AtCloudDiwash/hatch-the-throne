@@ -63,6 +63,9 @@ flowchart LR
     DL044["DL-044 Frozen files denied in every mode; out-of-s…"]
     DL045["DL-045 Claude cannot edit the guard's own state fi…"]
   end
+  subgraph M5
+    DL046["DL-046 Behavioral diff runs old and new code in se…"]
+  end
 ```
 
 ## Summary
@@ -74,13 +77,36 @@ flowchart LR
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | M3 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | M4 | 6 | 2 | 0 | 0 | 0 | 0 | 0 | 8 |
-| **All** | **22** | **4** | **1** | **14** | **0** | **0** | **4** | **45** |
+| M5 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| **All** | **23** | **4** | **1** | **14** | **0** | **0** | **4** | **46** |
 
 ## Entries, newest first
 
+### DL-046 · Behavioral diff runs old and new code in separate processes
+
+**feature** · M5 · T5.1 · 2026-11-05T11:55-06:00 · commit `pending`
+
+- **Context:** FR-14 and D-012: the decisive evidence is running both versions on the same inputs.
+- **What:** runner/diff.py starts lg_worker.py under the target's Python against the baseline worktree and the working tree, passes both the same inputs by file, and compares canonical results plus exception type and message. lg_codec.py gives deterministic encoding, ordering sets and dicts and scrubbing memory addresses.
+- **Why:** Separate processes keep old and new modules from sharing an import cache. The worker refuses a module that resolved outside its tree, so an installed copy can never pose as the old or new code.
+- **Impact:** Arguments are passed positionally in baseline order, so renaming a parameter alone is not a difference while reordering one is. A changed module constant also tests the functions in that file that read it. Side effects are not compared (D-029).
+- **Files:** `legacyguard/runner/diff.py`, `legacyguard/runner/lg_worker.py`, `legacyguard/runner/lg_codec.py`, `tests/test_runner.py`
+- **Requirements:** `FR-14`
+- **Decisions:** `D-012`, `D-025`, `D-026`, `D-029`
+- **Open questions:** `OQ-B3`, `OQ-B4`, `OQ-N3`
+- **Tests:** `tests/test_runner.py::test_unchanged_code_identical`, `tests/test_runner.py::test_known_change_differs`, `tests/test_runner.py::test_exception_difference`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_runner.py -k 'unchanged or known_change or exception or timeout or changed_constant or renamed_parameter or syntax_error or methods or module_for or codec or canon'
+......................                                                   [100%]
+22 passed, 21 deselected in 5.79s
+(exit 0)
+```
+
 ### DL-045 · Claude cannot edit the guard's own state files
 
-**change** · M4 · T4.6 · 2026-11-05T11:51-06:00 · commit `pending`
+**change** · M4 · T4.6 · 2026-11-05T11:51-06:00 · commit `f51bd50`
 
 - **Context:** The model must not grade its own output. An Edit to waivers.json or config.yaml would let Claude waive its own findings or switch to advisory.
 - **What:** PreToolUse denies Edit and Write under .legacyguard/ in every mode. waive, pin, mode and index skills set disable-model-invocation.
@@ -102,7 +128,7 @@ $ .venv/bin/pytest -q tests/test_pre_edit.py -k 'frozen or outside or guard_stat
 
 ### DL-044 · Frozen files denied in every mode; out-of-scope edits get a notice
 
-**feature** · M4 · T4.6 · 2026-11-05T11:51-06:00 · commit `pending`
+**feature** · M4 · T4.6 · 2026-11-05T11:51-06:00 · commit `f51bd50`
 
 - **Context:** D-034 denies frozen files even in advisory. D-010 says out-of-scope edits get a warning and no check.
 - **What:** pre_edit.py denies frozen files, notifies once per out-of-scope file, and fails open on invalid config.

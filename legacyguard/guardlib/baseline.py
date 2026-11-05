@@ -19,6 +19,7 @@ coverage.db
 coverage.db-*
 harvest.json
 reports/
+.hypothesis/
 """
 
 

@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M4 / live check
-- **Next step:** Live hook check on billing-api, then M5.
+- **Current milestone and task:** M5 / T5.2
+- **Next step:** Network block.
 
 ## Status
 
@@ -34,8 +34,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T4.3 | M4 | done | [x] Virtual apply and symbol diff (FR-12) | DL-041 | 5658c0e |
 | T4.4 | M4 | done | [x] Contract and test-integrity checks (FR-12, FR-17) | DL-042 | 19961bb |
 | T4.5 | M4 | done | [x] Decision policy, modes, budget (FR-12, FR-20, FR-23) | DL-043 | cb7934b |
-| T4.6 | M4 | done | [x] Frozen and scope rules | DL-044 DL-045 |  |
-| T5.1 | M5 | pending | [ ] Runner subprocesses (FR-14) |  |  |
+| T4.6 | M4 | done | [x] Frozen and scope rules | DL-044 DL-045 | f51bd50 |
+| T5.1 | M5 | done | [x] Runner subprocesses (FR-14) | DL-046 |  |
 | T5.2 | M5 | pending | [ ] Network block (FR-14) |  |  |
 | T5.3 | M5 | pending | [ ] Input sources (FR-14) |  |  |
 | T5.4 | M5 | pending | [ ] Self-diff filter (FR-14) |  |  |
@@ -88,6 +88,14 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 3. Impact output reproduces the FR-09 example, under 1,500 characters, with a source on each item.
 4. Live claude -p: MCP server connected, Claude called impact, and the skill ran after adding allowed-tools.
 5. Coverage runs only on /legacyguard:index, not at each session start (logged).
+
+### M4
+
+1. Baseline worktree with dirty-file copy, locked ledger, prompt context, virtual apply, symbol diff, contract and test checks, policy, and frozen and scope rules all pass their tests.
+2. The TESTING.md decision table passes, including no prompt on the 4th break and waivers that lapse when code changes.
+3. Live claude -p on billing-api: dropping InvoiceOut.currency gave ask, then deny, and Claude quoted the reason; the frozen ledger edit was denied.
+4. Two logged deviations: compact and resume keep the baseline; Claude cannot edit .legacyguard/ state.
+5. PreToolUse runs under 1 second in the test.
 
 
 ## Evidence
@@ -367,6 +375,15 @@ $ .venv/bin/pytest -q tests/test_pre_edit.py -k 'policy or fixture or fourth or 
 $ .venv/bin/pytest -q tests/test_pre_edit.py -k 'frozen or outside or guard_state or old_string or unparsable or invalid_config'
 ........                                                                 [100%]
 8 passed, 39 deselected in 5.44s
+(exit 0)
+```
+
+### T5.1 Runner subprocesses (FR-14) (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_runner.py -k 'unchanged or known_change or exception or timeout or changed_constant or renamed_parameter or syntax_error or methods or module_for or codec or canon'
+......................                                                   [100%]
+22 passed, 21 deselected in 5.79s
 (exit 0)
 ```
 

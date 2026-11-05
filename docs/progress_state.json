@@ -1,6 +1,6 @@
 {
- "current": "M4 / live check",
- "next": "Live hook check on billing-api, then M5.",
+ "current": "M5 / T5.2",
+ "next": "Network block.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -278,12 +278,17 @@
    "dl": [
     "DL-044",
     "DL-045"
-   ]
+   ],
+   "commit": "f51bd50"
   },
   "T5.1": {
    "milestone": "M5",
    "title": "Runner subprocesses (FR-14)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_runner.py -k 'unchanged or known_change or exception or timeout or changed_constant or renamed_parameter or syntax_error or methods or module_for or codec or canon'\n......................                                                   [100%]\n22 passed, 21 deselected in 5.79s\n(exit 0)",
+   "dl": [
+    "DL-046"
+   ]
   },
   "T5.2": {
    "milestone": "M5",
@@ -380,6 +385,7 @@
   "M0": "1. django-oscar runs on SQLite: 1,803 passed, 7 failed, 70 s, none of the failures in pricing code.\n2. Only 7.6% of 367 offer/basket functions return a value in isolation; 38.7% run at all.\n3. Every headless-testable hook behavior was confirmed on v2.1.318, so no fallback triggered.\n4. A/B estimate is about $10 notional for 20 Sonnet runs; plugin eval works but the custom harness stays.\n5. The prompt label needs a person, so it is MC-1 in MANUAL_CHECKS.md.",
   "M1": "1. The plugin validates and loads; all five hooks and the MCP server are wired in exec form.\n2. Hook runtime fails open, prints one JSON object, and clips context to 1,500 characters.\n3. A real clean install takes one session start; the symlink re-exec bug was found and fixed by that test.\n4. SessionStart warns about ANTHROPIC_API_KEY and gives Claude a summary.\n5. Allow is expressed by omitting permissionDecision, so the guard never auto-approves (a logged deviation from FR-12).",
   "M2": "1. billing-api has 12 API paths, 6 migrations, 2 event schemas, 45 passing tests and about 2,400 lines (the plan said around 3,000).\n2. Five traps are documented in TRAPS.md; the repo's own tests stay green with the rounding trap applied, and a test proves that.\n3. The generator builds 24 commits with planted co-change: 82% with rates.sql and 71% with close_month.py.\n4. Ten A/B tasks exist, and each held-out check is proven to pass clean and fail on a bad edit.\n5. billing-api is generated from tracked source (D-037), so run the build script after cloning.",
-  "M3": "1. The four lookup tables build on billing-api: 39 files, 15 routes from the framework, 163 contract items, 6 co-change pairs, 557 test-function pairs.\n2. Harvest captured Decimal(\"40.20\"), Decimal(\"0.025\") from a test that never asserts on the fee.\n3. Impact output reproduces the FR-09 example, under 1,500 characters, with a source on each item.\n4. Live claude -p: MCP server connected, Claude called impact, and the skill ran after adding allowed-tools.\n5. Coverage runs only on /legacyguard:index, not at each session start (logged)."
+  "M3": "1. The four lookup tables build on billing-api: 39 files, 15 routes from the framework, 163 contract items, 6 co-change pairs, 557 test-function pairs.\n2. Harvest captured Decimal(\"40.20\"), Decimal(\"0.025\") from a test that never asserts on the fee.\n3. Impact output reproduces the FR-09 example, under 1,500 characters, with a source on each item.\n4. Live claude -p: MCP server connected, Claude called impact, and the skill ran after adding allowed-tools.\n5. Coverage runs only on /legacyguard:index, not at each session start (logged).",
+  "M4": "1. Baseline worktree with dirty-file copy, locked ledger, prompt context, virtual apply, symbol diff, contract and test checks, policy, and frozen and scope rules all pass their tests.\n2. The TESTING.md decision table passes, including no prompt on the 4th break and waivers that lapse when code changes.\n3. Live claude -p on billing-api: dropping InvoiceOut.currency gave ask, then deny, and Claude quoted the reason; the frozen ledger edit was denied.\n4. Two logged deviations: compact and resume keep the baseline; Claude cannot edit .legacyguard/ state.\n5. PreToolUse runs under 1 second in the test."
  }
 }

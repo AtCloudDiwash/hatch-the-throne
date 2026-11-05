@@ -1,0 +1,12 @@
+# Written by LegacyGuard. config.yaml and waivers.json stay committable.
+baseline/
+index.db
+index.db-*
+session.json
+.session.*
+guard.log
+coverage.db
+coverage.db-*
+harvest.json
+reports/
+.hypothesis/
