@@ -364,6 +364,8 @@ def test_migration_folder_per_app_is_checked():
 def test_library_subclassing_popen_still_imports(svc):
     src = BASE + "\nimport subprocess\nclass P(subprocess.Popen):\n    pass\n\ndef uses_sub(n: int = 1):\n    subprocess.Popen(['ls'])\n    return n\n"
     (svc / "svc.py").write_text(src)
+    commit_all(svc, "add subprocess user")
+    assert run_script("session_start", {"cwd": str(svc), "session_id": "s2", "source": "startup"}).returncode == 0
     r = run_diff(svc, src, ["same", "uses_sub"])
     assert r["same"].status == differ.DONE
     assert r["uses_sub"].status == differ.UNTESTED and "subprocess" in r["uses_sub"].reason

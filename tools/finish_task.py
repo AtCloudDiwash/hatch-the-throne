@@ -49,7 +49,7 @@ def main() -> int:
         run = subprocess.run(a.evidence_cmd, shell=True, cwd=ROOT, capture_output=True, text=True)
         tail = "\n".join((run.stdout + run.stderr).strip().splitlines()[-a.tail:])
         evidence = f"$ {a.evidence_cmd}\n{tail}\n(exit {run.returncode})" + (f"\n{a.evidence_text}" if a.evidence_text else "")
-        if run.returncode and a.status == "done":
+        if run.returncode and a.status in ("done", "in_progress"):
             print(evidence)
             print("evidence command failed; nothing committed", file=sys.stderr)
             return 1

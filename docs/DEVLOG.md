@@ -81,7 +81,11 @@ flowchart LR
   end
   subgraph M7
     DL058["DL-058 Backtest harness replays commits and plante…"]
+    DL059["DL-059 A/B harness around claude -p with held-out …"]
+    DL060["DL-060 Two wrong test expectations, and close-out …"]
   end
+  DL015 -->|caused| DL060
+  DL058 -->|caused| DL060
 ```
 
 ## Summary
@@ -95,14 +99,60 @@ flowchart LR
 | M4 | 6 | 2 | 0 | 0 | 0 | 0 | 0 | 8 |
 | M5 | 6 | 0 | 0 | 1 | 0 | 0 | 0 | 7 |
 | M6 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
-| M7 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| **All** | **34** | **4** | **1** | **15** | **0** | **0** | **4** | **58** |
+| M7 | 2 | 0 | 1 | 0 | 0 | 0 | 0 | 3 |
+| **All** | **35** | **4** | **2** | **15** | **0** | **0** | **4** | **60** |
 
 ## Entries, newest first
 
+### DL-060 · Two wrong test expectations, and close-out no longer commits on failing evidence
+
+**fix** · M7 · T7.3 · 2026-11-05T12:08-06:00 · commit `pending`
+
+- **Context:** The previous commit (DL-058) went in with two failing tests, because finish_task only gated on status done.
+- **What:** Corrected test_replay_counts for the fixture's extra commit and rewrote the Popen test to use a committed baseline. finish_task now refuses to commit on failing evidence for in_progress as well.
+- **Why:** Evidence gating must not depend on the status label.
+- **Root cause:** DL-015 introduced the gate for done only. The two test errors were mine: the fixture's initial commit gave base a parent, and the Popen test's function did not exist at baseline. The guard's code was correct.
+- **Impact:** No behavior change in the guard. The log is honest that DL-058's evidence showed failures.
+- **Files:** `tests/test_backtest.py`, `tests/test_runner.py`, `tools/finish_task.py`
+- **Requirements:** none
+- **Decisions:** none
+- **Open questions:** none
+- **Tests:** `tests/test_backtest.py::test_replay_counts`
+- **Caused by:** `DL-015`, `DL-058`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_ab_harness.py tests/test_backtest.py tests/test_runner.py::test_library_subclassing_popen_still_imports
+.............                                                            [100%]
+13 passed in 8.12s
+(exit 0)
+```
+
+### DL-059 · A/B harness around claude -p with held-out scoring
+
+**feature** · M7 · T7.3 · 2026-11-05T12:08-06:00 · commit `pending`
+
+- **Context:** FR-29 and D-032: same tasks, guard on and off, scored by checks Claude never sees.
+- **What:** eval/run_ab.py builds a fresh repo per run, indexes it for guard-on, runs claude -p in a clean environment with an activated venv, scores with the held-out check and the repo's suite, and saves after each run so it can resume. It stops if it sees a usage limit.
+- **Why:** A clean environment keeps the parent session's settings out of the comparison and guarantees no API key. Only guard-on gets --plugin-dir; everything else is equal.
+- **Impact:** Adds a Stopped for human outcome beyond TESTING.md section 5: a run that made no change and shipped no regression is neither Arrived nor Fell. Deviation noted here.
+- **Files:** `eval/run_ab.py`, `tests/test_ab_harness.py`
+- **Requirements:** `FR-29`
+- **Decisions:** `D-032`, `D-033`, `D-015`
+- **Open questions:** `OQ-N6`
+- **Tests:** `tests/test_ab_harness.py::test_classify`, `tests/test_ab_harness.py::test_child_environment_never_has_an_api_key`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_ab_harness.py tests/test_backtest.py tests/test_runner.py::test_library_subclassing_popen_still_imports
+.............                                                            [100%]
+13 passed in 8.12s
+(exit 0)
+```
+
 ### DL-058 · Backtest harness replays commits and planted bugs without Claude
 
-**feature** · M7 · T7.1 · 2026-11-05T12:06-06:00 · commit `pending`
+**feature** · M7 · T7.1 · 2026-11-05T12:06-06:00 · commit `eb3db24`
 
 - **Context:** FR-28: measure false alarms on real commits and catches on known bugs, with no model use.
 - **What:** guardlib/backtest.py and lg.py backtest treat each changed file in a commit as one edit, run the pre-write checks and the behavioral diff between parent and commit in scratch worktrees, count prompts, wake-ups and denies, and save after each commit so a run can resume. Also: a Django app's migrations folder now counts as a migration, and Popen's __init__ is patched so libraries that subclass it still import.

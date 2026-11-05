@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M7 / T7.1
-- **Next step:** Run harvest and replay on django-oscar in the background; build the A/B harness.
+- **Current milestone and task:** M7 / T7.1 and T7.3
+- **Next step:** Run the A/B and the backtest; then compute T7.4.
 
 ## Status
 
@@ -46,9 +46,9 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T6.3 | M6 | done | [x] Waive and mode skills (FR-24, FR-23) | DL-055 | f1634f9 |
 | T6.4 | M6 | done | [x] Pin (FR-25) | DL-056 | f36de53 |
 | T6.5 | M6 | done | [x] Status skill and remaining MCP tools (FR-21, FR-22) | DL-057 | f9483e9 |
-| T7.1 | M7 | in_progress | [~] Backtest harness (FR-28) | DL-058 |  |
+| T7.1 | M7 | in_progress | [~] Backtest harness (FR-28) | DL-058 | eb3db24 |
 | T7.2 | M7 | pending | [ ] Seeded bugs (FR-28) |  |  |
-| T7.3 | M7 | pending | [ ] Guard on/off (FR-29) |  |  |
+| T7.3 | M7 | in_progress | [~] Guard on/off (FR-29) | DL-059 DL-060 |  |
 | T7.4 | M7 | pending | [ ] Budget check (D-013) |  |  |
 | T8.1 | M8 | pending | [ ] Pin minimum Claude Code version (NFR-10) |  |  |
 | T8.2 | M8 | pending | [ ] Live E2E-1 to E2E-8 |  |  |
@@ -520,5 +520,14 @@ tests/test_backtest.py:32: AssertionError
 FAILED tests/test_backtest.py::test_replay_counts - assert (5 == 4)
 1 failed, 2 passed in 2.41s
 (exit 1)
+```
+
+### T7.3 Guard on/off (FR-29) (in_progress)
+
+```text
+$ .venv/bin/pytest -q tests/test_ab_harness.py tests/test_backtest.py tests/test_runner.py::test_library_subclassing_popen_still_imports
+.............                                                            [100%]
+13 passed in 8.12s
+(exit 0)
 ```
 

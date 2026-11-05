@@ -29,9 +29,9 @@ def test_replay_counts(hist, tmp_path):
     cfg = cfgmod.load_config(str(hist))
     r = backtest.replay(cfg, 10, ("",), {}, tmp_path / "r.json", log=lambda *_: None)
     s = r["summary"]
-    assert s["edits"] == 4 and s["wake_ups"] == 1 and s["prompts"] == 1 and s["denies"] == 0
-    assert s["prompt_rate_per_10_edits"] == 2.5 and s["wake_up_rate_per_20_edits"] == 5.0
-    assert s["function_statuses"][ledger.VERIFIED] == 1 and s["function_statuses"][ledger.DIFFERENCE] == 1
+    assert s["edits"] == 5 and s["wake_ups"] == 1 and s["prompts"] == 1 and s["denies"] == 0
+    assert s["prompt_rate_per_10_edits"] == 2.0 and s["wake_up_rate_per_20_edits"] == 4.0
+    assert s["function_statuses"][ledger.VERIFIED] == 2 and s["function_statuses"][ledger.DIFFERENCE] == 1
     assert "lgbacktest" not in git(hist, "worktree", "list")
 
 

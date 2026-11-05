@@ -1,6 +1,6 @@
 {
- "current": "M7 / T7.1",
- "next": "Run harvest and replay on django-oscar in the background; build the A/B harness.",
+ "current": "M7 / T7.1 and T7.3",
+ "next": "Run the A/B and the backtest; then compute T7.4.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -399,7 +399,8 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_backtest.py\nF..                                                                      [100%]\n=================================== FAILURES ===================================\n______________________________ test_replay_counts ______________________________\n\nhist = PosixPath('/private/var/folders/dw/qc6ky71119z0qhshhk8rl88r0000gn/T/pytest-of-diwashkuskusmiya/pytest-89/test_replay_counts0/svc')\ntmp_path = PosixPath('/private/var/folders/dw/qc6ky71119z0qhshhk8rl88r0000gn/T/pytest-of-diwashkuskusmiya/pytest-89/test_replay_counts0')\n\n    def test_replay_counts(hist, tmp_path):\n        cfg = cfgmod.load_config(str(hist))\n        r = backtest.replay(cfg, 10, (\"\",), {}, tmp_path / \"r.json\", log=lambda *_: None)\n        s = r[\"summary\"]\n>       assert s[\"edits\"] == 4 and s[\"wake_ups\"] == 1 and s[\"prompts\"] == 1 and s[\"denies\"] == 0\nE       assert (5 == 4)\n\ntests/test_backtest.py:32: AssertionError\n=========================== short test summary info ============================\nFAILED tests/test_backtest.py::test_replay_counts - assert (5 == 4)\n1 failed, 2 passed in 2.41s\n(exit 1)",
    "dl": [
     "DL-058"
-   ]
+   ],
+   "commit": "eb3db24"
   },
   "T7.2": {
    "milestone": "M7",
@@ -409,7 +410,12 @@
   "T7.3": {
    "milestone": "M7",
    "title": "Guard on/off (FR-29)",
-   "status": "pending"
+   "status": "in_progress",
+   "evidence": "$ .venv/bin/pytest -q tests/test_ab_harness.py tests/test_backtest.py tests/test_runner.py::test_library_subclassing_popen_still_imports\n.............                                                            [100%]\n13 passed in 8.12s\n(exit 0)",
+   "dl": [
+    "DL-059",
+    "DL-060"
+   ]
   },
   "T7.4": {
    "milestone": "M7",
