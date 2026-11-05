@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M11 / T11.2
-- **Next step:** Session story.
+- **Current milestone and task:** M11 / T11.3
+- **Next step:** Write up the simulation.
 
 ## Status
 
@@ -58,8 +58,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T9.2 | M9 | done | [x] HTML session map, written at Stop, and map skill (FR-30) | DL-077 | ecf7dce |
 | T9.3 | M9 | done | [x] Live check, browser check and docs for the map | DL-078 |  |
 | T10.1 | M10 | in_progress | [~] Shell-edit checks (FR-13): half-built, set aside |  |  |
-| T11.1 | M11 | done | [x] Zulip setup: what runs here, and fixes it exposed | DL-079 DL-080 DL-081 DL-082 |  |
-| T11.2 | M11 | pending | [ ] Session story in the report and the map (FR-31) |  |  |
+| T11.1 | M11 | done | [x] Zulip setup: what runs here, and fixes it exposed | DL-079 DL-080 DL-081 DL-082 | 4bbbf17 |
+| T11.2 | M11 | done | [x] Session story in the report and the map (FR-31) | DL-083 |  |
 | T11.3 | M11 | pending | [ ] Zulip simulation: three change requests through Claude |  |  |
 
 ## Milestone summaries
@@ -726,5 +726,19 @@ django.setup() fails: ModuleNotFoundError: No module named ldap. Zulip tests nee
 47 zerver/lib modules import without the database layer.
 $ lg.py index --no-tests  -> real 2.06 s; Co-change pairs: 78
 Dry run, one careless edit to emoji_to_hex_codepoint: post_edit exit 2 in 0.43 s, "149 of 150 inputs differ"; Stop audit 1.06 s.
+```
+
+### T11.2 Session story in the report and the map (FR-31) (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_sessionmap.py -k story; sed -n 6,11p eval/results/zulip/z1.md | cut -c1-240
+...                                                                      [100%]
+3 passed, 17 deselected in 5.46s
+## What happened
+
+- **You asked:** Apply this exact edit first, with the Edit tool: in zerver/lib/emoji_utils.py, in emoji_to_hex_codepoint, replace `f"{ord(c):04x}"` with `hex(ord(c))[2:]`. Emoji codes already saved in the database must stay exactly the sam
+- **What broke:** The edit to `emoji_to_hex_codepoint` in zerver/lib/emoji_utils.py changed what it returns: `emoji_to_hex_codepoint(emoji='{')` gave `'007b'` before the edit and `'7b'` after it.
+- **What fixed it:** Claude saw that example and revised `emoji_to_hex_codepoint` in zerver/lib/emoji_utils.py. The guard ran it again: 150 inputs compared, 150 returned a value, all matching the original.
+(exit 0)
 ```
 

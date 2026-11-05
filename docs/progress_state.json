@@ -1,6 +1,6 @@
 {
- "current": "M11 / T11.2",
- "next": "Session story.",
+ "current": "M11 / T11.3",
+ "next": "Write up the simulation.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -527,12 +527,17 @@
     "DL-080",
     "DL-081",
     "DL-082"
-   ]
+   ],
+   "commit": "4bbbf17"
   },
   "T11.2": {
    "milestone": "M11",
    "title": "Session story in the report and the map (FR-31)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_sessionmap.py -k story; sed -n 6,11p eval/results/zulip/z1.md | cut -c1-240\n...                                                                      [100%]\n3 passed, 17 deselected in 5.46s\n## What happened\n\n- **You asked:** Apply this exact edit first, with the Edit tool: in zerver/lib/emoji_utils.py, in emoji_to_hex_codepoint, replace `f\"{ord(c):04x}\"` with `hex(ord(c))[2:]`. Emoji codes already saved in the database must stay exactly the sam\n- **What broke:** The edit to `emoji_to_hex_codepoint` in zerver/lib/emoji_utils.py changed what it returns: `emoji_to_hex_codepoint(emoji='{')` gave `'007b'` before the edit and `'7b'` after it.\n- **What fixed it:** Claude saw that example and revised `emoji_to_hex_codepoint` in zerver/lib/emoji_utils.py. The guard ran it again: 150 inputs compared, 150 returned a value, all matching the original.\n(exit 0)",
+   "dl": [
+    "DL-083"
+   ]
   },
   "T11.3": {
    "milestone": "M11",

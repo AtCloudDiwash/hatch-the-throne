@@ -111,6 +111,7 @@ flowchart LR
     DL080["DL-080 The guard runs on Zulip's backend, within l…"]
     DL081["DL-081 mock.patch decorators were indexed as API r…"]
     DL082["DL-082 Generated inputs cover more punctuation and…"]
+    DL083["DL-083 Reports and maps open with a plain story of…"]
   end
   DL015 -->|caused| DL060
   DL058 -->|caused| DL060
@@ -150,14 +151,41 @@ flowchart LR
 | M7 | 2 | 2 | 1 | 1 | 0 | 0 | 3 | 9 |
 | M8 | 2 | 2 | 1 | 1 | 1 | 1 | 0 | 8 |
 | M9 | 3 | 0 | 0 | 1 | 0 | 0 | 0 | 4 |
-| M11 | 0 | 2 | 1 | 0 | 0 | 0 | 1 | 4 |
-| **All** | **40** | **10** | **4** | **18** | **1** | **1** | **8** | **82** |
+| M11 | 1 | 2 | 1 | 0 | 0 | 0 | 1 | 5 |
+| **All** | **41** | **10** | **4** | **18** | **1** | **1** | **8** | **83** |
 
 ## Entries, newest first
 
+### DL-083 · Reports and maps open with a plain story of the session
+
+**feature** · M11 · T11.2 · 2026-11-05T13:38-06:00 · commit `pending`
+
+- **Context:** FR-31 and D-040: the team asked for a final output saying what was asked, what broke doing it, and what solved it.
+- **What:** report.story turns the ledger into ordered steps: You asked, What broke (with one example call, before and after), What fixed it (with the re-run count), Checked, Not checked (with the reason), Asked you, Needs you. The Markdown report and the session map both show it first.
+- **Why:** It adds no new judgment. Each line is a finding restated, so the five-status rule still holds and nothing is called safe.
+- **Impact:** A developer can read what happened without decoding the findings table. The table and the map stay below it for detail.
+- **Files:** `legacyguard/guardlib/report.py`, `legacyguard/guardlib/sessionmap.py`, `tests/test_sessionmap.py`
+- **Requirements:** `FR-31`, `FR-19`, `FR-30`
+- **Decisions:** `D-040`
+- **Open questions:** none
+- **Tests:** `tests/test_sessionmap.py::test_story_tells_asked_broke_fixed`, `tests/test_sessionmap.py::test_story_covers_unchecked_checked_and_asked_you`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_sessionmap.py -k story; sed -n 6,11p eval/results/zulip/z1.md | cut -c1-240
+...                                                                      [100%]
+3 passed, 17 deselected in 5.46s
+## What happened
+
+- **You asked:** Apply this exact edit first, with the Edit tool: in zerver/lib/emoji_utils.py, in emoji_to_hex_codepoint, replace `f"{ord(c):04x}"` with `hex(ord(c))[2:]`. Emoji codes already saved in the database must stay exactly the sam
+- **What broke:** The edit to `emoji_to_hex_codepoint` in zerver/lib/emoji_utils.py changed what it returns: `emoji_to_hex_codepoint(emoji='{')` gave `'007b'` before the edit and `'7b'` after it.
+- **What fixed it:** Claude saw that example and revised `emoji_to_hex_codepoint` in zerver/lib/emoji_utils.py. The guard ran it again: 150 inputs compared, 150 returned a value, all matching the original.
+(exit 0)
+```
+
 ### DL-082 · Generated inputs cover more punctuation and larger numbers
 
-**change** · M11 · T11.1 · 2026-11-05T13:37-06:00 · commit `pending`
+**change** · M11 · T11.1 · 2026-11-05T13:37-06:00 · commit `4bbbf17`
 
 - **Context:** Zulip has no runnable tests here, so every input is generated. The old generator made strings from 18 characters with no slash, and integers only up to 1,000.
 - **What:** Strings now draw from letters, digits and common punctuation, up to 16 characters. Integers mix small values with values up to 2 to the power 40.
@@ -188,7 +216,7 @@ Dry run, one careless edit to emoji_to_hex_codepoint: post_edit exit 2 in 0.43 s
 
 ### DL-081 · mock.patch decorators were indexed as API routes
 
-**fix** · M11 · T11.1 · 2026-11-05T13:37-06:00 · commit `pending`
+**fix** · M11 · T11.1 · 2026-11-05T13:37-06:00 · commit `4bbbf17`
 
 - **Context:** Indexing Zulip reported 114 routes from decorators. Zulip registers routes in urls.py, so that number was wrong.
 - **What:** A route decorator's path must now be empty or start with a slash.
@@ -220,7 +248,7 @@ Dry run, one careless edit to emoji_to_hex_codepoint: post_edit exit 2 in 0.43 s
 
 ### DL-080 · The guard runs on Zulip's backend, within limits this Mac sets
 
-**spike** · M11 · T11.1 · 2026-11-05T13:37-06:00 · commit `pending`
+**spike** · M11 · T11.1 · 2026-11-05T13:37-06:00 · commit `4bbbf17`
 
 - **Context:** The team asked to try the guard on a real project they picked: Zulip.
 - **What:** Cloned Zulip, pointed the guard at zerver/, installed 196 of 199 dependencies, and built the index in about 2 seconds. Zulip's full backend cannot start here (a missing system library), and its tests need PostgreSQL.
@@ -250,7 +278,7 @@ Dry run, one careless edit to emoji_to_hex_codepoint: post_edit exit 2 in 0.43 s
 
 ### DL-079 · Shell-edit checks (FR-13) set aside, half-built
 
-**change** · M11 · T11.1 · 2026-11-05T13:37-06:00 · commit `pending`
+**change** · M11 · T11.1 · 2026-11-05T13:37-06:00 · commit `4bbbf17`
 
 - **Context:** The team approved FR-13, then said the work was moving too fast and switched to a Zulip demo.
 - **What:** Moved the uncommitted FR-13 code into git stash. Nothing from it is in any commit. PROGRESS.md records what exists and how to resume. D-039 is reserved for its design decision.
