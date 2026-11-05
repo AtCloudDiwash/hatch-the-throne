@@ -52,3 +52,12 @@ Async output goes to Claude, not the developer (OQ-B5 evidence). So check how vi
 1. OQ-N10: does the pitch lead with everyday agent safety or legacy modernization?
 2. OQ-N11: team roles for the Team rubric criterion.
 3. OQ-N12: GitHub org and repo for the marketplace. Then replace `<owner>/<repo>` in `legacyguard/README.md`.
+
+## MC-8 The session map (FR-30)
+
+1. After the E2E-1 prompt in MC-4 has finished, type `/legacyguard:map`. Look for: your browser opens a page titled "LegacyGuard session map".
+2. Look for: `compute_late_fee` in the first column, marked `Verified pass · turned back`.
+3. Click it. Look for: the counterexample in the side panel, and the rest of the map dimmed except its callers.
+4. Look for: amber boxes such as `projected_fee` and `aging_bucket` (no test reaches them), and dashed edges to them.
+5. Tick "Fade callers that tests reach". Look for: only the amber callers stay bright.
+6. Decide whether this, or `/legacyguard:status`, is the better thing to show at 1:45 in the demo.

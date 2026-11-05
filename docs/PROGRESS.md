@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M9 / T9.3
-- **Next step:** Live check and docs.
+- **Current milestone and task:** Done: M0 to M9 worked through; see docs/FINAL_REPORT.md
+- **Next step:** The team runs docs/MANUAL_CHECKS.md, MC-1 to MC-8.
 
 ## Status
 
@@ -55,8 +55,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T8.3 | M8 | skipped | [-] Dry-run steps, backup video, names and roles | DL-071 | 87396d3 |
 | T8.4 | M8 | done | [x] Final report | DL-072 DL-073 DL-074 | 382d096 |
 | T9.1 | M9 | done | [x] Map data and impact text tree (FR-30) | DL-075 DL-076 | 32a195d |
-| T9.2 | M9 | done | [x] HTML session map, written at Stop, and map skill (FR-30) | DL-077 |  |
-| T9.3 | M9 | pending | [ ] Live check, browser check and docs for the map |  |  |
+| T9.2 | M9 | done | [x] HTML session map, written at Stop, and map skill (FR-30) | DL-077 | ecf7dce |
+| T9.3 | M9 | done | [x] Live check, browser check and docs for the map | DL-078 |  |
 
 ## Milestone summaries
 
@@ -115,6 +115,14 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 3. Self-diff removes false alarms from time, random and ordering; a test caught a random function passing on one input, which is now Untested.
 4. DB-dependent functions come out Untested with a reason, including when the target swallows the block.
 5. Two live Sonnet runs avoided the trap unaided, so the guard stayed quiet; the live wake-and-revert loop is tested in E2E-1.
+
+### M9
+
+1. The guard now writes an offline session map at Stop, next to the Markdown report, and /legacyguard:map opens it.
+2. It shows changed functions with their status, callers up to three steps, which callers no test reaches, and API routes.
+3. Edges are solid only when one test runs both ends; name-only matches are dashed. No score, and it never says safe.
+4. 17 new tests (254 in total), a browser check in light and dark, and one live claude -p run where Stop wrote the map.
+5. Scheduled jobs are not indexed, so only routes are labeled as entry points; MC-8 is the manual check.
 
 
 ## Evidence
@@ -674,5 +682,19 @@ ya  staff  20628 Nov  5 12:54 demo.html
 ya  staff   1437 Nov  5 12:54 demo.md
 (exit 0)
 Checked in the in-app browser on a sample billing-api session (eval/work/mapdemo): 14 nodes, 14 edges, 6 of them name-only. Clicking aging_bucket lit 5 nodes and dimmed 9. Dark colors, the fade checkbox, horizontal scroll inside the map box and the stacked narrow layout all worked. No page-level overflow.
+```
+
+### T9.3 Live check, browser check and docs for the map (done)
+
+```text
+$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1; python3 tools/devlog_check.py
+254 passed in 91.73s (0:01:31)
+✔ Validation passed
+devlog_check OK: 77 entries, every commit carries a known DL ID, links resolve, fixes have root causes
+(exit 0)
+Live claude -p (haiku) on a fresh billing-api, two instructed edits:
+Stop summary: "LegacyGuard: 0 verified pass, 0 confirmed failure, 1 open behavior difference, 0 turned back, 1 untested, 0 potential risk. Prompts 0 of 3, wake-ups 1. Report: .../reports/<session>.md Map: .../reports/<session>.html"
+Map data: 10 nodes, 9 edges; compute_late_fee = Behavior difference, aging_bucket = Untested. No guard.log.
+Stop hook with the map, 3 timed runs on the sample session: about 0.2 s each.
 ```
 

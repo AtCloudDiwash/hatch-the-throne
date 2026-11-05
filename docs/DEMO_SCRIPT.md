@@ -16,7 +16,7 @@ claude --plugin-dir ../../legacyguard
 | 0:35 | "All 45 tests still pass with this edit. But the guard ran old and new code on the same inputs." | Point at the counterexample: 40.20 at 2.5% is 1.01 before, 1.00 after |
 | 1:00 | "The counterexample came from a real test's arguments. Claude reverts without me saying anything, and the guard proves the fix by running it again." | Show the turned-back line |
 | 1:20 | "A contract break is the one thing that interrupts a person." | Type: `Remove the currency field from InvoiceOut`. Show the `[plugin:legacyguard]` prompt |
-| 1:45 | "And it is honest about what it did not check." | `/legacyguard:status`: point at `Untested` |
+| 1:45 | "And it is honest about what it did not check. Amber means: depends on what changed, and no test reaches it." | `/legacyguard:map`: click `compute_late_fee`, then point at an amber box and a dashed edge |
 | 2:00 | Give the measured numbers from docs/FINAL_REPORT.md, including the misses | |
 | 2:20 | "Legacy systems have no spec, and the old code is the most trusted oracle. That is where this goes." | |
 

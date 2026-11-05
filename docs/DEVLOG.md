@@ -104,6 +104,7 @@ flowchart LR
     DL075["DL-075 Add a session map as milestone M9"]
     DL076["DL-076 Map model and a text tree of the blast radi…"]
     DL077["DL-077 Session map: one offline HTML file per sess…"]
+    DL078["DL-078 Session map verified live and in a browser;…"]
   end
   DL015 -->|caused| DL060
   DL058 -->|caused| DL060
@@ -123,6 +124,8 @@ flowchart LR
   DL074 -.- DL024
   DL074 -.- DL068
   DL074 -.- DL073
+  DL078 -.- DL076
+  DL078 -.- DL077
 ```
 
 ## Summary
@@ -138,14 +141,42 @@ flowchart LR
 | M6 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | M7 | 2 | 2 | 1 | 1 | 0 | 0 | 3 | 9 |
 | M8 | 2 | 2 | 1 | 1 | 1 | 1 | 0 | 8 |
-| M9 | 2 | 0 | 0 | 1 | 0 | 0 | 0 | 3 |
-| **All** | **39** | **8** | **3** | **18** | **1** | **1** | **7** | **77** |
+| M9 | 3 | 0 | 0 | 1 | 0 | 0 | 0 | 4 |
+| **All** | **40** | **8** | **3** | **18** | **1** | **1** | **7** | **78** |
 
 ## Entries, newest first
 
+### DL-078 · Session map verified live and in a browser; docs updated
+
+**feature** · M9 · T9.3 · 2026-11-05T13:00-06:00 · commit `this commit is the last one; see git log -1`
+
+- **Context:** T9.3: a page meant for people has to be looked at, and Stop must write it in a real session.
+- **What:** One live Haiku run confirmed Stop writes the map and names it in its summary. A browser check covered click-to-highlight, the details panel, the fade option, dark colors and the narrow layout. Updated the plugin README, demo script, manual checks (MC-8) and the final report (section 9).
+- **Why:** The offline tests cannot show whether the page reads well.
+- **Impact:** Correction to what the team was shown earlier: the mockup labeled a nightly job and a weekly report, but the real map labels only API routes, because scheduled jobs are not indexed. This entry's commit field cannot hold its own hash: it is the last commit, shown by git log -1.
+- **Files:** `docs/FINAL_REPORT.md`, `docs/MANUAL_CHECKS.md`, `docs/DEMO_SCRIPT.md`, `legacyguard/README.md`, `README.md`
+- **Requirements:** `FR-30`, `FR-18`
+- **Decisions:** `D-038`
+- **Open questions:** none
+- **Tests:** `tests/test_sessionmap.py::test_stop_stays_quick_with_the_map`
+- **Related:** `DL-076`, `DL-077`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1; python3 tools/devlog_check.py
+254 passed in 91.73s (0:01:31)
+✔ Validation passed
+devlog_check OK: 77 entries, every commit carries a known DL ID, links resolve, fixes have root causes
+(exit 0)
+Live claude -p (haiku) on a fresh billing-api, two instructed edits:
+Stop summary: "LegacyGuard: 0 verified pass, 0 confirmed failure, 1 open behavior difference, 0 turned back, 1 untested, 0 potential risk. Prompts 0 of 3, wake-ups 1. Report: .../reports/<session>.md Map: .../reports/<session>.html"
+Map data: 10 nodes, 9 edges; compute_late_fee = Behavior difference, aging_bucket = Untested. No guard.log.
+Stop hook with the map, 3 timed runs on the sample session: about 0.2 s each.
+```
+
 ### DL-077 · Session map: one offline HTML file per session
 
-**feature** · M9 · T9.2 · 2026-11-05T12:57-06:00 · commit `pending`
+**feature** · M9 · T9.2 · 2026-11-05T12:57-06:00 · commit `ecf7dce`
 
 - **Context:** FR-30: the developer's second read, for when something is flagged.
 - **What:** sessionmap.render_html writes .legacyguard/reports/<session>.html with inline CSS and JS: status counts, a left-to-right map (changed functions, then callers by step), a details panel with the counterexample or the untested reason plus the waive and pin commands, and the findings table. The Stop hook writes it after the Markdown report, and /legacyguard:map writes and opens it.

@@ -1,6 +1,6 @@
 {
- "current": "M9 / T9.3",
- "next": "Live check and docs.",
+ "current": "Done: M0 to M9 worked through; see docs/FINAL_REPORT.md",
+ "next": "The team runs docs/MANUAL_CHECKS.md, MC-1 to MC-8.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -499,12 +499,17 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_sessionmap.py -k 'html or repo_text or stop_ or map_failure or map_command or map_skill'; claude plugin validate ./legacyguard | tail -1; ls -la eval/work/mapdemo/billing-api/.legacyguard/reports | tail -2 | cut -c30-\n.......                                                                  [100%]\n7 passed, 10 deselected in 6.67s\n✔ Validation passed\nya  staff  20628 Nov  5 12:54 demo.html\nya  staff   1437 Nov  5 12:54 demo.md\n(exit 0)\nChecked in the in-app browser on a sample billing-api session (eval/work/mapdemo): 14 nodes, 14 edges, 6 of them name-only. Clicking aging_bucket lit 5 nodes and dimmed 9. Dark colors, the fade checkbox, horizontal scroll inside the map box and the stacked narrow layout all worked. No page-level overflow.",
    "dl": [
     "DL-077"
-   ]
+   ],
+   "commit": "ecf7dce"
   },
   "T9.3": {
    "milestone": "M9",
    "title": "Live check, browser check and docs for the map",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1; python3 tools/devlog_check.py\n254 passed in 91.73s (0:01:31)\n✔ Validation passed\ndevlog_check OK: 77 entries, every commit carries a known DL ID, links resolve, fixes have root causes\n(exit 0)\nLive claude -p (haiku) on a fresh billing-api, two instructed edits:\nStop summary: \"LegacyGuard: 0 verified pass, 0 confirmed failure, 1 open behavior difference, 0 turned back, 1 untested, 0 potential risk. Prompts 0 of 3, wake-ups 1. Report: .../reports/<session>.md Map: .../reports/<session>.html\"\nMap data: 10 nodes, 9 edges; compute_late_fee = Behavior difference, aging_bucket = Untested. No guard.log.\nStop hook with the map, 3 timed runs on the sample session: about 0.2 s each.",
+   "dl": [
+    "DL-078"
+   ]
   }
  },
  "summaries": {
@@ -514,6 +519,7 @@
   "M3": "1. The four lookup tables build on billing-api: 39 files, 15 routes from the framework, 163 contract items, 6 co-change pairs, 557 test-function pairs.\n2. Harvest captured Decimal(\"40.20\"), Decimal(\"0.025\") from a test that never asserts on the fee.\n3. Impact output reproduces the FR-09 example, under 1,500 characters, with a source on each item.\n4. Live claude -p: MCP server connected, Claude called impact, and the skill ran after adding allowed-tools.\n5. Coverage runs only on /legacyguard:index, not at each session start (logged).",
   "M4": "1. Baseline worktree with dirty-file copy, locked ledger, prompt context, virtual apply, symbol diff, contract and test checks, policy, and frozen and scope rules all pass their tests.\n2. The TESTING.md decision table passes, including no prompt on the 4th break and waivers that lapse when code changes.\n3. Live claude -p on billing-api: dropping InvoiceOut.currency gave ask, then deny, and Claude quoted the reason; the frozen ledger edit was denied.\n4. Two logged deviations: compact and resume keep the baseline; Claude cannot edit .legacyguard/ state.\n5. PreToolUse runs under 1 second in the test.",
   "M6": "1. The Stop audit catches shell-made contract changes, rounding changes and frozen-file edits, and blocks at most once per finding.\n2. The report has one status per finding, an outcome column, prompts x of 3, wake-ups, pin suggestions and a limits footer.\n3. Waive needs a reason and lapses when the code changes; waive, pin, mode and index can't be invoked by Claude.\n4. Pin generates a test proven to fail on the bad version and pass on the good one.\n5. All six skills and three MCP tools exist; plugin validate passes.",
-  "M5": "1. Old code twice and new code once run in separate processes on the same inputs, with network, database, file writes and subprocesses blocked.\n2. Offline on billing-api: compute_late_fee(balance=Decimal(\"40.20\"), rate=Decimal(\"0.025\")) gives before 1.01, after 1.00, and the revert records Verified pass.\n3. Self-diff removes false alarms from time, random and ordering; a test caught a random function passing on one input, which is now Untested.\n4. DB-dependent functions come out Untested with a reason, including when the target swallows the block.\n5. Two live Sonnet runs avoided the trap unaided, so the guard stayed quiet; the live wake-and-revert loop is tested in E2E-1."
+  "M5": "1. Old code twice and new code once run in separate processes on the same inputs, with network, database, file writes and subprocesses blocked.\n2. Offline on billing-api: compute_late_fee(balance=Decimal(\"40.20\"), rate=Decimal(\"0.025\")) gives before 1.01, after 1.00, and the revert records Verified pass.\n3. Self-diff removes false alarms from time, random and ordering; a test caught a random function passing on one input, which is now Untested.\n4. DB-dependent functions come out Untested with a reason, including when the target swallows the block.\n5. Two live Sonnet runs avoided the trap unaided, so the guard stayed quiet; the live wake-and-revert loop is tested in E2E-1.",
+  "M9": "1. The guard now writes an offline session map at Stop, next to the Markdown report, and /legacyguard:map opens it.\n2. It shows changed functions with their status, callers up to three steps, which callers no test reaches, and API routes.\n3. Edges are solid only when one test runs both ends; name-only matches are dashed. No score, and it never says safe.\n4. 17 new tests (254 in total), a browser check in light and dark, and one live claude -p run where Stop wrote the map.\n5. Scheduled jobs are not indexed, so only routes are labeled as entry points; MC-8 is the manual check."
  }
 }

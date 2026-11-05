@@ -36,10 +36,17 @@ The first session start builds the guard's own virtual environment. Optional key
 | --- | --- | --- |
 | `/legacyguard:index` | Developer | Build the index and run the tests once |
 | `/legacyguard:status` | Anyone | Findings, mode, prompts used |
-| `/legacyguard:impact <symbol>` | Anyone | Callers, routes, tests, co-changed files |
+| `/legacyguard:impact <symbol>` | Anyone | Callers, routes, tests, co-changed files, and a tree of callers |
+| `/legacyguard:map` | Developer | Open the session map: what changed, what depends on it, what was checked |
 | `/legacyguard:waive <id> "<reason>"` | Developer | Accept a finding until the code changes |
 | `/legacyguard:pin <id>` | Developer | Write a regression test from a counterexample |
 | `/legacyguard:mode <mode>` | Developer | advisory, guarded or strict |
+
+## Session map
+
+When Claude stops, the guard writes `.legacyguard/reports/<session>.html` next to the Markdown report. It is one offline file. It shows each function changed this session with its status, the functions that call it up to three steps away, which of those no test reaches, and the API routes that lead to them. Click a function for its counterexample or the reason it is untested.
+
+Edges come from matching names. A solid edge means one test runs both functions; a dashed edge is a name match only.
 
 ## Limits
 
@@ -48,3 +55,4 @@ The first session start builds the guard's own virtual environment. Optional key
 - Functions that need a database, the network, or objects it can't build are reported `Untested`.
 - A `Verified pass` means no difference on the inputs tried.
 - Edits made through shell commands are seen only at Stop.
+- The map labels API routes as entry points. Scheduled jobs are not indexed, so they appear as ordinary callers.

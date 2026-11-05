@@ -204,3 +204,25 @@ Also still with the team: updating the stale "Project Knowledge" doc (OQ-B6).
 - Open `docs/devlog.html` in a browser. It works offline and has a timeline, a relationship map and a coverage matrix, with filters by type and milestone. Click anything to read the full entry.
 - Or view `docs/DEVLOG.md` on GitHub, which has a Mermaid map, a summary table and every entry, newest first.
 - `docs/devlog.jsonl` is the source, `docs/PROGRESS.md` has the evidence per task, and `docs/OPEN_QUESTIONS.md` has M0 evidence and the document conflicts.
+
+## 9. After the run: the session map (M9)
+
+Added later on 2026-11-05, at the team's request and with its approval (D-038, FR-30, DL-075 to DL-078). Sections 1 to 8 describe the one-pass run and are unchanged.
+
+**What it is:** when Claude stops, the guard now also writes `.legacyguard/reports/<session>.html`. It shows the functions changed this session with their status, their callers up to three steps away, which callers no test reaches, and the API routes that lead to them. `/legacyguard:map` writes and opens it, and `/legacyguard:impact` also prints the radius as a text tree.
+
+**Evidence:**
+
+- 17 new tests; 254 pass in total. `claude plugin validate` passes.
+- Checked in a browser on a sample billing-api session: 14 functions, 14 edges, 6 of them name-only. Click-to-highlight, the details panel, the fade option, dark colors and the narrow layout all worked.
+- One live `claude -p` run (Haiku): Stop wrote the map, its summary line named the file, and the map held 10 functions and 9 edges with `compute_late_fee` as a behavior difference and `aging_bucket` as Untested.
+- The Stop hook took 0.2 s with the map on that session.
+
+**Limits specific to the map:**
+
+- Edges are name matches. A solid edge means one test runs both functions, which is strong evidence of the call but not proof.
+- Callers are not run by the guard. The map says whether existing tests reach them, as of the last `/legacyguard:index`.
+- Only API routes are labeled as entry points. Scheduled jobs are not indexed, so `close_month` appears as an ordinary caller. My earlier mockup labeled a "nightly job" and a "weekly report"; the real map cannot.
+- At most 60 callers are drawn; the page says how many were left out.
+
+**Still for you:** MC-8 in `docs/MANUAL_CHECKS.md`, which includes deciding whether the map or `/legacyguard:status` goes in the demo.

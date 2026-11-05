@@ -19,4 +19,6 @@ python3 -m venv .venv
 .venv/bin/pytest -q tests
 ```
 
+When a session stops, open the `.html` file in `demo/billing-api/.legacyguard/reports/` (or type `/legacyguard:map`) to see what changed and what depends on it.
+
 To read why every change happened, open `docs/devlog.html` in a browser, or view `docs/DEVLOG.md` on GitHub.
