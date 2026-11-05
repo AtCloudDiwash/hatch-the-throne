@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M1 / T1.3
-- **Next step:** Bootstrap.
+- **Current milestone and task:** M1 / T1.4
+- **Next step:** SessionStart basics.
 
 ## Status
 
@@ -15,8 +15,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T0.3 | M0 | done | [x] Hook behavior check (OQ-B5, NFR-10) | DL-018 | fbb3000 |
 | T0.4 | M0 | done | [x] Plan usage of headless runs (OQ-N6) | DL-019 | 63a2461 |
 | T1.1 | M1 | done | [x] Manifest and wiring | DL-020 DL-021 | 3e3cf94 |
-| T1.2 | M1 | done | [x] Shared hook runtime | DL-022 DL-023 |  |
-| T1.3 | M1 | pending | [ ] Bootstrap (FR-03) |  |  |
+| T1.2 | M1 | done | [x] Shared hook runtime | DL-022 DL-023 | baea1b9 |
+| T1.3 | M1 | done | [x] Bootstrap (FR-03) | DL-024 DL-025 |  |
 | T1.4 | M1 | pending | [ ] SessionStart basics (FR-10 steps 5-6) |  |  |
 | T2.1 | M2 | pending | [ ] billing-api service |  |  |
 | T2.2 | M2 | pending | [ ] Planted traps |  |  |
@@ -134,6 +134,20 @@ $ claude plugin validate ./legacyguard
 $ .venv/bin/pytest -q tests/test_runtime.py
 .....................                                                    [100%]
 21 passed in 0.81s
+(exit 0)
+```
+
+### T1.3 Bootstrap (FR-03) (done)
+
+```text
+$ cat /tmp/lg_t13.txt && .venv/bin/pytest -q tests/test_bootstrap.py tests/test_session_start.py::test_bootstrap_failure_produces_manual_command
+--- first start (clean data dir, real pip)
+{"hookSpecificOutput": {"additionalContext": "LegacyGuard is active. Scope: .. Mode: guarded. Contract files: none. Frozen files: none. After each edit a background check runs old and new code on the same inputs; differences arriv
+
+--- second start
+{"hookSpecificOutput": {"additionalContext": "LegacyGuard is active. Scope: .. Mode: guarded. Contract files: none. Frozen files: none. After each edit a background check runs old and new code on the same inputs; differences arriv
+....                                                                     [100%]
+4 passed in 2.74s
 (exit 0)
 ```
 

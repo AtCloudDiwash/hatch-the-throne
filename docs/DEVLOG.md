@@ -34,6 +34,8 @@ flowchart LR
     DL021["DL-021 Use MCPServer, the mcp 2.x name for FastMCP"]
     DL022["DL-022 Shared hook runtime: fail-open, one JSON ob…"]
     DL023["DL-023 Guard allows by omitting permissionDecision…"]
+    DL024["DL-024 First session start builds the guard's own …"]
+    DL025["DL-025 Hooks never switched into the venv after a …"]
   end
 ```
 
@@ -42,14 +44,69 @@ flowchart LR
 | Milestone | feature | change | fix | decision | fallback | blocked | spike | Total |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | M0 | 1 | 0 | 0 | 14 | 0 | 0 | 4 | 19 |
-| M1 | 2 | 2 | 0 | 0 | 0 | 0 | 0 | 4 |
-| **All** | **3** | **2** | **0** | **14** | **0** | **0** | **4** | **23** |
+| M1 | 3 | 2 | 1 | 0 | 0 | 0 | 0 | 6 |
+| **All** | **4** | **2** | **1** | **14** | **0** | **0** | **4** | **25** |
 
 ## Entries, newest first
 
+### DL-025 · Hooks never switched into the venv after a successful install
+
+**fix** · M1 · T1.3 · 2026-11-05T11:31-06:00 · commit `pending`
+
+- **Context:** A real install on a clean data folder succeeded, but the hook still said dependencies were missing.
+- **What:** Compare sys.prefix with the venv folder rather than comparing resolved interpreter paths.
+- **Why:** sys.prefix is what actually distinguishes a venv.
+- **Root cause:** Pre-existing in the uncommitted T1.3 draft, so no earlier log entry introduced it. A venv's python is a symlink to the system interpreter, so resolving both paths made them equal and the re-exec was skipped.
+- **Impact:** The guard activates on the first session rather than never.
+- **Files:** `legacyguard/guardlib/bootstrap.py`, `tests/test_bootstrap.py`
+- **Requirements:** `FR-03`
+- **Decisions:** none
+- **Open questions:** none
+- **Tests:** `tests/test_bootstrap.py::test_reexec_switches_into_venv_even_though_python_is_a_symlink`
+- **Evidence:**
+
+```text
+$ cat /tmp/lg_t13.txt && .venv/bin/pytest -q tests/test_bootstrap.py tests/test_session_start.py::test_bootstrap_failure_produces_manual_command
+--- first start (clean data dir, real pip)
+{"hookSpecificOutput": {"additionalContext": "LegacyGuard is active. Scope: .. Mode: guarded. Contract files: none. Frozen files: none. After each edit a background check runs old and new code on the same inputs; differences arriv
+
+--- second start
+{"hookSpecificOutput": {"additionalContext": "LegacyGuard is active. Scope: .. Mode: guarded. Contract files: none. Frozen files: none. After each edit a background check runs old and new code on the same inputs; differences arriv
+....                                                                     [100%]
+4 passed in 2.74s
+(exit 0)
+```
+
+### DL-024 · First session start builds the guard's own venv
+
+**feature** · M1 · T1.3 · 2026-11-05T11:31-06:00 · commit `pending`
+
+- **Context:** FR-03: a clean machine with Python and git must get a working guard after one session start.
+- **What:** guardlib/bootstrap.py creates a venv in CLAUDE_PLUGIN_DATA, installs requirements.txt under a file lock, and writes a marker holding the requirements hash. Hooks re-exec under that venv before reading stdin.
+- **Why:** Keeping dependencies out of the system Python and the target project avoids version clashes.
+- **Impact:** The first session start takes about 30 seconds once; later ones skip it. Install failure gives a systemMessage with the manual command, and the guard stays inactive.
+- **Files:** `legacyguard/guardlib/bootstrap.py`, `legacyguard/scripts/_common.py`, `tests/test_bootstrap.py`
+- **Requirements:** `FR-03`
+- **Decisions:** `D-031`
+- **Open questions:** none
+- **Tests:** `tests/test_bootstrap.py::test_second_start_skips_install`
+- **Evidence:**
+
+```text
+$ cat /tmp/lg_t13.txt && .venv/bin/pytest -q tests/test_bootstrap.py tests/test_session_start.py::test_bootstrap_failure_produces_manual_command
+--- first start (clean data dir, real pip)
+{"hookSpecificOutput": {"additionalContext": "LegacyGuard is active. Scope: .. Mode: guarded. Contract files: none. Frozen files: none. After each edit a background check runs old and new code on the same inputs; differences arriv
+
+--- second start
+{"hookSpecificOutput": {"additionalContext": "LegacyGuard is active. Scope: .. Mode: guarded. Contract files: none. Frozen files: none. After each edit a background check runs old and new code on the same inputs; differences arriv
+....                                                                     [100%]
+4 passed in 2.74s
+(exit 0)
+```
+
 ### DL-023 · Guard allows by omitting permissionDecision, never by sending allow
 
-**change** · M1 · T1.2 · 2026-11-05T11:31-06:00 · commit `pending`
+**change** · M1 · T1.2 · 2026-11-05T11:31-06:00 · commit `baea1b9`
 
 - **Context:** FR-12 lists allow as an output value, but a hook's allow skips Claude Code's normal permission prompt, and CLAUDE.md constraint 5 says never auto-approve.
 - **What:** hook_output emits no permissionDecision for allows. Only ask and deny are ever sent.
@@ -71,7 +128,7 @@ $ .venv/bin/pytest -q tests/test_runtime.py
 
 ### DL-022 · Shared hook runtime: fail-open, one JSON object, clipped context
 
-**feature** · M1 · T1.2 · 2026-11-05T11:31-06:00 · commit `pending`
+**feature** · M1 · T1.2 · 2026-11-05T11:31-06:00 · commit `baea1b9`
 
 - **Context:** Hooks are short-lived processes that must never block Claude or corrupt the JSON channel.
 - **What:** scripts/_common.py wraps each hook: stray prints go to stderr, any exception is logged to .legacyguard/guard.log with exit 0 and no output, and additionalContext is clipped to 1,500 characters. guardlib/config.py and paths.py read config on every call and normalize Windows paths.
