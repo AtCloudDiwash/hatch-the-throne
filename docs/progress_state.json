@@ -1,6 +1,6 @@
 {
- "current": "M6 / T6.3",
- "next": "Waive and mode.",
+ "current": "M6 / T6.4",
+ "next": "Pin.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -359,12 +359,17 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_stop_controls.py -k 'report_contents or every_non_pass or environment'\n...                                                                      [100%]\n3 passed, 23 deselected in 5.69s\n(exit 0)",
    "dl": [
     "DL-054"
-   ]
+   ],
+   "commit": "cc8a4cc"
   },
   "T6.3": {
    "milestone": "M6",
    "title": "Waive and mode skills (FR-24, FR-23)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_stop_controls.py -k 'waive or waived or mode_command or skills_for'\n.....                                                                    [100%]\n5 passed, 21 deselected in 5.46s\n(exit 0)",
+   "dl": [
+    "DL-055"
+   ]
   },
   "T6.4": {
    "milestone": "M6",

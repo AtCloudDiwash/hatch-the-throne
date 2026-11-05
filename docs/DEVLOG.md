@@ -75,6 +75,7 @@ flowchart LR
   subgraph M6
     DL053["DL-053 Stop audit reviews the whole session and bl…"]
     DL054["DL-054 Session report with one honest status per f…"]
+    DL055["DL-055 Waive and mode commands, reserved for the d…"]
   end
 ```
 
@@ -88,14 +89,36 @@ flowchart LR
 | M3 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | M4 | 6 | 2 | 0 | 0 | 0 | 0 | 0 | 8 |
 | M5 | 6 | 0 | 0 | 1 | 0 | 0 | 0 | 7 |
-| M6 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
-| **All** | **30** | **4** | **1** | **15** | **0** | **0** | **4** | **54** |
+| M6 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| **All** | **31** | **4** | **1** | **15** | **0** | **0** | **4** | **55** |
 
 ## Entries, newest first
 
+### DL-055 · Waive and mode commands, reserved for the developer
+
+**feature** · M6 · T6.3 · 2026-11-05T12:01-06:00 · commit `pending`
+
+- **Context:** FR-23 and FR-24: developers accept findings with a reason and switch modes.
+- **What:** lg.py waive records id, reason, file, symbol, code hash and date in waivers.json, and refuses empty reasons, unknown IDs and non-evidence findings. lg.py mode edits only the mode line. Both skills set disable-model-invocation.
+- **Why:** Tying a waiver to a code hash means it cannot excuse later changes, and only a person can run it.
+- **Impact:** Accepting an intended change is the one path from intent unknown to accepted (D-024).
+- **Files:** `legacyguard/scripts/lg_more.py`, `legacyguard/skills/waive/SKILL.md`, `legacyguard/skills/mode/SKILL.md`
+- **Requirements:** `FR-22`, `FR-23`, `FR-24`
+- **Decisions:** `D-018`, `D-024`
+- **Open questions:** `OQ-B2`
+- **Tests:** `tests/test_stop_controls.py::test_waive_silent_until_code_hash_changes`, `tests/test_stop_controls.py::test_mode_command_changes_next_decision_and_keeps_the_rest`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_stop_controls.py -k 'waive or waived or mode_command or skills_for'
+.....                                                                    [100%]
+5 passed, 21 deselected in 5.46s
+(exit 0)
+```
+
 ### DL-054 · Session report with one honest status per finding
 
-**feature** · M6 · T6.2 · 2026-11-05T12:01-06:00 · commit `pending`
+**feature** · M6 · T6.2 · 2026-11-05T12:01-06:00 · commit `cc8a4cc`
 
 - **Context:** FR-19: readable in 10 seconds, with every non-pass finding replayable or explained.
 - **What:** guardlib/report.py writes .legacyguard/reports/<session>.md: a table by severity, prompts used, wake-ups, pin suggestions and a limits footer, plus a one-line systemMessage. Outcome is a separate column, so a turned-back difference keeps its status.
