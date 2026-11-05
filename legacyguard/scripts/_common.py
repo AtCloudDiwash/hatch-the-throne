@@ -15,6 +15,9 @@ if PLUGIN_ROOT not in sys.path:
 CONTEXT_LIMIT = 1500
 
 
+BOOT_ERROR: str | None = None
+
+
 class Wake(Exception):
     """Exit 2 with this text on stderr: wakes Claude. Only the behavioral diff raises it (D-004)."""
 
@@ -55,8 +58,23 @@ def log_error(cwd: str | None, message: str) -> None:
                 continue
 
 
-def run_hook(handler) -> None:
+def _bootstrap(install: bool) -> None:
+    """Switch to the guard's venv. Must run before stdin is read, because re-exec keeps stdin intact."""
+    global BOOT_ERROR
+    try:
+        from guardlib import bootstrap
+        if install and not bootstrap.deps_available():
+            bootstrap.ensure_venv(PLUGIN_ROOT)
+        bootstrap.reexec_in_venv(PLUGIN_ROOT)
+    except Exception as exc:  # noqa: BLE001 - fail open
+        BOOT_ERROR = str(exc) or type(exc).__name__
+
+
+def run_hook(handler, *, install: bool = False, needs_deps: bool = True) -> None:
     """Run handler(event) -> dict | None. Any internal error: log, exit 0, print nothing."""
+    _bootstrap(install)
+    if BOOT_ERROR and needs_deps:
+        os._exit(0)
     real_stdout, sys.stdout = sys.stdout, sys.stderr  # stray prints must not corrupt the JSON channel
     cwd = None
     try:
@@ -93,12 +111,6 @@ def hook_output(event_name: str, *, context: str | None = None, decision: str | 
     if system_message:
         out["systemMessage"] = system_message
     return out or None
-
-
-def ensure_deps() -> None:
-    """Re-exec under the guard's venv if needed. Raises BootstrapError if it is not installed."""
-    from guardlib import bootstrap
-    bootstrap.reexec_in_venv(PLUGIN_ROOT)
 
 
 def load_guard(event: dict):

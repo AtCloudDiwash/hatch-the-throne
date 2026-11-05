@@ -83,6 +83,7 @@ def reexec_in_venv(plugin_root: str | Path, ensure: bool = False) -> None:
     if ensure:
         ensure_venv(plugin_root)
     py = venv_python()
-    if py.exists() and Path(sys.executable).resolve() != py.resolve():
+    # Compare prefixes: a venv's python is a symlink to the system interpreter, so resolved paths match.
+    if py.exists() and Path(sys.prefix).resolve() != (data_dir() / "venv").resolve():
         os.execv(str(py), [str(py), *sys.argv])
     raise BootstrapError("guard dependencies are not installed")

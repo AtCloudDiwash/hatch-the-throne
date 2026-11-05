@@ -32,6 +32,8 @@ flowchart LR
   subgraph M1
     DL020["DL-020 Plugin manifest and hook wiring"]
     DL021["DL-021 Use MCPServer, the mcp 2.x name for FastMCP"]
+    DL022["DL-022 Shared hook runtime: fail-open, one JSON ob…"]
+    DL023["DL-023 Guard allows by omitting permissionDecision…"]
   end
 ```
 
@@ -40,14 +42,58 @@ flowchart LR
 | Milestone | feature | change | fix | decision | fallback | blocked | spike | Total |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | M0 | 1 | 0 | 0 | 14 | 0 | 0 | 4 | 19 |
-| M1 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 2 |
-| **All** | **2** | **1** | **0** | **14** | **0** | **0** | **4** | **21** |
+| M1 | 2 | 2 | 0 | 0 | 0 | 0 | 0 | 4 |
+| **All** | **3** | **2** | **0** | **14** | **0** | **0** | **4** | **23** |
 
 ## Entries, newest first
 
+### DL-023 · Guard allows by omitting permissionDecision, never by sending allow
+
+**change** · M1 · T1.2 · 2026-11-05T11:31-06:00 · commit `pending`
+
+- **Context:** FR-12 lists allow as an output value, but a hook's allow skips Claude Code's normal permission prompt, and CLAUDE.md constraint 5 says never auto-approve.
+- **What:** hook_output emits no permissionDecision for allows. Only ask and deny are ever sent.
+- **Why:** The hooks reference says allow skips the permission prompt. Omitting the field keeps the developer's own permission rules in charge.
+- **Impact:** Deviation from REQUIREMENTS.md FR-12 Output line (permissionDecision in allow, ask, deny), following CLAUDE.md constraint 5. Fixture cases that say allow mean: not asked and not denied.
+- **Files:** `legacyguard/scripts/_common.py`
+- **Requirements:** `FR-12`
+- **Decisions:** `D-013`, `D-018`
+- **Open questions:** none
+- **Tests:** `tests/test_runtime.py::test_allow_never_sets_permission_decision`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_runtime.py
+.....................                                                    [100%]
+21 passed in 0.81s
+(exit 0)
+```
+
+### DL-022 · Shared hook runtime: fail-open, one JSON object, clipped context
+
+**feature** · M1 · T1.2 · 2026-11-05T11:31-06:00 · commit `pending`
+
+- **Context:** Hooks are short-lived processes that must never block Claude or corrupt the JSON channel.
+- **What:** scripts/_common.py wraps each hook: stray prints go to stderr, any exception is logged to .legacyguard/guard.log with exit 0 and no output, and additionalContext is clipped to 1,500 characters. guardlib/config.py and paths.py read config on every call and normalize Windows paths.
+- **Why:** A central wrapper means no individual hook can forget the rules.
+- **Impact:** A guard bug can never freeze Claude. Mode changes apply on the next call.
+- **Files:** `legacyguard/scripts/_common.py`, `legacyguard/guardlib/config.py`, `legacyguard/guardlib/paths.py`, `tests/test_runtime.py`
+- **Requirements:** `FR-02`, `NFR-04`, `NFR-06`, `NFR-09`
+- **Decisions:** `D-004`, `D-020`, `D-026`
+- **Open questions:** `OQ-B4`
+- **Tests:** `tests/test_runtime.py::test_fail_open_on_exception_exit0_no_stdout`, `tests/test_runtime.py::test_windows_paths`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_runtime.py
+.....................                                                    [100%]
+21 passed in 0.81s
+(exit 0)
+```
+
 ### DL-021 · Use MCPServer, the mcp 2.x name for FastMCP
 
-**change** · M1 · T1.1 · 2026-11-05T11:30-06:00 · commit `pending`
+**change** · M1 · T1.1 · 2026-11-05T11:30-06:00 · commit `3e3cf94`
 
 - **Context:** D-031 names FastMCP, and mcp 2.x removed mcp.server.fastmcp.
 - **What:** Import MCPServer from mcp.server.mcpserver and require mcp>=2,<3.
@@ -67,7 +113,7 @@ No module named 'mcp.server.fastmcp'. This is mcp 2.x, where FastMCP was renamed
 
 ### DL-020 · Plugin manifest and hook wiring
 
-**feature** · M1 · T1.1 · 2026-11-05T11:30-06:00 · commit `pending`
+**feature** · M1 · T1.1 · 2026-11-05T11:30-06:00 · commit `3e3cf94`
 
 - **Context:** The guard must install as one Claude Code plugin with five hooks and an MCP server.
 - **What:** Added plugin.json, hooks.json in exec form using CLAUDE_PLUGIN_ROOT, .mcp.json, requirements.txt and stub scripts.

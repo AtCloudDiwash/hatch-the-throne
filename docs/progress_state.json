@@ -1,6 +1,6 @@
 {
- "current": "M1 / T1.2",
- "next": "Shared hook runtime.",
+ "current": "M1 / T1.3",
+ "next": "Bootstrap.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -74,12 +74,18 @@
    "dl": [
     "DL-020",
     "DL-021"
-   ]
+   ],
+   "commit": "3e3cf94"
   },
   "T1.2": {
    "milestone": "M1",
    "title": "Shared hook runtime",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_runtime.py\n.....................                                                    [100%]\n21 passed in 0.81s\n(exit 0)",
+   "dl": [
+    "DL-022",
+    "DL-023"
+   ]
   },
   "T1.3": {
    "milestone": "M1",

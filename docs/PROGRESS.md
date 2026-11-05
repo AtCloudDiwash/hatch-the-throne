@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M1 / T1.2
-- **Next step:** Shared hook runtime.
+- **Current milestone and task:** M1 / T1.3
+- **Next step:** Bootstrap.
 
 ## Status
 
@@ -14,8 +14,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T0.2 | M0 | done | [x] Runnable-function share (OQ-B1) | DL-017 | 702ea9c |
 | T0.3 | M0 | done | [x] Hook behavior check (OQ-B5, NFR-10) | DL-018 | fbb3000 |
 | T0.4 | M0 | done | [x] Plan usage of headless runs (OQ-N6) | DL-019 | 63a2461 |
-| T1.1 | M1 | done | [x] Manifest and wiring | DL-020 DL-021 |  |
-| T1.2 | M1 | pending | [ ] Shared hook runtime |  |  |
+| T1.1 | M1 | done | [x] Manifest and wiring | DL-020 DL-021 | 3e3cf94 |
+| T1.2 | M1 | done | [x] Shared hook runtime | DL-022 DL-023 |  |
 | T1.3 | M1 | pending | [ ] Bootstrap (FR-03) |  |  |
 | T1.4 | M1 | pending | [ ] SessionStart basics (FR-10 steps 5-6) |  |  |
 | T2.1 | M2 | pending | [ ] billing-api service |  |  |
@@ -125,6 +125,15 @@ smoke score 1.00 (3 runs) $0.00; 1 case(s), 5s
 $ claude plugin validate ./legacyguard
 
 ✔ Validation passed
+(exit 0)
+```
+
+### T1.2 Shared hook runtime (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_runtime.py
+.....................                                                    [100%]
+21 passed in 0.81s
 (exit 0)
 ```
 
