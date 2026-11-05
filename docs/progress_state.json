@@ -1,6 +1,6 @@
 {
- "current": "M3 / T3.2",
- "next": "Coverage map.",
+ "current": "M3 / T3.3",
+ "next": "Routes and contracts.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -156,12 +156,17 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_names.py\n......                                                                   [100%]\n6 passed in 0.48s\n(exit 0)",
    "dl": [
     "DL-031"
-   ]
+   ],
+   "commit": "c457cce"
   },
   "T3.2": {
    "milestone": "M3",
    "title": "Coverage map (FR-05)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_index_parts.py -k 'map or harvest or failing or leaves or coverage'\n.......                                                                  [100%]\n7 passed, 13 deselected in 8.56s\n(exit 0)",
+   "dl": [
+    "DL-032"
+   ]
   },
   "T3.3": {
    "milestone": "M3",

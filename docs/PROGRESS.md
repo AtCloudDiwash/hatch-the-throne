@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M3 / T3.2
-- **Next step:** Coverage map.
+- **Current milestone and task:** M3 / T3.3
+- **Next step:** Routes and contracts.
 
 ## Status
 
@@ -22,8 +22,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T2.2 | M2 | done | [x] Planted traps | DL-028 | a3bd3f8 |
 | T2.3 | M2 | done | [x] Planted history | DL-029 | 68e1680 |
 | T2.4 | M2 | done | [x] A/B task set | DL-030 | 6af2bb1 |
-| T3.1 | M3 | done | [x] Names table (FR-04) | DL-031 |  |
-| T3.2 | M3 | pending | [ ] Coverage map (FR-05) |  |  |
+| T3.1 | M3 | done | [x] Names table (FR-04) | DL-031 | c457cce |
+| T3.2 | M3 | done | [x] Coverage map (FR-05) | DL-032 |  |
 | T3.3 | M3 | pending | [ ] Routes and contracts (FR-06) |  |  |
 | T3.4 | M3 | pending | [ ] Co-change (FR-07) |  |  |
 | T3.5 | M3 | pending | [ ] Incremental re-index (FR-08) |  |  |
@@ -237,6 +237,15 @@ $ .venv/bin/pytest -q tests/test_ab_checks.py
 $ .venv/bin/pytest -q tests/test_names.py
 ......                                                                   [100%]
 6 passed in 0.48s
+(exit 0)
+```
+
+### T3.2 Coverage map (FR-05) (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_index_parts.py -k 'map or harvest or failing or leaves or coverage'
+.......                                                                  [100%]
+7 passed, 13 deselected in 8.56s
 (exit 0)
 ```
 

@@ -46,6 +46,7 @@ flowchart LR
   end
   subgraph M3
     DL031["DL-031 Names table from tree-sitter, with incremen…"]
+    DL032["DL-032 Test map from coverage contexts, plus a har…"]
   end
 ```
 
@@ -56,14 +57,36 @@ flowchart LR
 | M0 | 1 | 0 | 0 | 14 | 0 | 0 | 4 | 19 |
 | M1 | 4 | 2 | 1 | 0 | 0 | 0 | 0 | 7 |
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| M3 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| **All** | **10** | **2** | **1** | **14** | **0** | **0** | **4** | **31** |
+| M3 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| **All** | **11** | **2** | **1** | **14** | **0** | **0** | **4** | **32** |
 
 ## Entries, newest first
 
+### DL-032 · Test map from coverage contexts, plus a harvest of real call arguments
+
+**feature** · M3 · T3.2 · 2026-11-05T11:44-06:00 · commit `pending`
+
+- **Context:** FR-05 maps tests to functions. FR-14 needs replayable inputs from real tests, which must be captured when the suite runs.
+- **What:** coverage_map.py runs pytest once in the target's interpreter under coverage.py dynamic contexts with a small pytest plugin. The plugin records encodable arguments per function into .legacyguard/harvest.json. Values that cannot be stored, such as a database connection, are counted per parameter.
+- **Why:** Observed execution beats guessing. Recording at index time means Decimal("40.20") is available to the diff even though no test asserts on that fee. coverage is lent to the target through a temporary PYTHONPATH shim, so the target's environment is not changed.
+- **Impact:** Runs on /legacyguard:index, not on every session start, so startup stays fast (FR-08 covers parsing only). Failing suites still give a partial map with the status recorded.
+- **Files:** `legacyguard/indexer/coverage_map.py`, `legacyguard/runner/legacyguard_harvest.py`, `legacyguard/runner/lg_codec.py`, `tests/test_index_parts.py`
+- **Requirements:** `FR-05`, `FR-14`
+- **Decisions:** `D-005`
+- **Open questions:** none
+- **Tests:** `tests/test_index_parts.py::test_map_from_tiny_fixture`, `tests/test_index_parts.py::test_billing_harvest_has_the_counterexample_input`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_index_parts.py -k 'map or harvest or failing or leaves or coverage'
+.......                                                                  [100%]
+7 passed, 13 deselected in 8.56s
+(exit 0)
+```
+
 ### DL-031 · Names table from tree-sitter, with incremental re-parse
 
-**feature** · M3 · T3.1 · 2026-11-05T11:42-06:00 · commit `pending`
+**feature** · M3 · T3.1 · 2026-11-05T11:42-06:00 · commit `c457cce`
 
 - **Context:** FR-04 and FR-08: answer who calls this name, parsing each file independently and only when it changes.
 - **What:** guardlib/symbols.py extracts definitions (qualname, kind, span, signature, decorators, parameters) and call sites. indexer/names.py stores them and re-parses only files whose git blob SHA changed.
