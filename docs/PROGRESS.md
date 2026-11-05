@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M11 / T11.3
-- **Next step:** Write up the simulation.
+- **Current milestone and task:** Done for now: M0 to M9 and M11 complete; M10 (FR-13) paused in git stash
+- **Next step:** The team reads eval/results/zulip/README.md, then MC-1 to MC-9. FR-13 resumes only when the team says so.
 
 ## Status
 
@@ -59,8 +59,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T9.3 | M9 | done | [x] Live check, browser check and docs for the map | DL-078 |  |
 | T10.1 | M10 | in_progress | [~] Shell-edit checks (FR-13): half-built, set aside |  |  |
 | T11.1 | M11 | done | [x] Zulip setup: what runs here, and fixes it exposed | DL-079 DL-080 DL-081 DL-082 | 4bbbf17 |
-| T11.2 | M11 | done | [x] Session story in the report and the map (FR-31) | DL-083 |  |
-| T11.3 | M11 | pending | [ ] Zulip simulation: three change requests through Claude |  |  |
+| T11.2 | M11 | done | [x] Session story in the report and the map (FR-31) | DL-083 | 0170810 |
+| T11.3 | M11 | done | [x] Zulip simulation: three change requests through Claude | DL-084 DL-085 DL-086 |  |
 
 ## Milestone summaries
 
@@ -127,6 +127,14 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 3. Edges are solid only when one test runs both ends; name-only matches are dashed. No score, and it never says safe.
 4. 17 new tests (254 in total), a browser check in light and dark, and one live claude -p run where Stop wrote the map.
 5. Scheduled jobs are not indexed, so only routes are labeled as entry points; MC-8 is the manual check.
+
+### M11
+
+1. The guard ran on Zulip's backend (1,684 files): indexed in about 2 seconds, with 47 modules runnable on this Mac.
+2. Three change requests went through Claude with the guard on. In one, Claude's edit broke emoji codes, the guard showed an example, and Claude fixed it (150 inputs then matched).
+3. Reports and maps now open with a plain story: what was asked, what broke, what fixed it, what was not checked.
+4. The real repo exposed three guard problems, all fixed: false routes from mock.patch, narrow generated inputs, and a wrong Untested reason.
+5. Zulip's tests and database layer cannot run here, so its maps have no test information; FR-13 is paused in git stash.
 
 
 ## Evidence
@@ -740,5 +748,24 @@ $ .venv/bin/pytest -q tests/test_sessionmap.py -k story; sed -n 6,11p eval/resul
 - **What broke:** The edit to `emoji_to_hex_codepoint` in zerver/lib/emoji_utils.py changed what it returns: `emoji_to_hex_codepoint(emoji='{')` gave `'007b'` before the edit and `'7b'` after it.
 - **What fixed it:** Claude saw that example and revised `emoji_to_hex_codepoint` in zerver/lib/emoji_utils.py. The guard ran it again: 150 inputs compared, 150 returned a value, all matching the original.
 (exit 0)
+```
+
+### T11.3 Zulip simulation: three change requests through Claude (done)
+
+```text
+$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1; python3 tools/devlog_check.py; python3 -c "import json;r=json.load(open('eval/results/zulip/summary.json'));[print(k,v['seconds'],'s','wake-ups',v['wake_ups'],[s['kind'] for s in v['story']]) for k,v in r.items()]"
+260 passed in 101.64s (0:01:41)
+✔ Validation passed
+devlog_check OK: 83 entries, every commit carries a known DL ID, links resolve, fixes have root causes
+z1 26 s wake-ups 1 ['asked', 'broke', 'fixed']
+z2 57 s wake-ups 0 ['asked', 'checked']
+z3 20 s wake-ups 0 ['asked', 'unchecked', 'unchecked']
+(exit 0)
+Independent check of z2 (Claude rewrote parse_user_agent; the guard said old and new agree on 150 inputs):
+real examples compared: 3804 differences: 0
+random strings compared: 200000 differences: 0
+z3 before the fix: "untested because: new function, so there is no old version to compare"
+z3 after the fix:  "could not run: ModuleNotFoundError: No module named icu"
+Plan usage: 5 Sonnet runs (z1, z2, z3 three times), about $0.47 notional.
 ```
 

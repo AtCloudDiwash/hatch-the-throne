@@ -42,6 +42,10 @@ The first session start builds the guard's own virtual environment. Optional key
 | `/legacyguard:pin <id>` | Developer | Write a regression test from a counterexample |
 | `/legacyguard:mode <mode>` | Developer | advisory, guarded or strict |
 
+## Session report
+
+When Claude stops, the guard writes `.legacyguard/reports/<session>.md`. It opens with "What happened": what you asked, what broke with one example, what fixed it, and what could not be checked. A findings table follows.
+
 ## Session map
 
 When Claude stops, the guard writes `.legacyguard/reports/<session>.html` next to the Markdown report. It is one offline file. It shows each function changed this session with its status, the functions that call it up to three steps away, which of those no test reaches, and the API routes that lead to them. Click a function for its counterexample or the reason it is untested.

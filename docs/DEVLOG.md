@@ -112,6 +112,9 @@ flowchart LR
     DL081["DL-081 mock.patch decorators were indexed as API r…"]
     DL082["DL-082 Generated inputs cover more punctuation and…"]
     DL083["DL-083 Reports and maps open with a plain story of…"]
+    DL084["DL-084 Three change requests on Zulip, through Cla…"]
+    DL085["DL-085 A missing library was reported as a new fun…"]
+    DL086["DL-086 Zulip results written up for the developer …"]
   end
   DL015 -->|caused| DL060
   DL058 -->|caused| DL060
@@ -135,6 +138,9 @@ flowchart LR
   DL078 -.- DL077
   DL033 -->|caused| DL081
   DL082 -.- DL048
+  DL084 -.- DL080
+  DL084 -.- DL083
+  DL046 -->|caused| DL085
 ```
 
 ## Summary
@@ -151,14 +157,113 @@ flowchart LR
 | M7 | 2 | 2 | 1 | 1 | 0 | 0 | 3 | 9 |
 | M8 | 2 | 2 | 1 | 1 | 1 | 1 | 0 | 8 |
 | M9 | 3 | 0 | 0 | 1 | 0 | 0 | 0 | 4 |
-| M11 | 1 | 2 | 1 | 0 | 0 | 0 | 1 | 5 |
-| **All** | **41** | **10** | **4** | **18** | **1** | **1** | **8** | **83** |
+| M11 | 2 | 2 | 2 | 0 | 0 | 0 | 2 | 8 |
+| **All** | **42** | **10** | **5** | **18** | **1** | **1** | **9** | **86** |
 
 ## Entries, newest first
 
+### DL-086 · Zulip results written up for the developer and the team
+
+**feature** · M11 · T11.3 · 2026-11-05T13:40-06:00 · commit `this commit is the last one; see git log -1`
+
+- **Context:** The team asked for the final output and an interactive map for each change.
+- **What:** eval/results/zulip/README.md lists each request with what was asked, what broke, what fixed it and links to its map, report and code change. Final report section 10 and manual check MC-9 added.
+- **Why:** One page to start from, generated from the run's own data.
+- **Impact:** This entry's commit field cannot hold its own hash: it is the last commit, shown by git log -1.
+- **Files:** `docs/FINAL_REPORT.md`, `docs/MANUAL_CHECKS.md`, `README.md`, `legacyguard/README.md`
+- **Requirements:** `FR-31`
+- **Decisions:** `D-040`
+- **Open questions:** none
+- **Tests:** none
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1; python3 tools/devlog_check.py; python3 -c "import json;r=json.load(open('eval/results/zulip/summary.json'));[print(k,v['seconds'],'s','wake-ups',v['wake_ups'],[s['kind'] for s in v['story']]) for k,v in r.items()]"
+260 passed in 101.64s (0:01:41)
+✔ Validation passed
+devlog_check OK: 83 entries, every commit carries a known DL ID, links resolve, fixes have root causes
+z1 26 s wake-ups 1 ['asked', 'broke', 'fixed']
+z2 57 s wake-ups 0 ['asked', 'checked']
+z3 20 s wake-ups 0 ['asked', 'unchecked', 'unchecked']
+(exit 0)
+Independent check of z2 (Claude rewrote parse_user_agent; the guard said old and new agree on 150 inputs):
+real examples compared: 3804 differences: 0
+random strings compared: 200000 differences: 0
+z3 before the fix: "untested because: new function, so there is no old version to compare"
+z3 after the fix:  "could not run: ModuleNotFoundError: No module named icu"
+Plan usage: 5 Sonnet runs (z1, z2, z3 three times), about $0.47 notional.
+```
+
+### DL-085 · A missing library was reported as a new function
+
+**fix** · M11 · T11.3 · 2026-11-05T13:40-06:00 · commit `this commit is the last one; see git log -1`
+
+- **Context:** In z3 the report said the changed functions were new, so there was nothing to compare. They were not new.
+- **What:** The worker now calls a function missing only when the function, or its own module, does not exist. A module that cannot import one of its dependencies is an import error, reported with the library's name.
+- **Why:** The status was right (Untested) but the reason was false, and a developer acts on the reason.
+- **Root cause:** DL-046 treated every ModuleNotFoundError as the target being absent. On billing-api every dependency was installed, so the case never arose.
+- **Impact:** z3 now reads: could not run: ModuleNotFoundError: No module named icu. A module that does not exist yet is still reported as new.
+- **Files:** `legacyguard/runner/lg_worker.py`, `tests/test_runner.py`
+- **Requirements:** `FR-14`, `FR-19`
+- **Decisions:** none
+- **Open questions:** none
+- **Tests:** `tests/test_runner.py::test_missing_dependency_is_reported_as_that_not_as_a_new_function`, `tests/test_runner.py::test_a_module_that_does_not_exist_yet_is_still_a_new_function`
+- **Caused by:** `DL-046`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1; python3 tools/devlog_check.py; python3 -c "import json;r=json.load(open('eval/results/zulip/summary.json'));[print(k,v['seconds'],'s','wake-ups',v['wake_ups'],[s['kind'] for s in v['story']]) for k,v in r.items()]"
+260 passed in 101.64s (0:01:41)
+✔ Validation passed
+devlog_check OK: 83 entries, every commit carries a known DL ID, links resolve, fixes have root causes
+z1 26 s wake-ups 1 ['asked', 'broke', 'fixed']
+z2 57 s wake-ups 0 ['asked', 'checked']
+z3 20 s wake-ups 0 ['asked', 'unchecked', 'unchecked']
+(exit 0)
+Independent check of z2 (Claude rewrote parse_user_agent; the guard said old and new agree on 150 inputs):
+real examples compared: 3804 differences: 0
+random strings compared: 200000 differences: 0
+z3 before the fix: "untested because: new function, so there is no old version to compare"
+z3 after the fix:  "could not run: ModuleNotFoundError: No module named icu"
+Plan usage: 5 Sonnet runs (z1, z2, z3 three times), about $0.47 notional.
+```
+
+### DL-084 · Three change requests on Zulip, through Claude, with the guard on
+
+**spike** · M11 · T11.3 · 2026-11-05T13:40-06:00 · commit `this commit is the last one; see git log -1`
+
+- **Context:** D-040: a real-world simulation on a repo the team chose, ending in what a developer would read.
+- **What:** eval/run_zulip.py ran three requests with claude -p (Sonnet), each on a clean checkout. z1 (instructed edit): the edit broke zero-padding in emoji codes, the guard woke Claude with an example, Claude added padding, and the re-run matched on 150 inputs. z2 (open): Claude rewrote parse_user_agent without a regex and the guard found old and new agree. z3 (open): the changed functions could not be run on this Mac, so they are Untested.
+- **Why:** One instructed break shows the loop; two open requests show what happens when Claude is left alone.
+- **Impact:** I checked z2 independently: 0 differences on 3,804 real examples and 200,000 random strings, so the Verified pass held. The outputs for each request are in eval/results/zulip/. Limits are in the final report, section 10.
+- **Files:** `eval/run_zulip.py`, `eval/results/zulip/README.md`, `eval/results/zulip/summary.json`, `eval/results/zulip/z1.html`, `eval/results/zulip/z2.html`, `eval/results/zulip/z3.html`
+- **Requirements:** `FR-31`, `FR-30`, `FR-15`, `FR-28`
+- **Decisions:** `D-040`
+- **Open questions:** none
+- **Tests:** none
+- **Related:** `DL-080`, `DL-083`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1; python3 tools/devlog_check.py; python3 -c "import json;r=json.load(open('eval/results/zulip/summary.json'));[print(k,v['seconds'],'s','wake-ups',v['wake_ups'],[s['kind'] for s in v['story']]) for k,v in r.items()]"
+260 passed in 101.64s (0:01:41)
+✔ Validation passed
+devlog_check OK: 83 entries, every commit carries a known DL ID, links resolve, fixes have root causes
+z1 26 s wake-ups 1 ['asked', 'broke', 'fixed']
+z2 57 s wake-ups 0 ['asked', 'checked']
+z3 20 s wake-ups 0 ['asked', 'unchecked', 'unchecked']
+(exit 0)
+Independent check of z2 (Claude rewrote parse_user_agent; the guard said old and new agree on 150 inputs):
+real examples compared: 3804 differences: 0
+random strings compared: 200000 differences: 0
+z3 before the fix: "untested because: new function, so there is no old version to compare"
+z3 after the fix:  "could not run: ModuleNotFoundError: No module named icu"
+Plan usage: 5 Sonnet runs (z1, z2, z3 three times), about $0.47 notional.
+```
+
 ### DL-083 · Reports and maps open with a plain story of the session
 
-**feature** · M11 · T11.2 · 2026-11-05T13:38-06:00 · commit `pending`
+**feature** · M11 · T11.2 · 2026-11-05T13:38-06:00 · commit `0170810`
 
 - **Context:** FR-31 and D-040: the team asked for a final output saying what was asked, what broke doing it, and what solved it.
 - **What:** report.story turns the ledger into ordered steps: You asked, What broke (with one example call, before and after), What fixed it (with the re-run count), Checked, Not checked (with the reason), Asked you, Needs you. The Markdown report and the session map both show it first.

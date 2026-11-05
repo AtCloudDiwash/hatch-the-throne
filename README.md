@@ -21,4 +21,6 @@ python3 -m venv .venv
 
 When a session stops, open the `.html` file in `demo/billing-api/.legacyguard/reports/` (or type `/legacyguard:map`) to see what changed and what depends on it.
 
+For the guard on a real project, see `eval/results/zulip/README.md`: three change requests on Zulip's backend, with the report and map a developer gets for each.
+
 To read why every change happened, open `docs/devlog.html` in a browser, or view `docs/DEVLOG.md` on GitHub.

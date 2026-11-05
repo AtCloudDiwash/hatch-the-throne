@@ -226,3 +226,34 @@ Added later on 2026-11-05, at the team's request and with its approval (D-038, F
 - At most 60 callers are drawn; the page says how many were left out.
 
 **Still for you:** MC-8 in `docs/MANUAL_CHECKS.md`, which includes deciding whether the map or `/legacyguard:status` goes in the demo.
+
+## 10. After the run: Zulip simulation and the session story (M11)
+
+Added on 2026-11-05 at the team's request (D-040, FR-31, DL-079 to DL-086). The team chose Zulip, a real open-source chat server (Apache 2.0), as a project the guard had never seen.
+
+**What was done:** the guard was pointed at Zulip's backend (`zerver/`: 1,684 Python files, about 357,000 lines). Three change requests were then given to Claude through `claude -p`, each in its own session with the guard on. For each one the developer's report, the interactive map and the code change are in `eval/results/zulip/`. Start with `eval/results/zulip/README.md`.
+
+| Request | What Claude did | What the guard did | Outcome |
+| --- | --- | --- | --- |
+| z1: use `hex()` in `emoji_to_hex_codepoint` (Claude was told to make this exact edit) | Made the edit, which dropped zero-padding | Showed Claude `emoji_to_hex_codepoint(emoji='{')` gave `'007b'` before and `'7b'` after | Claude added padding. Re-run: 150 inputs match the original |
+| z2: rewrite `parse_user_agent` without a regex (open request) | Rewrote it with string operations; could not test its own work | Ran old and new on 150 generated inputs: all agree | Verified pass. I then checked it independently: 0 differences on 3,804 real examples from Zulip's fixture file and on 200,000 random strings |
+| z3: simplify `floor_to_hour` and `floor_to_day` (open request) | Rewrote both | Could not run them: this Mac lacks a library the file imports | Reported `Untested`, with that reason |
+
+**New in the developer's output:** every report and map now starts with "What happened": what was asked, what broke with one example, what fixed it, and what could not be checked.
+
+**What the real repo exposed in the guard, all fixed:**
+
+- `mock.patch` decorators were being indexed as API routes (DL-081).
+- Generated test inputs were too narrow: strings never contained a slash and numbers never exceeded 1,000 (DL-082). I widened them because of this trial.
+- A file that could not load a missing library was reported as "new function", which was the wrong reason (DL-085).
+
+**Limits of this simulation:**
+
+- Zulip's tests need PostgreSQL and its full backend needs system libraries that are not installed here. So there is no test map: the maps show test reach as unknown and every edge as a name match.
+- Only 47 backend modules can be compared by running them on this machine. The rest come out `Untested`.
+- Name matching over-matches on a real repo. For example, the map for z1 lists several `handleMatch` methods as two steps away only because they share a name.
+- z1's break was instructed, as in E2E-1. z2 and z3 were open requests, and Claude introduced no behavior change in z2.
+- Shell commands were limited to read-only ones, so every change went through Edit or Write. Shell-edit checking (FR-13) was started and then set aside at the team's request; it is in `git stash` (DL-079).
+- Plan usage: 5 Sonnet runs, about $0.47 notional.
+
+**For you:** MC-9 in `docs/MANUAL_CHECKS.md`.

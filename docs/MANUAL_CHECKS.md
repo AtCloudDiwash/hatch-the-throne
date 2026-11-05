@@ -61,3 +61,11 @@ Async output goes to Claude, not the developer (OQ-B5 evidence). So check how vi
 4. Look for: amber boxes such as `projected_fee` and `aging_bucket` (no test reaches them), and dashed edges to them.
 5. Tick "Fade callers that tests reach". Look for: only the amber callers stay bright.
 6. Decide whether this, or `/legacyguard:status`, is the better thing to show at 1:45 in the demo.
+
+## MC-9 The Zulip results (FR-31)
+
+1. Open `eval/results/zulip/README.md` and read the three requests.
+2. Open `eval/results/zulip/z1.html` in a browser. Look for: "What happened" at the top with You asked, What broke and What fixed it.
+3. Click `emoji_to_hex_codepoint`. Look for: both findings in the side panel, and its callers lit up.
+4. Open `z3.html`. Look for: two "Not checked" lines that name the missing library.
+5. Decide whether to show Zulip or billing-api in the demo. Zulip is a real project, but its map has no test information on this machine.
