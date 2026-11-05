@@ -29,6 +29,10 @@ flowchart LR
     DL018["DL-018 All testable hook behaviors confirmed on Cl…"]
     DL019["DL-019 Headless runs are affordable, and plugin ev…"]
   end
+  subgraph M1
+    DL020["DL-020 Plugin manifest and hook wiring"]
+    DL021["DL-021 Use MCPServer, the mcp 2.x name for FastMCP"]
+  end
 ```
 
 ## Summary
@@ -36,13 +40,56 @@ flowchart LR
 | Milestone | feature | change | fix | decision | fallback | blocked | spike | Total |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | M0 | 1 | 0 | 0 | 14 | 0 | 0 | 4 | 19 |
-| **All** | **1** | **0** | **0** | **14** | **0** | **0** | **4** | **19** |
+| M1 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 2 |
+| **All** | **2** | **1** | **0** | **14** | **0** | **0** | **4** | **21** |
 
 ## Entries, newest first
 
+### DL-021 · Use MCPServer, the mcp 2.x name for FastMCP
+
+**change** · M1 · T1.1 · 2026-11-05T11:30-06:00 · commit `pending`
+
+- **Context:** D-031 names FastMCP, and mcp 2.x removed mcp.server.fastmcp.
+- **What:** Import MCPServer from mcp.server.mcpserver and require mcp>=2,<3.
+- **Why:** It is the same SDK class under its new name. Pinning mcp<2 would start the project on an old major version.
+- **Impact:** Deviation from the wording of D-031 and OQ-N5 in docs/DECISIONS.md, not their intent.
+- **Files:** `legacyguard/mcp_server/server.py`, `legacyguard/requirements.txt`
+- **Requirements:** `FR-21`
+- **Decisions:** `D-031`
+- **Open questions:** `OQ-N5`
+- **Tests:** none
+- **Evidence:**
+
+```text
+$ python -c 'from mcp.server.fastmcp import FastMCP'
+No module named 'mcp.server.fastmcp'. This is mcp 2.x, where FastMCP was renamed to MCPServer
+```
+
+### DL-020 · Plugin manifest and hook wiring
+
+**feature** · M1 · T1.1 · 2026-11-05T11:30-06:00 · commit `pending`
+
+- **Context:** The guard must install as one Claude Code plugin with five hooks and an MCP server.
+- **What:** Added plugin.json, hooks.json in exec form using CLAUDE_PLUGIN_ROOT, .mcp.json, requirements.txt and stub scripts.
+- **Why:** Exec form avoids shell quoting problems with paths that contain spaces, such as this project's own path.
+- **Impact:** claude plugin validate passes; the plugin loads with --plugin-dir.
+- **Files:** `legacyguard/.claude-plugin/plugin.json`, `legacyguard/hooks/hooks.json`, `legacyguard/.mcp.json`
+- **Requirements:** `FR-01`
+- **Decisions:** `D-002`, `D-017`
+- **Open questions:** none
+- **Tests:** none
+- **Evidence:**
+
+```text
+$ claude plugin validate ./legacyguard
+
+✔ Validation passed
+(exit 0)
+```
+
 ### DL-019 · Headless runs are affordable, and plugin eval works but stays optional
 
-**spike** · M0 · T0.4 · 2026-11-05T11:25-06:00 · commit `pending`
+**spike** · M0 · T0.4 · 2026-11-05T11:25-06:00 · commit `63a2461`
 
 - **Context:** OQ-N6 needed a usage estimate and a try of claude plugin eval.
 - **What:** Timed a small Sonnet task, read /usage in -p mode, and ran plugin eval once with a regex grader.

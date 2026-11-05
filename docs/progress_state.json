@@ -1,6 +1,6 @@
 {
- "current": "M1 / T1.1",
- "next": "Build the plugin skeleton.",
+ "current": "M1 / T1.2",
+ "next": "Shared hook runtime.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -63,12 +63,18 @@
    "evidence": "$ claude -p <small task> --model sonnet --output-format json\n{\"subtype\":\"success\",\"num_turns\":9,\"duration_ms\":25965,\"total_cost_usd\":0.1095}  cache_read=178028 cache_create=18598 output=1725\n$ claude -p /usage\nCurrent session: 8% used; Current week (all models): 10% used (unchanged after the runs)\n$ claude plugin eval . --ablation none --trust-plugin\nsmoke score 1.00 (3 runs) $0.00; 1 case(s), 5s",
    "dl": [
     "DL-019"
-   ]
+   ],
+   "commit": "63a2461"
   },
   "T1.1": {
    "milestone": "M1",
    "title": "Manifest and wiring",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ claude plugin validate ./legacyguard\n\n✔ Validation passed\n(exit 0)",
+   "dl": [
+    "DL-020",
+    "DL-021"
+   ]
   },
   "T1.2": {
    "milestone": "M1",
@@ -266,5 +272,7 @@
    "status": "pending"
   }
  },
- "summaries": {}
+ "summaries": {
+  "M0": "1. django-oscar runs on SQLite: 1,803 passed, 7 failed, 70 s, none of the failures in pricing code.\n2. Only 7.6% of 367 offer/basket functions return a value in isolation; 38.7% run at all.\n3. Every headless-testable hook behavior was confirmed on v2.1.318, so no fallback triggered.\n4. A/B estimate is about $10 notional for 20 Sonnet runs; plugin eval works but the custom harness stays.\n5. The prompt label needs a person, so it is MC-1 in MANUAL_CHECKS.md."
+ }
 }
