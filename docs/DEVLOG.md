@@ -65,6 +65,7 @@ flowchart LR
   end
   subgraph M5
     DL046["DL-046 Behavioral diff runs old and new code in se…"]
+    DL047["DL-047 Runner blocks network, databases, file writ…"]
   end
 ```
 
@@ -77,14 +78,36 @@ flowchart LR
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | M3 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | M4 | 6 | 2 | 0 | 0 | 0 | 0 | 0 | 8 |
-| M5 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| **All** | **23** | **4** | **1** | **14** | **0** | **0** | **4** | **46** |
+| M5 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| **All** | **24** | **4** | **1** | **14** | **0** | **0** | **4** | **47** |
 
 ## Entries, newest first
 
+### DL-047 · Runner blocks network, databases, file writes and subprocesses
+
+**feature** · M5 · T5.2 · 2026-11-05T11:55-06:00 · commit `pending`
+
+- **Context:** NFR-05 and CLAUDE.md constraint 9: the diff never touches real services. The guard must also write only under .legacyguard/.
+- **What:** lg_worker.install_blocks patches socket, sqlite3, open and subprocess before target code loads. Blocks raise a BaseException, and each attempt is recorded even if the target swallows it. The worker gets no environment variables whose names look like secrets, and uses -B so no __pycache__ appears.
+- **Why:** Running a project's code is only acceptable if it cannot reach anything real.
+- **Impact:** A function that opens a socket or database is reported Untested with that reason, never Verified pass. Limit: this blocks Python-level calls; a C extension opening its own socket is not intercepted.
+- **Files:** `legacyguard/runner/lg_worker.py`
+- **Requirements:** `FR-14`, `NFR-02`, `NFR-05`, `NFR-11`
+- **Decisions:** `D-012`
+- **Open questions:** none
+- **Tests:** `tests/test_runner.py::test_network_is_blocked_in_the_runner`, `tests/test_runner.py::test_worker_blocks_network_directly`, `tests/test_runner.py::test_secrets_are_not_passed_to_target_code`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_runner.py -k 'network or secrets or file_writes or no_pycache'
+......                                                                   [100%]
+6 passed, 37 deselected in 2.07s
+(exit 0)
+```
+
 ### DL-046 · Behavioral diff runs old and new code in separate processes
 
-**feature** · M5 · T5.1 · 2026-11-05T11:55-06:00 · commit `pending`
+**feature** · M5 · T5.1 · 2026-11-05T11:55-06:00 · commit `a567e30`
 
 - **Context:** FR-14 and D-012: the decisive evidence is running both versions on the same inputs.
 - **What:** runner/diff.py starts lg_worker.py under the target's Python against the baseline worktree and the working tree, passes both the same inputs by file, and compares canonical results plus exception type and message. lg_codec.py gives deterministic encoding, ordering sets and dicts and scrubbing memory addresses.

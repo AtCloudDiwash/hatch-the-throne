@@ -1,6 +1,6 @@
 {
- "current": "M5 / T5.2",
- "next": "Network block.",
+ "current": "M5 / T5.3",
+ "next": "Input sources.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -288,12 +288,17 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_runner.py -k 'unchanged or known_change or exception or timeout or changed_constant or renamed_parameter or syntax_error or methods or module_for or codec or canon'\n......................                                                   [100%]\n22 passed, 21 deselected in 5.79s\n(exit 0)",
    "dl": [
     "DL-046"
-   ]
+   ],
+   "commit": "a567e30"
   },
   "T5.2": {
    "milestone": "M5",
    "title": "Network block (FR-14)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_runner.py -k 'network or secrets or file_writes or no_pycache'\n......                                                                   [100%]\n6 passed, 37 deselected in 2.07s\n(exit 0)",
+   "dl": [
+    "DL-047"
+   ]
   },
   "T5.3": {
    "milestone": "M5",
