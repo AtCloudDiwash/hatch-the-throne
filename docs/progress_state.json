@@ -1,6 +1,6 @@
 {
- "current": "M1 / T1.4",
- "next": "SessionStart basics.",
+ "current": "M1 / live check",
+ "next": "Verify the plugin live, then start M2.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -96,12 +96,17 @@
    "dl": [
     "DL-024",
     "DL-025"
-   ]
+   ],
+   "commit": "90c960c"
   },
   "T1.4": {
    "milestone": "M1",
    "title": "SessionStart basics (FR-10 steps 5-6)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_session_start.py\n......                                                                   [100%]\n6 passed in 1.99s\n(exit 0)",
+   "dl": [
+    "DL-026"
+   ]
   },
   "T2.1": {
    "milestone": "M2",

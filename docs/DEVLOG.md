@@ -36,6 +36,7 @@ flowchart LR
     DL023["DL-023 Guard allows by omitting permissionDecision…"]
     DL024["DL-024 First session start builds the guard's own …"]
     DL025["DL-025 Hooks never switched into the venv after a …"]
+    DL026["DL-026 SessionStart warns about API keys and gives…"]
   end
 ```
 
@@ -44,14 +45,36 @@ flowchart LR
 | Milestone | feature | change | fix | decision | fallback | blocked | spike | Total |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | M0 | 1 | 0 | 0 | 14 | 0 | 0 | 4 | 19 |
-| M1 | 3 | 2 | 1 | 0 | 0 | 0 | 0 | 6 |
-| **All** | **4** | **2** | **1** | **14** | **0** | **0** | **4** | **25** |
+| M1 | 4 | 2 | 1 | 0 | 0 | 0 | 0 | 7 |
+| **All** | **5** | **2** | **1** | **14** | **0** | **0** | **4** | **26** |
 
 ## Entries, newest first
 
+### DL-026 · SessionStart warns about API keys and gives Claude a summary
+
+**feature** · M1 · T1.4 · 2026-11-05T11:31-06:00 · commit `pending`
+
+- **Context:** FR-10 steps 5 and 6: warn if ANTHROPIC_API_KEY would bill per token, and tell Claude the guard's settings.
+- **What:** session_start.py emits a systemMessage warning when the key is set and a factual summary of scope, mode, contracts, frozen files and tools. A missing or invalid config gives a setup notice and no block.
+- **Why:** The API-key warning prevents a surprise bill, and the summary lets Claude plan around frozen files.
+- **Impact:** Developers see the warning at start. The guard never reads or uses the key.
+- **Files:** `legacyguard/scripts/session_start.py`, `tests/test_session_start.py`
+- **Requirements:** `FR-10`, `FR-02`, `NFR-01`, `NFR-08`
+- **Decisions:** `D-015`
+- **Open questions:** none
+- **Tests:** `tests/test_session_start.py::test_api_key_warning`, `tests/test_session_start.py::test_summary_in_context`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_session_start.py
+......                                                                   [100%]
+6 passed in 1.99s
+(exit 0)
+```
+
 ### DL-025 · Hooks never switched into the venv after a successful install
 
-**fix** · M1 · T1.3 · 2026-11-05T11:31-06:00 · commit `pending`
+**fix** · M1 · T1.3 · 2026-11-05T11:31-06:00 · commit `90c960c`
 
 - **Context:** A real install on a clean data folder succeeded, but the hook still said dependencies were missing.
 - **What:** Compare sys.prefix with the venv folder rather than comparing resolved interpreter paths.
@@ -79,7 +102,7 @@ $ cat /tmp/lg_t13.txt && .venv/bin/pytest -q tests/test_bootstrap.py tests/test_
 
 ### DL-024 · First session start builds the guard's own venv
 
-**feature** · M1 · T1.3 · 2026-11-05T11:31-06:00 · commit `pending`
+**feature** · M1 · T1.3 · 2026-11-05T11:31-06:00 · commit `90c960c`
 
 - **Context:** FR-03: a clean machine with Python and git must get a working guard after one session start.
 - **What:** guardlib/bootstrap.py creates a venv in CLAUDE_PLUGIN_DATA, installs requirements.txt under a file lock, and writes a marker holding the requirements hash. Hooks re-exec under that venv before reading stdin.
