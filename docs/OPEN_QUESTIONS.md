@@ -6,12 +6,12 @@ Rule: **never silently resolve an item here.** When one is decided, move it to [
 
 | ID | Question | Blocks | Evidence that settles it |
 | --- | --- | --- | --- |
-| OQ-B1 | Does django-oscar's test suite pass locally on SQLite, and what share of its offer/basket functions can run in isolation? | M7, D-014 | Spikes T0.1, T0.2. Fallback: OpenFisca |
+| OQ-B1 | **Resolved by evidence below (M0): django-oscar runs on SQLite; 7.6% of functions return a value in isolation.** Does django-oscar's test suite pass locally on SQLite, and what share of its offer/basket functions can run in isolation? | M7, D-014 | Spikes T0.1, T0.2. Fallback: OpenFisca |
 | OQ-B2 | **Resolved → D-024 (default for one-pass build; revisit after demo).** How is a behavior difference labeled "requested" when the prompt asked for it? Options discussed: in-session Claude decides with the developer having the final say; developer marks it via waive; an optional prompt hook at Stop. Simple keyword matching was never agreed. | M5 (FR-16) | Team decision; T0.3 results |
 | OQ-B3 | **Resolved → D-025 (default for one-pass build; revisit after demo).** Does the behavioral diff compare against the **session baseline** or the **previous edit**? Also how to treat a dirty working tree at session start. Both a PreToolUse snapshot and a baseline `git worktree` were mentioned. | M4, M5 | Team decision; recommendation in conversation leaned toward baseline worktree |
 | OQ-B4 | **Resolved → D-026 (default for one-pass build; revisit after demo).** How does the guard find the target project's Python interpreter and dependencies (config key, auto-detect `.venv`, etc.)? | M5 | Team decision; test on billing-api and django-oscar |
-| OQ-B5 | Verify on the pinned Claude Code version: `asyncRewake` exit-2 wake-up; whether an async hook's stdout JSON (success `additionalContext`, or the `systemMessage` notice to the developer that D-013 assumes) is honored; Stop `decision: "block"` and `stop_hook_active`; `ask` label in prompts; `-p` deny behavior. The hooks reference was only partly read. Also pick the minimum Claude Code version. | M1–M6 | Spike T0.3 |
-| OQ-B6 | Approval to start: no milestone is approved. Also, the project's "Project Knowledge" doc (Nov 3) says no idea is selected, which conflicts with the master prompt (Nov 4). Update or confirm. | M0 | Team says "approved" for M0; team updates the stale doc |
+| OQ-B5 | **Resolved by evidence below (M0): behaviors confirmed; minimum version v2.1.318.** Verify on the pinned Claude Code version: `asyncRewake` exit-2 wake-up; whether an async hook's stdout JSON (success `additionalContext`, or the `systemMessage` notice to the developer that D-013 assumes) is honored; Stop `decision: "block"` and `stop_hook_active`; `ask` label in prompts; `-p` deny behavior. The hooks reference was only partly read. Also pick the minimum Claude Code version. | M1–M6 | Spike T0.3 |
+| OQ-B6 | **Partly resolved: the build prompt approved M0 to M8 for this run only. The team must still update the stale "Project Knowledge" doc.** Approval to start: no milestone is approved. Also, the project's "Project Knowledge" doc (Nov 3) says no idea is selected, which conflicts with the master prompt (Nov 4). Update or confirm. | M0 | Team says "approved" for M0; team updates the stale doc |
 
 ## 2. Non-blocking
 
@@ -66,6 +66,21 @@ Each item is labeled **measured**, **observed once**, or **inferred**.
 **`claude plugin eval` (measured, once).** Works: 3 runs by default, regex grader passed, 5 s. Each run starts in an empty directory, and a case's workspace comes from scaffolding. The custom harness stays per D-032, because held-out trap checks need a seeded billing-api clone with its history.
 
 **Observation (observed once).** In the usage trial Claude reported "the sandbox blocked pytest". The real cause was a permission denial: Claude ran `python -m pytest` and the allowlist only named `python3` and `pytest`. No sandbox is configured. The A/B allowlist must include all interpreter spellings.
+
+### Conflicts found between documents
+
+Per the build prompt, DECISIONS.md wins. Each is also logged in the dev log as type "change".
+
+| Conflict | Followed | Dev log |
+| --- | --- | --- |
+| FR-12 lists `allow` as an output; CLAUDE.md constraint 5 says never auto-approve, and a hook's `allow` skips the permission prompt | Omit `permissionDecision` for allows | DL-023 |
+| FR-23 says advisory gives context only for declared rules | D-034: frozen files are denied in every mode | DL-044 |
+| FR-25 proposes `tests/guard/` | D-028: `tests/legacyguard/` | DL-056 |
+| D-035 says recreate at each SessionStart, but SessionStart also fires on compact and resume | Keep the baseline for the same session, which serves D-025 | DL-039 |
+| D-031 names FastMCP; `mcp` 2.x renamed it `MCPServer` | `MCPServer` | DL-021 |
+| D-013 assumes a `systemMessage` notice to the developer on a behavior difference; the hooks reference says an async hook's `systemMessage` goes to Claude only | Stop report and `/legacyguard:status` are the developer's view | DL-018 |
+| TECH_STACK and TESTING say django-oscar has a `--sqlite` option; it no longer does | `DATABASE_ENGINE` and `DATABASE_NAME` environment variables | DL-016 |
+| CLAUDE.md and the plan say no milestone is approved | The build prompt approved M0 to M8 for this run only | DL-001 onward |
 
 ## 3. Future research
 

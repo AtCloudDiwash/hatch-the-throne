@@ -1,7 +1,7 @@
 # CLAUDE.md — Guardrails for AI Coding Agents (working name: LegacyGuard)
 
-> **Status: architecture defined, implementation NOT approved.**
-> Do not write product code until the team explicitly says "approved" for a specific milestone in [docs/IMPLEMENTATION_PLAN.md](docs/IMPLEMENTATION_PLAN.md). Completing one milestone never approves the next.
+> **Status: MVP built in one approved run (M0 to M8); see [docs/FINAL_REPORT.md](docs/FINAL_REPORT.md).**
+> That approval covered that run only. New milestones need the team's explicit "approved" again.
 
 ## What this project is
 

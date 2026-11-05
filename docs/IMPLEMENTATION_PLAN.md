@@ -1,6 +1,6 @@
 # IMPLEMENTATION_PLAN.md — Development Roadmap
 
-> **No milestone is approved yet.** Each milestone needs an explicit "approved" from the team before work starts. Finishing a milestone never approves the next one.
+> **M0 to M8 were approved for one continuous run, now complete (docs/FINAL_REPORT.md).** After that run, each milestone needs an explicit "approved" from the team before work starts. Finishing a milestone never approves the next one.
 
 Hackathon window: November 2–9, 2026. Requirements: [REQUIREMENTS.md](REQUIREMENTS.md). Test details: [TESTING.md](TESTING.md).
 
