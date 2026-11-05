@@ -1,6 +1,6 @@
 {
- "current": "M3 / T3.1",
- "next": "Names table.",
+ "current": "M3 / T3.2",
+ "next": "Coverage map.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -146,12 +146,17 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_ab_checks.py\n.............                                                            [100%]\n13 passed in 6.85s\n(exit 0)",
    "dl": [
     "DL-030"
-   ]
+   ],
+   "commit": "6af2bb1"
   },
   "T3.1": {
    "milestone": "M3",
    "title": "Names table (FR-04)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_names.py\n......                                                                   [100%]\n6 passed in 0.48s\n(exit 0)",
+   "dl": [
+    "DL-031"
+   ]
   },
   "T3.2": {
    "milestone": "M3",
@@ -311,6 +316,7 @@
  },
  "summaries": {
   "M0": "1. django-oscar runs on SQLite: 1,803 passed, 7 failed, 70 s, none of the failures in pricing code.\n2. Only 7.6% of 367 offer/basket functions return a value in isolation; 38.7% run at all.\n3. Every headless-testable hook behavior was confirmed on v2.1.318, so no fallback triggered.\n4. A/B estimate is about $10 notional for 20 Sonnet runs; plugin eval works but the custom harness stays.\n5. The prompt label needs a person, so it is MC-1 in MANUAL_CHECKS.md.",
-  "M1": "1. The plugin validates and loads; all five hooks and the MCP server are wired in exec form.\n2. Hook runtime fails open, prints one JSON object, and clips context to 1,500 characters.\n3. A real clean install takes one session start; the symlink re-exec bug was found and fixed by that test.\n4. SessionStart warns about ANTHROPIC_API_KEY and gives Claude a summary.\n5. Allow is expressed by omitting permissionDecision, so the guard never auto-approves (a logged deviation from FR-12)."
+  "M1": "1. The plugin validates and loads; all five hooks and the MCP server are wired in exec form.\n2. Hook runtime fails open, prints one JSON object, and clips context to 1,500 characters.\n3. A real clean install takes one session start; the symlink re-exec bug was found and fixed by that test.\n4. SessionStart warns about ANTHROPIC_API_KEY and gives Claude a summary.\n5. Allow is expressed by omitting permissionDecision, so the guard never auto-approves (a logged deviation from FR-12).",
+  "M2": "1. billing-api has 12 API paths, 6 migrations, 2 event schemas, 45 passing tests and about 2,400 lines (the plan said around 3,000).\n2. Five traps are documented in TRAPS.md; the repo's own tests stay green with the rounding trap applied, and a test proves that.\n3. The generator builds 24 commits with planted co-change: 82% with rates.sql and 71% with close_month.py.\n4. Ten A/B tasks exist, and each held-out check is proven to pass clean and fail on a bad edit.\n5. billing-api is generated from tracked source (D-037), so run the build script after cloning."
  }
 }

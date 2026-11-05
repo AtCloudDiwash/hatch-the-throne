@@ -44,6 +44,9 @@ flowchart LR
     DL029["DL-029 Generated billing-api repo with planted co-…"]
     DL030["DL-030 Ten A/B tasks with verified held-out checks"]
   end
+  subgraph M3
+    DL031["DL-031 Names table from tree-sitter, with incremen…"]
+  end
 ```
 
 ## Summary
@@ -53,13 +56,36 @@ flowchart LR
 | M0 | 1 | 0 | 0 | 14 | 0 | 0 | 4 | 19 |
 | M1 | 4 | 2 | 1 | 0 | 0 | 0 | 0 | 7 |
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| **All** | **9** | **2** | **1** | **14** | **0** | **0** | **4** | **30** |
+| M3 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
+| **All** | **10** | **2** | **1** | **14** | **0** | **0** | **4** | **31** |
 
 ## Entries, newest first
 
+### DL-031 · Names table from tree-sitter, with incremental re-parse
+
+**feature** · M3 · T3.1 · 2026-11-05T11:42-06:00 · commit `pending`
+
+- **Context:** FR-04 and FR-08: answer who calls this name, parsing each file independently and only when it changes.
+- **What:** guardlib/symbols.py extracts definitions (qualname, kind, span, signature, decorators, parameters) and call sites. indexer/names.py stores them and re-parses only files whose git blob SHA changed.
+- **Why:** Per-file parsing is fast and survives broken code. Same-named functions are all returned rather than guessed between (D-005).
+- **Impact:** Lookups stay cheap on each edit; a one-file change re-parses one file.
+- **Files:** `legacyguard/guardlib/symbols.py`, `legacyguard/indexer/db.py`, `legacyguard/indexer/names.py`, `tests/test_names.py`
+- **Requirements:** `FR-04`, `FR-08`
+- **Decisions:** `D-005`, `D-019`
+- **Open questions:** none
+- **Tests:** `tests/test_names.py::test_incremental_touches_one_file`, `tests/test_names.py::test_same_named_functions_all_stored`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_names.py
+......                                                                   [100%]
+6 passed in 0.48s
+(exit 0)
+```
+
 ### DL-030 · Ten A/B tasks with verified held-out checks
 
-**feature** · M2 · T2.4 · 2026-11-05T11:38-06:00 · commit `pending`
+**feature** · M2 · T2.4 · 2026-11-05T11:38-06:00 · commit `6af2bb1`
 
 - **Context:** FR-29 and D-033 require 10 natural-language tasks, each touching a trap, scored by checks Claude never sees.
 - **What:** eval/tasks/tasks.yaml and eval/checks/test_t01..t10.py. tests/test_ab_checks.py proves each check passes on the clean repo and fails on a known-bad edit.

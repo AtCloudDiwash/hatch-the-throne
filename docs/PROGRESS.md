@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M3 / T3.1
-- **Next step:** Names table.
+- **Current milestone and task:** M3 / T3.2
+- **Next step:** Coverage map.
 
 ## Status
 
@@ -21,8 +21,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T2.1 | M2 | done | [x] billing-api service | DL-027 | 1c33f86 |
 | T2.2 | M2 | done | [x] Planted traps | DL-028 | a3bd3f8 |
 | T2.3 | M2 | done | [x] Planted history | DL-029 | 68e1680 |
-| T2.4 | M2 | done | [x] A/B task set | DL-030 |  |
-| T3.1 | M3 | pending | [ ] Names table (FR-04) |  |  |
+| T2.4 | M2 | done | [x] A/B task set | DL-030 | 6af2bb1 |
+| T3.1 | M3 | done | [x] Names table (FR-04) | DL-031 |  |
 | T3.2 | M3 | pending | [ ] Coverage map (FR-05) |  |  |
 | T3.3 | M3 | pending | [ ] Routes and contracts (FR-06) |  |  |
 | T3.4 | M3 | pending | [ ] Co-change (FR-07) |  |  |
@@ -72,6 +72,14 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 3. A real clean install takes one session start; the symlink re-exec bug was found and fixed by that test.
 4. SessionStart warns about ANTHROPIC_API_KEY and gives Claude a summary.
 5. Allow is expressed by omitting permissionDecision, so the guard never auto-approves (a logged deviation from FR-12).
+
+### M2
+
+1. billing-api has 12 API paths, 6 migrations, 2 event schemas, 45 passing tests and about 2,400 lines (the plan said around 3,000).
+2. Five traps are documented in TRAPS.md; the repo's own tests stay green with the rounding trap applied, and a test proves that.
+3. The generator builds 24 commits with planted co-change: 82% with rates.sql and 71% with close_month.py.
+4. Ten A/B tasks exist, and each held-out check is proven to pass clean and fail on a bad edit.
+5. billing-api is generated from tracked source (D-037), so run the build script after cloning.
 
 
 ## Evidence
@@ -220,6 +228,15 @@ db/rates.sql
 $ .venv/bin/pytest -q tests/test_ab_checks.py
 .............                                                            [100%]
 13 passed in 6.85s
+(exit 0)
+```
+
+### T3.1 Names table (FR-04) (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_names.py
+......                                                                   [100%]
+6 passed in 0.48s
 (exit 0)
 ```
 
