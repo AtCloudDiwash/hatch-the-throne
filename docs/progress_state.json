@@ -1,6 +1,6 @@
 {
  "current": "M7 / T7.3",
- "next": "Run the 20 A/B runs.",
+ "next": "A/B running; then finish T7.4 with its numbers.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -410,7 +410,8 @@
    "evidence": "$ python3 -c \"import json;s=json.load(open('eval/results/backtest/planted.json'));print('any non-pass',s['catch_rate_any_non_pass'],'proved by execution',s['catch_rate_proved_by_execution']);[print(b['id'],b['what'],'|',[(f['status'],f['reason']) for f in b['functions']]) for b in s['bugs']]\"\nany non-pass 0.9 proved by execution 0.4\nB01 Percentage benefit divides by 10, not 100 | [('Untested', 'needs a database')]\nB02 Percentage benefit loses its 100% cap | [('Untested', 'needs a database')]\nB03 Absolute benefit can exceed the value of the items | [('Untested', 'needs a database')]\nB04 Absolute shipping discount can exceed the charge | [('Behavior difference — intent unknown', '')]\nB05 Fixed-price shipping returns the price, not the discount | [('Behavior difference — intent unknown', '')]\nB06 Shipping percentage discount rounds to ten cents | [('Behavior difference — intent unknown', '')]\nB07 Benefit rounding helper rounds to ten cents | [('Behavior difference — intent unknown', '')]\nB08 Count condition needs one more item than configured | [('Untested', 'needs a database')]\nB09 Per-item shipping ignores quantity | [('Untested', 'needs a database')]\nB10 Fixed price with tax drops the tax | [('Verified pass', '')]\n(exit 0)",
    "dl": [
     "DL-062"
-   ]
+   ],
+   "commit": "03e727b"
   },
   "T7.3": {
    "milestone": "M7",
@@ -426,7 +427,12 @@
   "T7.4": {
    "milestone": "M7",
    "title": "Budget check (D-013)",
-   "status": "pending"
+   "status": "in_progress",
+   "evidence": "$ .venv/bin/pytest -q tests/test_runner.py -k guessed; python3 -c \"import json;[print(n,json.load(open(f'eval/results/backtest/replay{n}.json'))['summary']['wake_up_rate_per_20_edits'],json.load(open(f'eval/results/backtest/planted{n}.json'))['catch_rate_proved_by_execution']) for n in ('_before_filter','_broad_filter','')]\"\n...                                                                      [100%]\n3 passed, 45 deselected in 1.90s\n_before_filter 1.432 0.4\n_broad_filter 1.273 0.3\n 1.273 0.4\n(exit 0)",
+   "dl": [
+    "DL-063",
+    "DL-064"
+   ]
   },
   "T8.1": {
    "milestone": "M8",

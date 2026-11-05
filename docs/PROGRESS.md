@@ -3,7 +3,7 @@
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
 - **Current milestone and task:** M7 / T7.3
-- **Next step:** Run the 20 A/B runs.
+- **Next step:** A/B running; then finish T7.4 with its numbers.
 
 ## Status
 
@@ -47,9 +47,9 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T6.4 | M6 | done | [x] Pin (FR-25) | DL-056 | f36de53 |
 | T6.5 | M6 | done | [x] Status skill and remaining MCP tools (FR-21, FR-22) | DL-057 | f9483e9 |
 | T7.1 | M7 | done | [x] Backtest harness (FR-28) | DL-058 DL-061 | 35253d5 |
-| T7.2 | M7 | done | [x] Seeded bugs (FR-28) | DL-062 |  |
+| T7.2 | M7 | done | [x] Seeded bugs (FR-28) | DL-062 | 03e727b |
 | T7.3 | M7 | in_progress | [~] Guard on/off (FR-29) | DL-059 DL-060 | a1ba430 |
-| T7.4 | M7 | pending | [ ] Budget check (D-013) |  |  |
+| T7.4 | M7 | in_progress | [~] Budget check (D-013) | DL-063 DL-064 |  |
 | T8.1 | M8 | pending | [ ] Pin minimum Claude Code version (NFR-10) |  |  |
 | T8.2 | M8 | pending | [ ] Live E2E-1 to E2E-8 |  |  |
 | T8.3 | M8 | pending | [ ] Dry-run steps, backup video, names and roles |  |  |
@@ -531,6 +531,18 @@ B10 Fixed price with tax drops the tax | [('Verified pass', '')]
 $ .venv/bin/pytest -q tests/test_ab_harness.py tests/test_backtest.py tests/test_runner.py::test_library_subclassing_popen_still_imports
 .............                                                            [100%]
 13 passed in 8.12s
+(exit 0)
+```
+
+### T7.4 Budget check (D-013) (in_progress)
+
+```text
+$ .venv/bin/pytest -q tests/test_runner.py -k guessed; python3 -c "import json;[print(n,json.load(open(f'eval/results/backtest/replay{n}.json'))['summary']['wake_up_rate_per_20_edits'],json.load(open(f'eval/results/backtest/planted{n}.json'))['catch_rate_proved_by_execution']) for n in ('_before_filter','_broad_filter','')]"
+...                                                                      [100%]
+3 passed, 45 deselected in 1.90s
+_before_filter 1.432 0.4
+_broad_filter 1.273 0.3
+ 1.273 0.4
 (exit 0)
 ```
 

@@ -85,11 +85,14 @@ flowchart LR
     DL060["DL-060 Two wrong test expectations, and close-out …"]
     DL061["DL-061 Backtest on 100 real oscar commits: prompts…"]
     DL062["DL-062 Planted oscar bugs: 9 of 10 flagged, 4 of 1…"]
+    DL063["DL-063 Drop guessed inputs that old code rejects, …"]
+    DL064["DL-064 Keep the filter only when both versions rej…"]
   end
   DL015 -->|caused| DL060
   DL058 -->|caused| DL060
   DL061 -.- DL058
   DL062 -.- DL058
+  DL064 -.- DL063
 ```
 
 ## Summary
@@ -103,14 +106,65 @@ flowchart LR
 | M4 | 6 | 2 | 0 | 0 | 0 | 0 | 0 | 8 |
 | M5 | 6 | 0 | 0 | 1 | 0 | 0 | 0 | 7 |
 | M6 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
-| M7 | 2 | 0 | 1 | 0 | 0 | 0 | 2 | 5 |
-| **All** | **35** | **4** | **2** | **15** | **0** | **0** | **6** | **62** |
+| M7 | 2 | 2 | 1 | 0 | 0 | 0 | 2 | 7 |
+| **All** | **35** | **6** | **2** | **15** | **0** | **0** | **6** | **64** |
 
 ## Entries, newest first
 
+### DL-064 · Keep the filter only when both versions reject the guessed input
+
+**change** · M7 · T7.4 · 2026-11-05T12:15-06:00 · commit `pending`
+
+- **Context:** The broad filter cost a real catch.
+- **What:** An input is dropped only if it is guessed, old code raised, and new code raised too. If new code accepts what old code rejected, it stays as a difference.
+- **Why:** Same wake-up reduction (1.27 per 20 edits), and proved catches return to 40%. Typed parameters are never filtered, because a hint says the value was valid.
+- **Impact:** The wake-up target is still missed. No further tuning: D-013 says evidence findings are never downgraded, so the miss is reported as measured.
+- **Files:** `legacyguard/runner/diff.py`, `tests/test_runner.py`
+- **Requirements:** `FR-14`, `NFR-07`
+- **Decisions:** `D-013`
+- **Open questions:** none
+- **Tests:** `tests/test_runner.py::test_guessed_input_that_only_new_code_accepts_still_counts`, `tests/test_runner.py::test_guessed_inputs_that_old_code_rejects_are_not_evidence`
+- **Related:** `DL-063`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_runner.py -k guessed; python3 -c "import json;[print(n,json.load(open(f'eval/results/backtest/replay{n}.json'))['summary']['wake_up_rate_per_20_edits'],json.load(open(f'eval/results/backtest/planted{n}.json'))['catch_rate_proved_by_execution']) for n in ('_before_filter','_broad_filter','')]"
+...                                                                      [100%]
+3 passed, 45 deselected in 1.90s
+_before_filter 1.432 0.4
+_broad_filter 1.273 0.3
+ 1.273 0.4
+(exit 0)
+```
+
+### DL-063 · Drop guessed inputs that old code rejects, first too broadly
+
+**change** · M7 · T7.4 · 2026-11-05T12:15-06:00 · commit `pending`
+
+- **Context:** T7.4: wake-ups were 1.43 per 20 edits, over target. Many compared two errors on values guessed for untyped parameters, such as get(request=0).
+- **What:** Dropped generated inputs for parameters with no hint or default whenever old code raised. Wake-ups fell to 1.27, but proved catches fell from 40% to 30%, losing B04.
+- **Why:** A value the function rejects was never a valid call, but this rule also discarded the case where new code accepts what old code rejected.
+- **Impact:** Superseded by the narrower rule in the next entry. Measurements are kept in *_broad_filter.json.
+- **Files:** `legacyguard/runner/inputs.py`, `legacyguard/runner/diff.py`, `eval/results/backtest/replay_broad_filter.json`, `eval/results/backtest/planted_broad_filter.json`
+- **Requirements:** `FR-14`, `NFR-07`
+- **Decisions:** `D-013`
+- **Open questions:** none
+- **Tests:** none
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_runner.py -k guessed; python3 -c "import json;[print(n,json.load(open(f'eval/results/backtest/replay{n}.json'))['summary']['wake_up_rate_per_20_edits'],json.load(open(f'eval/results/backtest/planted{n}.json'))['catch_rate_proved_by_execution']) for n in ('_before_filter','_broad_filter','')]"
+...                                                                      [100%]
+3 passed, 45 deselected in 1.90s
+_before_filter 1.432 0.4
+_broad_filter 1.273 0.3
+ 1.273 0.4
+(exit 0)
+```
+
 ### DL-062 · Planted oscar bugs: 9 of 10 flagged, 4 of 10 proved by execution, 1 false pass
 
-**spike** · M7 · T7.2 · 2026-11-05T12:15-06:00 · commit `pending`
+**spike** · M7 · T7.2 · 2026-11-05T12:15-06:00 · commit `03e727b`
 
 - **Context:** FR-28: known-bad changes in pricing and offer code, chosen and committed before any run (DL-058).
 - **What:** Any status other than Verified pass: 90%. A counterexample proved by running: 40% (B04 to B07). Five were Untested because the functions need a database, which TESTING.md's definition counts as flagged. B10 got a Verified pass although the bug is real: recorded inputs all had zero tax, so the dropped tax changed nothing.
