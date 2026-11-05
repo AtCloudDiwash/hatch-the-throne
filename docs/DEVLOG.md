@@ -76,6 +76,7 @@ flowchart LR
     DL053["DL-053 Stop audit reviews the whole session and bl…"]
     DL054["DL-054 Session report with one honest status per f…"]
     DL055["DL-055 Waive and mode commands, reserved for the d…"]
+    DL056["DL-056 Pin writes a regression test, only on the d…"]
   end
 ```
 
@@ -89,14 +90,36 @@ flowchart LR
 | M3 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | M4 | 6 | 2 | 0 | 0 | 0 | 0 | 0 | 8 |
 | M5 | 6 | 0 | 0 | 1 | 0 | 0 | 0 | 7 |
-| M6 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
-| **All** | **31** | **4** | **1** | **15** | **0** | **0** | **4** | **55** |
+| M6 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| **All** | **32** | **4** | **1** | **15** | **0** | **0** | **4** | **56** |
 
 ## Entries, newest first
 
+### DL-056 · Pin writes a regression test, only on the developer's command
+
+**feature** · M6 · T6.4 · 2026-11-05T12:01-06:00 · commit `pending`
+
+- **Context:** FR-25 and D-028: never take that road again.
+- **What:** lg.py pin generates tests/legacyguard/test_pinned_<id>.py from a counterexample, expecting the baseline result, including exception type and message. Objects without a literal form are refused with a reason.
+- **Why:** It uses the session baseline's result as expected behavior. This is the guard's single write outside .legacyguard/.
+- **Impact:** A test proves the pinned file fails on the bad version and passes on the good one. Deviation from FR-25's proposed tests/guard/ path, per D-028. The file name uses LG_3 rather than LG-3 so it stays importable.
+- **Files:** `legacyguard/scripts/lg_more.py`, `legacyguard/skills/pin/SKILL.md`
+- **Requirements:** `FR-25`, `NFR-11`
+- **Decisions:** `D-028`, `D-022`
+- **Open questions:** `OQ-N2`
+- **Tests:** `tests/test_stop_controls.py::test_pin_fails_on_bad_version_passes_on_good`, `tests/test_stop_controls.py::test_nothing_is_written_outside_state_dir_without_pin`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_stop_controls.py -k 'pin or nothing_is_written'
+....                                                                     [100%]
+4 passed, 22 deselected in 5.71s
+(exit 0)
+```
+
 ### DL-055 · Waive and mode commands, reserved for the developer
 
-**feature** · M6 · T6.3 · 2026-11-05T12:01-06:00 · commit `pending`
+**feature** · M6 · T6.3 · 2026-11-05T12:01-06:00 · commit `f1634f9`
 
 - **Context:** FR-23 and FR-24: developers accept findings with a reason and switch modes.
 - **What:** lg.py waive records id, reason, file, symbol, code hash and date in waivers.json, and refuses empty reasons, unknown IDs and non-evidence findings. lg.py mode edits only the mode line. Both skills set disable-model-invocation.

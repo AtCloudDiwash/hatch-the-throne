@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M6 / T6.4
-- **Next step:** Pin.
+- **Current milestone and task:** M6 / T6.5
+- **Next step:** Status and MCP tools.
 
 ## Status
 
@@ -43,8 +43,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T5.6 | M5 | done | [x] PostToolUse wake-up (FR-15, FR-16) | DL-051 DL-052 | db2f382 |
 | T6.1 | M6 | done | [x] Stop audit (FR-18) | DL-053 | d588a4e |
 | T6.2 | M6 | done | [x] Report (FR-19) | DL-054 | cc8a4cc |
-| T6.3 | M6 | done | [x] Waive and mode skills (FR-24, FR-23) | DL-055 |  |
-| T6.4 | M6 | pending | [ ] Pin (FR-25) |  |  |
+| T6.3 | M6 | done | [x] Waive and mode skills (FR-24, FR-23) | DL-055 | f1634f9 |
+| T6.4 | M6 | done | [x] Pin (FR-25) | DL-056 |  |
 | T6.5 | M6 | pending | [ ] Status skill and remaining MCP tools (FR-21, FR-22) |  |  |
 | T7.1 | M7 | pending | [ ] Backtest harness (FR-28) |  |  |
 | T7.2 | M7 | pending | [ ] Seeded bugs (FR-28) |  |  |
@@ -459,6 +459,15 @@ $ .venv/bin/pytest -q tests/test_stop_controls.py -k 'report_contents or every_n
 $ .venv/bin/pytest -q tests/test_stop_controls.py -k 'waive or waived or mode_command or skills_for'
 .....                                                                    [100%]
 5 passed, 21 deselected in 5.46s
+(exit 0)
+```
+
+### T6.4 Pin (FR-25) (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_stop_controls.py -k 'pin or nothing_is_written'
+....                                                                     [100%]
+4 passed, 22 deselected in 5.71s
 (exit 0)
 ```
 

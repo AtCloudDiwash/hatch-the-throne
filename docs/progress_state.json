@@ -1,6 +1,6 @@
 {
- "current": "M6 / T6.4",
- "next": "Pin.",
+ "current": "M6 / T6.5",
+ "next": "Status and MCP tools.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -369,12 +369,17 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_stop_controls.py -k 'waive or waived or mode_command or skills_for'\n.....                                                                    [100%]\n5 passed, 21 deselected in 5.46s\n(exit 0)",
    "dl": [
     "DL-055"
-   ]
+   ],
+   "commit": "f1634f9"
   },
   "T6.4": {
    "milestone": "M6",
    "title": "Pin (FR-25)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_stop_controls.py -k 'pin or nothing_is_written'\n....                                                                     [100%]\n4 passed, 22 deselected in 5.71s\n(exit 0)",
+   "dl": [
+    "DL-056"
+   ]
   },
   "T6.5": {
    "milestone": "M6",
