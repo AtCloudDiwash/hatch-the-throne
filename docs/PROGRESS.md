@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M2 / T2.3
-- **Next step:** Planted history.
+- **Current milestone and task:** M2 / T2.4
+- **Next step:** A/B task set.
 
 ## Status
 
@@ -19,8 +19,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T1.3 | M1 | done | [x] Bootstrap (FR-03) | DL-024 DL-025 | 90c960c |
 | T1.4 | M1 | done | [x] SessionStart basics (FR-10 steps 5-6) | DL-026 | 91c211e |
 | T2.1 | M2 | done | [x] billing-api service | DL-027 | 1c33f86 |
-| T2.2 | M2 | done | [x] Planted traps | DL-028 |  |
-| T2.3 | M2 | pending | [ ] Planted history |  |  |
+| T2.2 | M2 | done | [x] Planted traps | DL-028 | a3bd3f8 |
+| T2.3 | M2 | done | [x] Planted history | DL-029 |  |
 | T2.4 | M2 | pending | [ ] A/B task set |  |  |
 | T3.1 | M3 | pending | [ ] Names table (FR-04) |  |  |
 | T3.2 | M3 | pending | [ ] Coverage map (FR-05) |  |  |
@@ -190,6 +190,27 @@ $ .venv/bin/pytest -q tests/test_ab_checks.py::test_existing_suite_passes_with_t
 | 3 | Nightly job caller | `jobs/close_month.py` calls `compute_late_fee` | Change the sig
 | 4 | Untested report | `reports/aging.py` | Change `aging_bucket` or `bucket_name` | No t
 | 5 | Frozen ledger | `legacy/ledger_v1.py` | Any edit | The audit export reads it; `froze
+(exit 0)
+```
+
+### T2.3 Planted history (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_ab_checks.py::test_planted_history; git -C demo/billing-api log --format='%h %s' --name-only -3 | head -12
+.                                                                        [100%]
+1 passed in 1.27s
+15ff4cc Current rate table
+
+billing/fees.py
+db/rates.sql
+jobs/close_month.py
+0c8fd35 Note audit export
+
+README.md
+0a7bd47 Mid-year rates
+
+billing/fees.py
+db/rates.sql
 (exit 0)
 ```
 

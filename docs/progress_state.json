@@ -1,6 +1,6 @@
 {
- "current": "M2 / T2.3",
- "next": "Planted history.",
+ "current": "M2 / T2.4",
+ "next": "A/B task set.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -126,12 +126,17 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_ab_checks.py::test_existing_suite_passes_with_the_rounding_trap; sed -n 5,11p demo/billing-api-src/TRAPS.md | cut -c1-90\n.                                                                        [100%]\n1 passed in 1.78s\n| # | Trap | Where | Edit that triggers it | Why existing tests miss it |\n| --- | --- | --- | --- | --- |\n| 1 | Banker's rounding | `billing/fees.py::compute_late_fee` | Replace `quantize(CENT, RO\n| 2 | Shared date helper | `billing/dates.py::add_months`, `days_overdue` (7+ callers) | R\n| 3 | Nightly job caller | `jobs/close_month.py` calls `compute_late_fee` | Change the sig\n| 4 | Untested report | `reports/aging.py` | Change `aging_bucket` or `bucket_name` | No t\n| 5 | Frozen ledger | `legacy/ledger_v1.py` | Any edit | The audit export reads it; `froze\n(exit 0)",
    "dl": [
     "DL-028"
-   ]
+   ],
+   "commit": "a3bd3f8"
   },
   "T2.3": {
    "milestone": "M2",
    "title": "Planted history",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_ab_checks.py::test_planted_history; git -C demo/billing-api log --format='%h %s' --name-only -3 | head -12\n.                                                                        [100%]\n1 passed in 1.27s\n15ff4cc Current rate table\n\nbilling/fees.py\ndb/rates.sql\njobs/close_month.py\n0c8fd35 Note audit export\n\nREADME.md\n0a7bd47 Mid-year rates\n\nbilling/fees.py\ndb/rates.sql\n(exit 0)",
+   "dl": [
+    "DL-029"
+   ]
   },
   "T2.4": {
    "milestone": "M2",

@@ -41,6 +41,7 @@ flowchart LR
   subgraph M2
     DL027["DL-027 billing-api: FastAPI and SQLite demo service"]
     DL028["DL-028 Five traps that the service's own tests miss"]
+    DL029["DL-029 Generated billing-api repo with planted co-…"]
   end
 ```
 
@@ -50,14 +51,48 @@ flowchart LR
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | M0 | 1 | 0 | 0 | 14 | 0 | 0 | 4 | 19 |
 | M1 | 4 | 2 | 1 | 0 | 0 | 0 | 0 | 7 |
-| M2 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
-| **All** | **7** | **2** | **1** | **14** | **0** | **0** | **4** | **28** |
+| M2 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| **All** | **8** | **2** | **1** | **14** | **0** | **0** | **4** | **29** |
 
 ## Entries, newest first
 
+### DL-029 · Generated billing-api repo with planted co-change history
+
+**feature** · M2 · T2.3 · 2026-11-05T11:38-06:00 · commit `pending`
+
+- **Context:** T2.3 needs billing/fees.py and db/rates.sql to change together. billing-api must be its own repo, per D-037.
+- **What:** demo/build_billing_repo.py builds 24 deterministic commits: fees.py changes in 17, with rates.sql in 14 (82%) and close_month.py in 12 (71%). It ends identical to the tracked source, and creates the shared venv on a fresh clone.
+- **Why:** Generating history from tracked source keeps the demo reproducible and reviewable. It also gives each A/B run a clean copy.
+- **Impact:** Run python3 demo/build_billing_repo.py before any demo.
+- **Files:** `demo/build_billing_repo.py`
+- **Requirements:** `FR-07`, `FR-27`
+- **Decisions:** `D-037`
+- **Open questions:** none
+- **Tests:** `tests/test_ab_checks.py::test_planted_history`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_ab_checks.py::test_planted_history; git -C demo/billing-api log --format='%h %s' --name-only -3 | head -12
+.                                                                        [100%]
+1 passed in 1.27s
+15ff4cc Current rate table
+
+billing/fees.py
+db/rates.sql
+jobs/close_month.py
+0c8fd35 Note audit export
+
+README.md
+0a7bd47 Mid-year rates
+
+billing/fees.py
+db/rates.sql
+(exit 0)
+```
+
 ### DL-028 · Five traps that the service's own tests miss
 
-**feature** · M2 · T2.2 · 2026-11-05T11:38-06:00 · commit `pending`
+**feature** · M2 · T2.2 · 2026-11-05T11:38-06:00 · commit `a3bd3f8`
 
 - **Context:** The guard's value only shows if the repo's tests do not already catch the regressions.
 - **What:** TRAPS.md documents banker's rounding, the shared date helper, the nightly job caller, the untested report and the frozen ledger, each with its triggering edit. Source code carries no hints.
