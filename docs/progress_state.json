@@ -1,6 +1,6 @@
 {
- "current": "M2 / T2.2",
- "next": "Planted traps.",
+ "current": "M2 / T2.3",
+ "next": "Planted history.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -116,12 +116,17 @@
    "evidence": "$ cd demo/billing-api && PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p no:cacheprovider 2>&1 | tail -1; find . -path ./.venv -prune -o -path ./.git -prune -o \\( -name '*.py' -o -name '*.sql' -o -name '*.json' -o -name '*.yaml' -o -name '*.md' \\) -print | xargs wc -l | tail -1\n45 passed, 1 warning in 0.23s\n    2383 total\n(exit 0)",
    "dl": [
     "DL-027"
-   ]
+   ],
+   "commit": "1c33f86"
   },
   "T2.2": {
    "milestone": "M2",
    "title": "Planted traps",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_ab_checks.py::test_existing_suite_passes_with_the_rounding_trap; sed -n 5,11p demo/billing-api-src/TRAPS.md | cut -c1-90\n.                                                                        [100%]\n1 passed in 1.78s\n| # | Trap | Where | Edit that triggers it | Why existing tests miss it |\n| --- | --- | --- | --- | --- |\n| 1 | Banker's rounding | `billing/fees.py::compute_late_fee` | Replace `quantize(CENT, RO\n| 2 | Shared date helper | `billing/dates.py::add_months`, `days_overdue` (7+ callers) | R\n| 3 | Nightly job caller | `jobs/close_month.py` calls `compute_late_fee` | Change the sig\n| 4 | Untested report | `reports/aging.py` | Change `aging_bucket` or `bucket_name` | No t\n| 5 | Frozen ledger | `legacy/ledger_v1.py` | Any edit | The audit export reads it; `froze\n(exit 0)",
+   "dl": [
+    "DL-028"
+   ]
   },
   "T2.3": {
    "milestone": "M2",

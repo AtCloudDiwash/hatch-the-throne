@@ -40,6 +40,7 @@ flowchart LR
   end
   subgraph M2
     DL027["DL-027 billing-api: FastAPI and SQLite demo service"]
+    DL028["DL-028 Five traps that the service's own tests miss"]
   end
 ```
 
@@ -49,14 +50,43 @@ flowchart LR
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | M0 | 1 | 0 | 0 | 14 | 0 | 0 | 4 | 19 |
 | M1 | 4 | 2 | 1 | 0 | 0 | 0 | 0 | 7 |
-| M2 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| **All** | **6** | **2** | **1** | **14** | **0** | **0** | **4** | **27** |
+| M2 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| **All** | **7** | **2** | **1** | **14** | **0** | **0** | **4** | **28** |
 
 ## Entries, newest first
 
+### DL-028 · Five traps that the service's own tests miss
+
+**feature** · M2 · T2.2 · 2026-11-05T11:38-06:00 · commit `pending`
+
+- **Context:** The guard's value only shows if the repo's tests do not already catch the regressions.
+- **What:** TRAPS.md documents banker's rounding, the shared date helper, the nightly job caller, the untested report and the frozen ledger, each with its triggering edit. Source code carries no hints.
+- **Why:** A hint in a comment would make Claude avoid the trap and invalidate the A/B comparison.
+- **Impact:** Replacing quantize with round leaves all 45 repo tests green, and a test proves it.
+- **Files:** `demo/billing-api-src/TRAPS.md`
+- **Requirements:** `FR-27`
+- **Decisions:** `D-014`
+- **Open questions:** none
+- **Tests:** `tests/test_ab_checks.py::test_existing_suite_passes_with_the_rounding_trap`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_ab_checks.py::test_existing_suite_passes_with_the_rounding_trap; sed -n 5,11p demo/billing-api-src/TRAPS.md | cut -c1-90
+.                                                                        [100%]
+1 passed in 1.78s
+| # | Trap | Where | Edit that triggers it | Why existing tests miss it |
+| --- | --- | --- | --- | --- |
+| 1 | Banker's rounding | `billing/fees.py::compute_late_fee` | Replace `quantize(CENT, RO
+| 2 | Shared date helper | `billing/dates.py::add_months`, `days_overdue` (7+ callers) | R
+| 3 | Nightly job caller | `jobs/close_month.py` calls `compute_late_fee` | Change the sig
+| 4 | Untested report | `reports/aging.py` | Change `aging_bucket` or `bucket_name` | No t
+| 5 | Frozen ledger | `legacy/ledger_v1.py` | Any edit | The audit export reads it; `froze
+(exit 0)
+```
+
 ### DL-027 · billing-api: FastAPI and SQLite demo service
 
-**feature** · M2 · T2.1 · 2026-11-05T11:38-06:00 · commit `pending`
+**feature** · M2 · T2.1 · 2026-11-05T11:38-06:00 · commit `1c33f86`
 
 - **Context:** The live demo needs a deterministic service with a real contract, tests and history.
 - **What:** 12 API paths, business rules, jobs, reports, 6 SQL migrations, 2 event schemas, an openapi.yaml generated from the live routes, and 45 tests.

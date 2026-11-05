@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M2 / T2.2
-- **Next step:** Planted traps.
+- **Current milestone and task:** M2 / T2.3
+- **Next step:** Planted history.
 
 ## Status
 
@@ -18,8 +18,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T1.2 | M1 | done | [x] Shared hook runtime | DL-022 DL-023 | baea1b9 |
 | T1.3 | M1 | done | [x] Bootstrap (FR-03) | DL-024 DL-025 | 90c960c |
 | T1.4 | M1 | done | [x] SessionStart basics (FR-10 steps 5-6) | DL-026 | 91c211e |
-| T2.1 | M2 | done | [x] billing-api service | DL-027 |  |
-| T2.2 | M2 | pending | [ ] Planted traps |  |  |
+| T2.1 | M2 | done | [x] billing-api service | DL-027 | 1c33f86 |
+| T2.2 | M2 | done | [x] Planted traps | DL-028 |  |
 | T2.3 | M2 | pending | [ ] Planted history |  |  |
 | T2.4 | M2 | pending | [ ] A/B task set |  |  |
 | T3.1 | M3 | pending | [ ] Names table (FR-04) |  |  |
@@ -174,6 +174,22 @@ $ .venv/bin/pytest -q tests/test_session_start.py
 $ cd demo/billing-api && PYTHONDONTWRITEBYTECODE=1 .venv/bin/python -m pytest -q -p no:cacheprovider 2>&1 | tail -1; find . -path ./.venv -prune -o -path ./.git -prune -o \( -name '*.py' -o -name '*.sql' -o -name '*.json' -o -name '*.yaml' -o -name '*.md' \) -print | xargs wc -l | tail -1
 45 passed, 1 warning in 0.23s
     2383 total
+(exit 0)
+```
+
+### T2.2 Planted traps (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_ab_checks.py::test_existing_suite_passes_with_the_rounding_trap; sed -n 5,11p demo/billing-api-src/TRAPS.md | cut -c1-90
+.                                                                        [100%]
+1 passed in 1.78s
+| # | Trap | Where | Edit that triggers it | Why existing tests miss it |
+| --- | --- | --- | --- | --- |
+| 1 | Banker's rounding | `billing/fees.py::compute_late_fee` | Replace `quantize(CENT, RO
+| 2 | Shared date helper | `billing/dates.py::add_months`, `days_overdue` (7+ callers) | R
+| 3 | Nightly job caller | `jobs/close_month.py` calls `compute_late_fee` | Change the sig
+| 4 | Untested report | `reports/aging.py` | Change `aging_bucket` or `bucket_name` | No t
+| 5 | Frozen ledger | `legacy/ledger_v1.py` | Any edit | The audit export reads it; `froze
 (exit 0)
 ```
 
