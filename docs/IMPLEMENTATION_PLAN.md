@@ -175,6 +175,18 @@ Runs split across teammates' plans over two days.
 | T9.2 | HTML map, written at Stop, plus `/legacyguard:map` (FR-30) | Stop writes the `.html` next to the `.md`; a map failure leaves the report intact; the file works offline |
 | T9.3 | Live check, browser check and docs | A live `claude -p` Stop writes the map; the map is checked in a browser in light and dark |
 
+## M10 Shell-edit checks (FR-13): approved, then paused
+
+T10.1 was started on 2026-11-05 and set aside the same day at the team's request. The half-built code is in `git stash`, not in any commit. See PROGRESS.md.
+
+## M11 Zulip simulation and session story (approved 2026-11-05)
+
+| Task | Objective | Done when |
+| --- | --- | --- |
+| T11.1 | Set the guard up on Zulip's backend; record what runs on this machine | Index built; list of what can and cannot run; fixes for anything it exposes |
+| T11.2 | Session story in the report and map (FR-31) | Story for the rounding edit reads asked, broke, fixed |
+| T11.3 | Run change requests through `claude -p` on Zulip with the guard on | Report, map and code change kept for each request; results written up honestly |
+
 ## Requirement → task traceability
 
 | Requirement | Tasks |
@@ -204,3 +216,5 @@ Runs split across teammates' plans over two days.
 | FR-28 | T7.1, T7.2 |
 | FR-29 | T7.3 |
 | FR-30 | T9.1, T9.2, T9.3 |
+| FR-31 | T11.2, T11.3 |
+| FR-13 | T10.1 (paused) |

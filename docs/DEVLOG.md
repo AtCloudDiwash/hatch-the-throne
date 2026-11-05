@@ -106,6 +106,12 @@ flowchart LR
     DL077["DL-077 Session map: one offline HTML file per sess…"]
     DL078["DL-078 Session map verified live and in a browser;…"]
   end
+  subgraph M11
+    DL079["DL-079 Shell-edit checks  FR-13  set aside, half-b…"]
+    DL080["DL-080 The guard runs on Zulip's backend, within l…"]
+    DL081["DL-081 mock.patch decorators were indexed as API r…"]
+    DL082["DL-082 Generated inputs cover more punctuation and…"]
+  end
   DL015 -->|caused| DL060
   DL058 -->|caused| DL060
   DL061 -.- DL058
@@ -126,6 +132,8 @@ flowchart LR
   DL074 -.- DL073
   DL078 -.- DL076
   DL078 -.- DL077
+  DL033 -->|caused| DL081
+  DL082 -.- DL048
 ```
 
 ## Summary
@@ -142,9 +150,123 @@ flowchart LR
 | M7 | 2 | 2 | 1 | 1 | 0 | 0 | 3 | 9 |
 | M8 | 2 | 2 | 1 | 1 | 1 | 1 | 0 | 8 |
 | M9 | 3 | 0 | 0 | 1 | 0 | 0 | 0 | 4 |
-| **All** | **40** | **8** | **3** | **18** | **1** | **1** | **7** | **78** |
+| M11 | 0 | 2 | 1 | 0 | 0 | 0 | 1 | 4 |
+| **All** | **40** | **10** | **4** | **18** | **1** | **1** | **8** | **82** |
 
 ## Entries, newest first
+
+### DL-082 · Generated inputs cover more punctuation and larger numbers
+
+**change** · M11 · T11.1 · 2026-11-05T13:37-06:00 · commit `pending`
+
+- **Context:** Zulip has no runnable tests here, so every input is generated. The old generator made strings from 18 characters with no slash, and integers only up to 1,000.
+- **What:** Strings now draw from letters, digits and common punctuation, up to 16 characters. Integers mix small values with values up to 2 to the power 40.
+- **Why:** A parser that branches on a slash was never given one, and a byte-count helper was never given a large number. Both are general gaps, not Zulip-specific ones.
+- **Impact:** All existing tests still pass, including the exact billing-api counterexample, which comes from a real test call and not from generation. Disclosed plainly: this change was made because of what the Zulip trial showed.
+- **Files:** `legacyguard/runner/inputs.py`
+- **Requirements:** `FR-14`
+- **Decisions:** none
+- **Open questions:** none
+- **Tests:** `tests/test_runner.py::test_generated_inputs_from_hints_are_deterministic`
+- **Related:** `DL-048`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_index_parts.py::test_mock_patch_decorator_is_not_a_route tests/test_runner.py -k 'generated or harvested or unchanged'; git stash list | cut -c1-80
+....                                                                     [100%]
+4 passed, 47 deselected in 2.78s
+stash@{0}: On main: FR-13 shell-edit checks, half-built (M10), set aside 2026-11
+(exit 0)
+Zulip at 9cde567 (2026-11-03), Apache 2.0. Backend zerver/: 1,684 Python files, 356,627 lines.
+$ uv sync --frozen --only-group prod  -> failed building pyicu (needs ICU system library)
+Installed 196 of 199 pinned packages; skipped pyicu, uwsgi, python-ldap.
+django.setup() fails: ModuleNotFoundError: No module named ldap. Zulip tests need PostgreSQL, so no test map.
+47 zerver/lib modules import without the database layer.
+$ lg.py index --no-tests  -> real 2.06 s; Co-change pairs: 78
+Dry run, one careless edit to emoji_to_hex_codepoint: post_edit exit 2 in 0.43 s, "149 of 150 inputs differ"; Stop audit 1.06 s.
+```
+
+### DL-081 · mock.patch decorators were indexed as API routes
+
+**fix** · M11 · T11.1 · 2026-11-05T13:37-06:00 · commit `pending`
+
+- **Context:** Indexing Zulip reported 114 routes from decorators. Zulip registers routes in urls.py, so that number was wrong.
+- **What:** A route decorator's path must now be empty or start with a slash.
+- **Why:** @mock.patch("pkg.mod.x") matched the pattern for @router.patch("/x").
+- **Root cause:** DL-033 wrote the fallback pattern to accept any quoted string after .get, .post, .put, .patch or .delete. billing-api has no mock.patch decorators, so no test showed it.
+- **Impact:** No false routes on repos that use unittest.mock. FastAPI paths, including the empty path, still match.
+- **Files:** `legacyguard/indexer/routes.py`, `legacyguard/guardlib/checks.py`
+- **Requirements:** `FR-06`, `FR-12`
+- **Decisions:** none
+- **Open questions:** none
+- **Tests:** `tests/test_index_parts.py::test_mock_patch_decorator_is_not_a_route`
+- **Caused by:** `DL-033`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_index_parts.py::test_mock_patch_decorator_is_not_a_route tests/test_runner.py -k 'generated or harvested or unchanged'; git stash list | cut -c1-80
+....                                                                     [100%]
+4 passed, 47 deselected in 2.78s
+stash@{0}: On main: FR-13 shell-edit checks, half-built (M10), set aside 2026-11
+(exit 0)
+Zulip at 9cde567 (2026-11-03), Apache 2.0. Backend zerver/: 1,684 Python files, 356,627 lines.
+$ uv sync --frozen --only-group prod  -> failed building pyicu (needs ICU system library)
+Installed 196 of 199 pinned packages; skipped pyicu, uwsgi, python-ldap.
+django.setup() fails: ModuleNotFoundError: No module named ldap. Zulip tests need PostgreSQL, so no test map.
+47 zerver/lib modules import without the database layer.
+$ lg.py index --no-tests  -> real 2.06 s; Co-change pairs: 78
+Dry run, one careless edit to emoji_to_hex_codepoint: post_edit exit 2 in 0.43 s, "149 of 150 inputs differ"; Stop audit 1.06 s.
+```
+
+### DL-080 · The guard runs on Zulip's backend, within limits this Mac sets
+
+**spike** · M11 · T11.1 · 2026-11-05T13:37-06:00 · commit `pending`
+
+- **Context:** The team asked to try the guard on a real project they picked: Zulip.
+- **What:** Cloned Zulip, pointed the guard at zerver/, installed 196 of 199 dependencies, and built the index in about 2 seconds. Zulip's full backend cannot start here (a missing system library), and its tests need PostgreSQL.
+- **Why:** Knowing what can run decides what the guard can honestly claim on this repo.
+- **Impact:** 47 backend modules can be compared by running them. Everything that needs the database layer is reported Untested. There is no test map, so the session map shows test reach as unknown and every edge as a name match.
+- **Files:** `eval/run_zulip.py`
+- **Requirements:** `FR-28`, `FR-14`
+- **Decisions:** `D-040`, `D-014`
+- **Open questions:** none
+- **Tests:** none
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_index_parts.py::test_mock_patch_decorator_is_not_a_route tests/test_runner.py -k 'generated or harvested or unchanged'; git stash list | cut -c1-80
+....                                                                     [100%]
+4 passed, 47 deselected in 2.78s
+stash@{0}: On main: FR-13 shell-edit checks, half-built (M10), set aside 2026-11
+(exit 0)
+Zulip at 9cde567 (2026-11-03), Apache 2.0. Backend zerver/: 1,684 Python files, 356,627 lines.
+$ uv sync --frozen --only-group prod  -> failed building pyicu (needs ICU system library)
+Installed 196 of 199 pinned packages; skipped pyicu, uwsgi, python-ldap.
+django.setup() fails: ModuleNotFoundError: No module named ldap. Zulip tests need PostgreSQL, so no test map.
+47 zerver/lib modules import without the database layer.
+$ lg.py index --no-tests  -> real 2.06 s; Co-change pairs: 78
+Dry run, one careless edit to emoji_to_hex_codepoint: post_edit exit 2 in 0.43 s, "149 of 150 inputs differ"; Stop audit 1.06 s.
+```
+
+### DL-079 · Shell-edit checks (FR-13) set aside, half-built
+
+**change** · M11 · T11.1 · 2026-11-05T13:37-06:00 · commit `pending`
+
+- **Context:** The team approved FR-13, then said the work was moving too fast and switched to a Zulip demo.
+- **What:** Moved the uncommitted FR-13 code into git stash. Nothing from it is in any commit. PROGRESS.md records what exists and how to resume. D-039 is reserved for its design decision.
+- **Why:** Running a live demo on half-built, untested hook code would have been a risk, and deleting the work would have wasted it.
+- **Impact:** Edits made through shell commands are still seen only at Stop, as before. The Zulip simulation allows read-only shell commands only, so every change goes through Edit or Write.
+- **Files:** `docs/progress_state.json`, `docs/IMPLEMENTATION_PLAN.md`, `docs/DECISIONS.md`
+- **Requirements:** `FR-13`
+- **Decisions:** `D-039`
+- **Open questions:** none
+- **Tests:** none
+- **Evidence:**
+
+```text
+$ git stash list
+stash@{0}: On main: FR-13 shell-edit checks, half-built (M10), set aside 2026-11-05
+```
 
 ### DL-078 · Session map verified live and in a browser; docs updated
 

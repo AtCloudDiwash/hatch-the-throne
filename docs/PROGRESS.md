@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** Done: M0 to M9 worked through; see docs/FINAL_REPORT.md
-- **Next step:** The team runs docs/MANUAL_CHECKS.md, MC-1 to MC-8.
+- **Current milestone and task:** M11 / T11.2
+- **Next step:** Session story.
 
 ## Status
 
@@ -57,6 +57,10 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T9.1 | M9 | done | [x] Map data and impact text tree (FR-30) | DL-075 DL-076 | 32a195d |
 | T9.2 | M9 | done | [x] HTML session map, written at Stop, and map skill (FR-30) | DL-077 | ecf7dce |
 | T9.3 | M9 | done | [x] Live check, browser check and docs for the map | DL-078 |  |
+| T10.1 | M10 | in_progress | [~] Shell-edit checks (FR-13): half-built, set aside |  |  |
+| T11.1 | M11 | done | [x] Zulip setup: what runs here, and fixes it exposed | DL-079 DL-080 DL-081 DL-082 |  |
+| T11.2 | M11 | pending | [ ] Session story in the report and the map (FR-31) |  |  |
+| T11.3 | M11 | pending | [ ] Zulip simulation: three change requests through Claude |  |  |
 
 ## Milestone summaries
 
@@ -696,5 +700,31 @@ Live claude -p (haiku) on a fresh billing-api, two instructed edits:
 Stop summary: "LegacyGuard: 0 verified pass, 0 confirmed failure, 1 open behavior difference, 0 turned back, 1 untested, 0 potential risk. Prompts 0 of 3, wake-ups 1. Report: .../reports/<session>.md Map: .../reports/<session>.html"
 Map data: 10 nodes, 9 edges; compute_late_fee = Behavior difference, aging_bucket = Untested. No guard.log.
 Stop hook with the map, 3 timed runs on the sample session: about 0.2 s each.
+```
+
+### T10.1 Shell-edit checks (FR-13): half-built, set aside (in_progress)
+
+```text
+Approved by the team ("Build FR-13"), then paused when the team asked to slow down and switched to the Zulip demo.
+The code is not in any commit. It is kept in git stash: stash@{0} "FR-13 shell-edit checks, half-built (M10), set aside 2026-11-05".
+Written so far: a reader for shell commands, hooks that refuse shell writes to frozen and guard files, and a check after each shell command. No tests for it yet.
+To resume: git stash pop, then write the tests first.
+```
+
+### T11.1 Zulip setup: what runs here, and fixes it exposed (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_index_parts.py::test_mock_patch_decorator_is_not_a_route tests/test_runner.py -k 'generated or harvested or unchanged'; git stash list | cut -c1-80
+....                                                                     [100%]
+4 passed, 47 deselected in 2.78s
+stash@{0}: On main: FR-13 shell-edit checks, half-built (M10), set aside 2026-11
+(exit 0)
+Zulip at 9cde567 (2026-11-03), Apache 2.0. Backend zerver/: 1,684 Python files, 356,627 lines.
+$ uv sync --frozen --only-group prod  -> failed building pyicu (needs ICU system library)
+Installed 196 of 199 pinned packages; skipped pyicu, uwsgi, python-ldap.
+django.setup() fails: ModuleNotFoundError: No module named ldap. Zulip tests need PostgreSQL, so no test map.
+47 zerver/lib modules import without the database layer.
+$ lg.py index --no-tests  -> real 2.06 s; Co-change pairs: 78
+Dry run, one careless edit to emoji_to_hex_codepoint: post_edit exit 2 in 0.43 s, "149 of 150 inputs differ"; Stop audit 1.06 s.
 ```
 

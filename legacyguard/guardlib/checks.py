@@ -9,7 +9,7 @@ from guardlib import contracts_parse as cp
 from guardlib import symbols
 from guardlib.symbol_diff import diff as symbol_diff
 
-ROUTE_DECORATOR = re.compile(r"""^([\w.]*)\.(get|post|put|patch|delete)\(\s*["']([^"']*)["']""", re.I)
+ROUTE_DECORATOR = re.compile(r"""^([\w.]*)\.(get|post|put|patch|delete)\(\s*["'](/[^"']*|)["']""", re.I)
 DEPENDENCY_DEFAULT = re.compile(r"\b(Depends|Security|BackgroundTasks)\b")
 
 

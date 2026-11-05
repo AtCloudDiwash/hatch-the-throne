@@ -10,7 +10,7 @@ from guardlib import config as cfgmod
 from indexer.coverage_map import clean_env
 
 RUNNER = Path(__file__).resolve().parent.parent / "runner"
-ROUTE_DECORATOR = re.compile(r"""^[\w.]*\.(get|post|put|patch|delete)\(\s*["']([^"']*)["']""", re.I)
+ROUTE_DECORATOR = re.compile(r"""^[\w.]*\.(get|post|put|patch|delete)\(\s*["'](/[^"']*|)["']""", re.I)
 
 INTROSPECT = r"""
 import inspect, json, os, sys

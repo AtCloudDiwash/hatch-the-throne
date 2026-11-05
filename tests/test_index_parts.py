@@ -177,3 +177,10 @@ def test_billing_planted_pair_reported(billing):
 def test_billing_status_stays_clean(billing):
     out = subprocess.run(["git", "-C", str(billing), "status", "--short"], capture_output=True, text=True).stdout
     assert all(".legacyguard" in l for l in out.splitlines()), out
+
+
+def test_mock_patch_decorator_is_not_a_route(repo):
+    (repo / "m.py").write_text('from unittest import mock\n\n@mock.patch("pkg.mod.thing")\ndef helper(x):\n    return x\n\n@router.get("/items")\ndef items():\n    return []\n\n@router.post("")\ndef create():\n    return {}\n')
+    conn = db.connect(str(repo))
+    names.update(conn, str(repo), ".")
+    assert sorted((r[0], r[1], r[2]) for r in routes.from_decorators(conn)) == [("GET", "/items", "items"), ("POST", "", "create")]

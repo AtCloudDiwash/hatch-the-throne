@@ -206,6 +206,12 @@ Terms:
 - **Constraints:** Only changed functions and their radius, never the whole repo (D-006, D-038). An edge is solid only when one test runs both ends; otherwise dashed, as a name match. Colors mean the five statuses or test reach, nothing else. A failure to build the map never blocks Stop or the Markdown report.
 - **Acceptance:** After the rounding edit on billing-api, the map shows `compute_late_fee` as a behavior difference with its counterexample, `projected_fee` and `aging_bucket` as dependents no test reaches, and the settle route.
 
+### FR-31 Session story — Confirmed — Post-MVP (M11)
+- **Problem:** The findings table is precise but a developer first wants to know what happened.
+- **Behavior:** The session report and the session map start with "What happened": what was asked (the stored prompts), what broke (each behavior difference with one example call, before and after), what fixed it (a revision followed by a matching re-run), what was checked, what could not be checked and why, what the developer was asked, and what still needs a decision.
+- **Constraints:** Built only from the ledger; no model call. Every line corresponds to a finding. Plain sentences; never "safe".
+- **Acceptance:** After the rounding edit and its revert on billing-api, the story reads: asked, broke (with the 40.20 example), fixed (with the re-run count).
+
 ---
 
 ## Non-functional requirements

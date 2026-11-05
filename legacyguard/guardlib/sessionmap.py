@@ -111,6 +111,7 @@ def build(cfg, data: dict) -> dict:
     order = {n["id"]: i for i, n in enumerate(changed.values())}
     model["nodes"] = sorted(nodes.values(), key=lambda n: (n["layer"], order.get(n["id"], 0), n["id"]))
     model["edges"] = sorted(edges.values(), key=lambda e: (e["from"], e["to"]))
+    model["story"] = [{**st, "label": report.STORY_LABEL[st["kind"]]} for st in report.story(data)]
     model["findings"] = [{"id": f["id"], "status": f["status"], "subject": f["subject"], "evidence": str(f["evidence"])[:400], "outcome": report.outcome(f),
                           "node": f"{f['file']}::{f['item']}" if f"{f['file']}::{f['item']}" in nodes else None} for f in visible]
     return model
@@ -139,6 +140,11 @@ svg text{fill:var(--ink)}.col{font-size:12px;fill:var(--muted)}.nm{font:600 12px
 .e{fill:none;stroke:var(--edge);stroke-width:1.4}.e.guess{stroke-dasharray:5 4}.dim{opacity:.16}.fade{opacity:.3}
 table{border-collapse:collapse;width:100%}th,td{padding:6px 10px;border-bottom:1px solid var(--soft);text-align:left;vertical-align:top;font-size:13px}th{color:var(--muted);font-weight:600;white-space:nowrap}
 td.ev{overflow-wrap:anywhere;min-width:220px}tr.go{cursor:pointer}tr.go:hover td{background:var(--soft)}
+#story{margin:12px 20px 0;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:10px 14px}#story:empty{display:none}
+#story h2{margin:0 0 6px}#story ol{margin:0;padding:0;list-style:none}#story li{display:flex;gap:10px;padding:4px 0;align-items:baseline}
+.tag{flex:none;width:104px;font-size:12px;font-weight:600;border-radius:4px;padding:1px 8px;border:1px solid var(--line);background:var(--soft);text-align:center}
+.t-broke{background:var(--diff-bg);border-color:var(--diff)}.t-fixed,.t-checked{background:var(--ok-bg);border-color:var(--ok)}.t-open{background:var(--fail-bg);border-color:var(--fail)}
+.t-unchecked{background:var(--unt-bg);border-color:var(--unt)}.t-asked_you,.t-blocked,.t-accepted{background:var(--risk-bg);border-color:var(--risk)}#story code{background:var(--soft);padding:0 3px;border-radius:3px}
 .note{color:var(--muted);font-size:12.5px;padding:0 20px 22px;max-width:980px}.empty{padding:16px;color:var(--muted)}
 @media (max-width:980px){main{flex-direction:column}aside{width:100%;position:static;max-height:none}}
 """
@@ -194,6 +200,9 @@ function table(){if(!M.findings.length){$('#findings').innerHTML='<div class=emp
  let h='<table><thead><tr><th>ID</th><th>Status</th><th>Subject</th><th>Evidence</th><th>Outcome</th></tr></thead><tbody>';
  for(const f of M.findings)h+=`<tr${f.node?` class=go data-id="${esc(f.node)}"`:''}><td>${esc(f.id)}</td><td><span class=sw style="background:var(--${SC[f.status]}-bg);border-color:var(--${SC[f.status]})"></span>${esc(f.status)}</td><td>${esc(f.subject)}</td><td class=ev>${esc(f.evidence)}</td><td>${esc(f.outcome)}</td></tr>`;
  $('#findings').innerHTML=h+'</tbody></table>';document.querySelectorAll('tr.go').forEach(r=>r.onclick=()=>{pick(r.dataset.id);$('#map').scrollIntoView({block:'nearest'})})}
+function storyHtml(){if(!M.story.length)return;const md=t=>esc(t).replace(/`([^`]+)`/g,'<code>$1</code>');
+ $('#story').innerHTML='<h2>What happened</h2><ol>'+M.story.map(s=>`<li><span class="tag t-${s.kind}">${esc(s.label)}</span><span>${md(s.text)}</span></li>`).join('')+'</ol>'}
+storyHtml();
 $('#fade').onchange=e=>{fade=e.target.checked;draw()};
 const notes=[];if(!M.index)notes.push('There is no index, so dependents are unknown. Run /legacyguard:index.');else if(!M.coverage)notes.push('There is no test map yet, so test reach is unknown. Run /legacyguard:index.');
 if(M.truncated)notes.push(M.truncated+' more callers are not drawn.');$('#warn').textContent=notes.join(' ');
@@ -209,6 +218,7 @@ def render_html(model: dict) -> str:
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>LegacyGuard session map</title><style>{CSS}</style></head><body>
 <header><h1>LegacyGuard session map</h1><p class="meta">{safe_meta}</p><div class="chips" id="chips"></div></header>
+<section id="story"></section>
 <main><div id="left">
 <div class="tools"><span><svg width="30" height="8"><path class="e" d="M0 4H30"/></svg> one test runs both ends</span>
 <span><svg width="30" height="8"><path class="e guess" d="M0 4H30"/></svg> matched by name only</span>

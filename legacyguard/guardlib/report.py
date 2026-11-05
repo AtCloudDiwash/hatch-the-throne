@@ -46,11 +46,69 @@ def _line(f: dict) -> str:
     return f"| {f['id']} | {f['status']} | {_clean(f['subject'])} | {_clean(f['evidence'])[:220]} | {note} |"
 
 
+def _first_example(f: dict) -> str:
+    ce = (f.get("counterexamples") or [{}])[0]
+    if ce.get("call"):
+        return f"`{ce['call']}` gave `{ce['before']}` before the edit and `{ce['after']}` after it"
+    return _clean(f["evidence"])[:200]
+
+
+def story(data: dict) -> list[dict]:
+    """What was asked, what changed, what broke and what fixed it, in order and in plain words (FR-31).
+
+    Each step is {kind, text, id}. Kinds: asked, broke, fixed, open, accepted, checked, unchecked, asked_you, blocked.
+    """
+    steps = [{"kind": "asked", "text": _clean(p)[:400], "id": None} for p in data.get("prompt_text") or [] if str(p).strip()]
+    findings = sorted(data["findings"], key=lambda f: int(f["id"].split("-")[1]))
+    verified = {(f["file"], f["item"]): f for f in findings if f["kind"] == "verified" and f["state"] != "superseded"}
+    had_difference = {(f["file"], f["item"]) for f in findings if f["kind"] == "behavior_difference"}
+    for f in findings:
+        key, name = (f["file"], f["item"]), f"`{f['item']}` in {f['file']}"
+        if f["kind"] == "behavior_difference":
+            if f["status"] == ledger.FAILURE:
+                steps.append({"kind": "broke", "id": f["id"], "text": f"The edit to {name} broke it: {_clean(f['evidence'])[:200]}."})
+            else:
+                steps.append({"kind": "broke", "id": f["id"], "text": f"The edit to {name} changed what it returns: {_first_example(f)}."})
+            if f["state"] == "resolved":
+                ok = verified.get(key)
+                proof = f" The guard ran it again: {ok['evidence']}, all matching the original." if ok else ""
+                steps.append({"kind": "fixed", "id": f["id"], "text": f"Claude saw that example and revised {name}.{proof}"})
+            elif f["state"] == "superseded":
+                steps.append({"kind": "fixed", "id": f["id"], "text": f"Claude changed {name} again, and the guard re-checked the new version."})
+            elif f["state"] == "waived":
+                steps.append({"kind": "accepted", "id": f["id"], "text": f"You accepted the change to {name} with /legacyguard:waive."})
+            elif f["state"] == "open":
+                steps.append({"kind": "open", "id": f["id"], "text": f"{name} still behaves differently from the original. If you asked for that, accept it with /legacyguard:waive {f['id']} \"<reason>\"."})
+        elif f["kind"] == "verified" and f["state"] != "superseded" and key not in had_difference:
+            steps.append({"kind": "checked", "id": f["id"], "text": f"{name} changed, and old and new code agree: {f['evidence']}."})
+        elif f["kind"] == "untested" and f["state"] != "superseded":
+            why = _clean(f["evidence"]).replace("untested because: ", "").replace("untested because it ", "it ")[:160]
+            steps.append({"kind": "unchecked", "id": f["id"], "text": f"{name} changed but could not be checked by running it: {why}."})
+        elif f["kind"] == "contract_break":
+            how = {"not_applied": "You were asked first, and the edit did not happen.", "applied": "You were asked first and approved it.",
+                   "waived": "You accepted it with /legacyguard:waive.", "undone": "It was later undone.", "open": "It is in the code now and needs your decision."}.get(f["state"], "")
+            if f.get("last_decision") == "over_budget":
+                how = "You were not asked, because this session's prompt budget was used up."
+            steps.append({"kind": "asked_you" if f["state"] in ("not_applied", "applied") else "open" if f["state"] == "open" else "accepted", "id": f["id"],
+                          "text": f"An edit to {f['file']} would break something others rely on: {_clean(f['subject'])}. {how}".strip()})
+        elif f["kind"] == "frozen":
+            steps.append({"kind": "blocked" if f["state"] == "blocked" else "open" if f["state"] == "open" else "fixed", "id": f["id"],
+                          "text": f"{_clean(f['subject'])}. {outcome(f).capitalize()}."})
+    return steps
+
+
+STORY_LABEL = {"asked": "You asked", "broke": "What broke", "fixed": "What fixed it", "open": "Needs you", "accepted": "Accepted", "checked": "Checked",
+               "unchecked": "Not checked", "asked_you": "Asked you", "blocked": "Blocked"}
+
+
 def render(data: dict, cfg) -> str:
     c = counts(data)
     lines = [f"# LegacyGuard session report", "",
              f"Session `{data.get('session_id')}`. Mode **{cfg.mode}**. Baseline `{(data.get('baseline_commit') or 'none')[:10]}`.",
              f"Prompts used **{data['prompts_used']} of {cfg.budget}**. Claude wake-ups **{data['wakeups']}**. Edits seen {data.get('edits', 0)}.", ""]
+    steps = story(data)
+    if steps:
+        lines += ["## What happened", ""] + [f"- **{STORY_LABEL[st['kind']]}:** {st['text']}" for st in steps] + ["", "## Findings", ""]
     items = visible(data)
     if items:
         lines += ["| ID | Status | Subject | Evidence | Outcome |", "| --- | --- | --- | --- | --- |"]

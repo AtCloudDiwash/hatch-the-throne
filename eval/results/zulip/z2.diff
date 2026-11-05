@@ -1,0 +1,50 @@
+diff --git a/zerver/lib/user_agent.py b/zerver/lib/user_agent.py
+index abb90b6..377a88f 100644
+--- a/zerver/lib/user_agent.py
++++ b/zerver/lib/user_agent.py
+@@ -1,18 +1,32 @@
+-import re
++DIGITS = "0123456789"
++
++
++def _find_first_of(string: str, chars: str, start: int = 0) -> int:
++    for i in range(start, len(string)):
++        if string[i] in chars:
++            return i
++    return len(string)
++
+ 
+ # Warning: If you change this parsing, please test using
+ #   zerver/tests/test_decorators.py
+ # And extend zerver/tests/fixtures/user_agents_unique with any new test cases
+-pattern = re.compile(
+-    r"""^ (?P<name> [^/ ]* [^0-9/(]* )
+-    (/ (?P<version> [^/ ]* ))?
+-    ([ /] .*)?
+-    $""",
+-    re.VERBOSE,
+-)
+-
+-
+ def parse_user_agent(user_agent: str) -> dict[str, str]:
+-    match = pattern.match(user_agent)
+-    assert match is not None
+-    return match.groupdict()
++    # The name is the text before the first "/" or space. If a space
++    # comes first, the name continues through any following words,
++    # until a digit, "(" or "/" begins the version or other details.
++    name_end = _find_first_of(user_agent, " /")
++    if name_end < len(user_agent) and user_agent[name_end] == " ":
++        words_end = _find_first_of(user_agent, DIGITS + "/(", name_end)
++        if words_end < len(user_agent) and user_agent[words_end] != "/":
++            # A digit or "(" does not belong to the name, and neither
++            # does the word right before it.
++            words_end = user_agent.rfind(" ", name_end, words_end)
++        name_end = words_end
++
++    name = user_agent[:name_end]
++    version = None
++    if user_agent[name_end : name_end + 1] == "/":
++        version_start = name_end + 1
++        version = user_agent[version_start : _find_first_of(user_agent, " /", version_start)]
++    return {"name": name, "version": version}

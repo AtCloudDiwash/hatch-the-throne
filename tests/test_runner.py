@@ -397,3 +397,25 @@ def test_guessed_input_that_old_code_accepts_still_counts(svc):
     assert run_script("session_start", {"cwd": str(svc), "session_id": "s3", "source": "startup"}).returncode == 0
     r = run_diff(svc, "def h(x):\n    return str(x) + '!'\n", ["h"])
     assert r["h"].status == differ.DIFFERENT
+
+
+def test_missing_dependency_is_reported_as_that_not_as_a_new_function(svc):
+    """Found on Zulip: a module importing a library that is not installed was reported as 'new function'."""
+    src = "import a_library_that_is_not_installed\n\ndef g(n: int):\n    return n\n"
+    (svc / "dep.py").write_text(src)
+    commit_all(svc, "dep")
+    assert run_script("session_start", {"cwd": str(svc), "session_id": "s4", "source": "startup"}).returncode == 0
+    cfg = cfgmod.load_config(str(svc))
+    (svc / "dep.py").write_text(src.replace("return n", "return n + 1"))
+    t = differ.Target("dep.py", "g", "function", [{"name": "n", "annotation": "int", "default": None}], "h")
+    r = differ.run(cfg, str(baseline.baseline_dir(cfg)), str(svc), [t], harvest={})[0]
+    assert r.status == differ.UNTESTED
+    assert "could not run" in r.reason and "a_library_that_is_not_installed" in r.reason and "new function" not in r.reason
+
+
+def test_a_module_that_does_not_exist_yet_is_still_a_new_function(svc):
+    cfg = cfgmod.load_config(str(svc))
+    (svc / "fresh.py").write_text("def g(n: int):\n    return n\n")
+    t = differ.Target("fresh.py", "g", "function", [{"name": "n", "annotation": "int", "default": None}], "h")
+    r = differ.run(cfg, str(baseline.baseline_dir(cfg)), str(svc), [t], harvest={})[0]
+    assert r.status == differ.UNTESTED and "no old version" in r.reason

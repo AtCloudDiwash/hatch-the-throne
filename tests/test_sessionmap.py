@@ -230,3 +230,49 @@ def test_map_command(bill):
 def test_map_skill_is_wired():
     text = (PLUGIN / "skills/map/SKILL.md").read_text()
     assert 'lg.py" --skill map' in text and "disable-model-invocation: true" in text
+
+
+# ---- FR-31 story ----
+
+def test_story_tells_asked_broke_fixed(bill):
+    from guardlib import report
+    run_script("prompt_context", {"cwd": str(bill), "session_id": "sess1", "prompt": "Simplify the late fee calculation"})
+    change(bill, "billing/fees.py", GOOD, BAD)
+    cfg = cfgmod.load_config(str(bill))
+    steps = report.story(ledger.load(cfg.state_dir))
+    assert [s["kind"] for s in steps] == ["asked", "broke", "open"]
+    assert steps[0]["text"] == "Simplify the late fee calculation"
+    assert '`compute_late_fee(balance=Decimal("40.20"), rate=Decimal("0.025"))` gave `1.01` before the edit and `1.00` after it' in steps[1]["text"]
+    change(bill, "billing/fees.py", BAD, GOOD)
+    steps = report.story(ledger.load(cfg.state_dir))
+    assert [s["kind"] for s in steps] == ["asked", "broke", "fixed"]
+    assert "ran it again" in steps[2]["text"] and "inputs compared" in steps[2]["text"]
+
+
+def test_story_covers_unchecked_checked_and_asked_you(bill):
+    from guardlib import report
+    change(bill, "billing/tax.py", 'return Decimal("0.00")', 'return Decimal("0.00") + 0')
+    change(bill, "reports/aging.py", '"""Bucket and projected late fee for one invoice, read from the live database."""', '"""Bucket."""')
+    r = run_script("pre_edit", {"cwd": str(bill), "session_id": "sess1", "tool_name": "Edit", "tool_input": {
+        "file_path": str(bill / "billing/api/schemas.py"), "old_string": "    currency: str\n    status: str\n", "new_string": "    status: str\n"}})
+    assert json.loads(r.stdout)["hookSpecificOutput"]["permissionDecision"] == "ask"
+    stop(bill)
+    cfg = cfgmod.load_config(str(bill))
+    kinds = [s["kind"] for s in report.story(ledger.load(cfg.state_dir))]
+    assert kinds == ["checked", "unchecked", "asked_you"]
+    md = (bill / ".legacyguard/reports/sess1.md").read_text()
+    assert "## What happened" in md and "**Not checked:**" in md and "**Asked you:**" in md and "the edit did not happen" in md
+    html = (bill / ".legacyguard/reports/sess1.html").read_text()
+    assert '"story"' in html and "What happened" in html
+
+
+def test_story_never_says_safe_and_escapes_prompt(bill):
+    from guardlib import report
+    run_script("prompt_context", {"cwd": str(bill), "session_id": "sess1", "prompt": "<img src=x onerror=alert(1)> | fix it"})
+    change(bill, "billing/fees.py", GOOD, BAD)
+    cfg = cfgmod.load_config(str(bill))
+    data = ledger.load(cfg.state_dir)
+    text = " ".join(s["text"] for s in report.story(data))
+    assert " safe" not in text.lower()
+    html = sessionmap.render_html(sessionmap.build(cfg, data))
+    assert "<img src=x" not in html

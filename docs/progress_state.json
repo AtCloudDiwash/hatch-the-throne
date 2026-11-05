@@ -1,6 +1,6 @@
 {
- "current": "Done: M0 to M9 worked through; see docs/FINAL_REPORT.md",
- "next": "The team runs docs/MANUAL_CHECKS.md, MC-1 to MC-8.",
+ "current": "M11 / T11.2",
+ "next": "Session story.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -510,6 +510,34 @@
    "dl": [
     "DL-078"
    ]
+  },
+  "T10.1": {
+   "milestone": "M10",
+   "title": "Shell-edit checks (FR-13): half-built, set aside",
+   "status": "in_progress",
+   "evidence": "Approved by the team (\"Build FR-13\"), then paused when the team asked to slow down and switched to the Zulip demo.\nThe code is not in any commit. It is kept in git stash: stash@{0} \"FR-13 shell-edit checks, half-built (M10), set aside 2026-11-05\".\nWritten so far: a reader for shell commands, hooks that refuse shell writes to frozen and guard files, and a check after each shell command. No tests for it yet.\nTo resume: git stash pop, then write the tests first."
+  },
+  "T11.1": {
+   "milestone": "M11",
+   "title": "Zulip setup: what runs here, and fixes it exposed",
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_index_parts.py::test_mock_patch_decorator_is_not_a_route tests/test_runner.py -k 'generated or harvested or unchanged'; git stash list | cut -c1-80\n....                                                                     [100%]\n4 passed, 47 deselected in 2.78s\nstash@{0}: On main: FR-13 shell-edit checks, half-built (M10), set aside 2026-11\n(exit 0)\nZulip at 9cde567 (2026-11-03), Apache 2.0. Backend zerver/: 1,684 Python files, 356,627 lines.\n$ uv sync --frozen --only-group prod  -> failed building pyicu (needs ICU system library)\nInstalled 196 of 199 pinned packages; skipped pyicu, uwsgi, python-ldap.\ndjango.setup() fails: ModuleNotFoundError: No module named ldap. Zulip tests need PostgreSQL, so no test map.\n47 zerver/lib modules import without the database layer.\n$ lg.py index --no-tests  -> real 2.06 s; Co-change pairs: 78\nDry run, one careless edit to emoji_to_hex_codepoint: post_edit exit 2 in 0.43 s, \"149 of 150 inputs differ\"; Stop audit 1.06 s.",
+   "dl": [
+    "DL-079",
+    "DL-080",
+    "DL-081",
+    "DL-082"
+   ]
+  },
+  "T11.2": {
+   "milestone": "M11",
+   "title": "Session story in the report and the map (FR-31)",
+   "status": "pending"
+  },
+  "T11.3": {
+   "milestone": "M11",
+   "title": "Zulip simulation: three change requests through Claude",
+   "status": "pending"
   }
  },
  "summaries": {

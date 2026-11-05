@@ -1,0 +1,13 @@
+diff --git a/zerver/lib/emoji_utils.py b/zerver/lib/emoji_utils.py
+index 3fd693b..8e756fa 100644
+--- a/zerver/lib/emoji_utils.py
++++ b/zerver/lib/emoji_utils.py
+@@ -18,7 +18,7 @@ def unqualify_emoji(emoji: str) -> str:
+ 
+ 
+ def emoji_to_hex_codepoint(emoji: str) -> str:
+-    return "-".join(f"{ord(c):04x}" for c in emoji)
++    return "-".join(hex(ord(c))[2:].zfill(4) for c in emoji)
+ 
+ 
+ def hex_codepoint_to_emoji(hex: str) -> str:

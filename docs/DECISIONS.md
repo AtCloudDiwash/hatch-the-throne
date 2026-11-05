@@ -196,3 +196,13 @@ Each entry below records a default chosen by the team for the one-pass M0–M8 b
 - **Reasoning:** The data already exists in `index.db` and `session.json`, so this is rendering with no new analysis. A whole-repo graph would reintroduce D-006. Marking guessed edges keeps a static guess from posing as proof (D-005).
 - **Trade-offs:** Name matching can show a wrong caller or miss a dynamic one. Scheduled jobs are not indexed, so only API routes are labeled as entry points.
 - **Status:** Confirmed (approved for M9)
+
+## D-039 Reserved: shell-edit checks (FR-13)
+- **Status:** Deferred. The team approved building FR-13 on 2026-11-05, then paused it. The half-built code is in `git stash` and its design decision will be written here when it resumes.
+
+## D-040 Session story, and a real-repo simulation on Zulip
+- **Context:** The team asked to run the guard on Zulip's backend as a real-world simulation, and for a final output a developer can read: what was asked, what broke, what fixed it. Approved by that request on 2026-11-05 (M11).
+- **Decision:** (1) The Markdown report and the session map open with "What happened": the request, each thing that broke with one example, what fixed it, what could not be checked, and what needs the developer. It is built only from the findings ledger and the stored prompt. (2) `eval/run_zulip.py` runs change requests through `claude -p` on a Zulip checkout with the guard on and keeps the report, map and code change for each.
+- **Reasoning:** The findings table is exact but reads like a log. The same facts in order, in plain words, are what a developer wants first. The story adds no new judgment: every line maps to a finding with exactly one of the five statuses.
+- **Trade-offs:** On this Mac Zulip's test suite and database layer cannot run, so the map cannot say which callers tests reach, and only modules that import without the database can be compared by running them.
+- **Status:** Confirmed (approved for M11)

@@ -14,6 +14,8 @@ from runner import lg_codec
 
 DB_PARAM_NAMES = {"conn", "connection", "cursor", "cur", "db", "session", "engine", "transaction", "tx"}
 MAX_GENERATED = 150
+# Letters, digits and the punctuation that parsers branch on. A narrower alphabet missed every "/" case on a real repo.
+TEXT_ALPHABET = "abcdefgh XYZ-_0123456789/.:()@,;=+#%&?!'\"[]{}<>*~"
 
 
 def _hypothesis(state_dir: Path):
@@ -38,11 +40,11 @@ def _strategy_for(annotation: str | None, default: str | None, st):
         if ann == "Decimal":
             base = st.one_of(money, rate)
         elif ann == "int":
-            base = st.integers(-1000, 1000)
+            base = st.one_of(st.integers(-1000, 1000), st.integers(-2**40, 2**40))
         elif ann == "float":
             base = st.floats(-1e6, 1e6, allow_nan=False, allow_infinity=False)
         elif ann == "str":
-            base = st.text("abcdefgh XYZ-_0123", max_size=12)
+            base = st.text(TEXT_ALPHABET, max_size=16)
         elif ann == "bool":
             base = st.booleans()
         elif ann == "date":

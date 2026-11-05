@@ -153,7 +153,10 @@ def run_function(spec, root_real):
     except GuardBlocked as exc:
         return {"status": "import_blocked", "reason": str(exc)}
     except (ImportError, AttributeError) as exc:
-        kind = "missing" if isinstance(exc, AttributeError) or isinstance(exc, ModuleNotFoundError) else "import_error"
+        # "missing" means the function or its own module is not there. A module that exists but cannot import
+        # one of its dependencies is an import error, and must be reported as that.
+        own = isinstance(exc, ModuleNotFoundError) and exc.name is not None and (module == exc.name or module.startswith(exc.name + "."))
+        kind = "missing" if isinstance(exc, AttributeError) or own else "import_error"
         return {"status": kind, "reason": f"{type(exc).__name__}: {exc}"}
     except BaseException as exc:  # noqa: BLE001 - target module code can raise anything at import
         return {"status": "import_error", "reason": f"{type(exc).__name__}: {exc}"}
