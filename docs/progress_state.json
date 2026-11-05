@@ -1,6 +1,6 @@
 {
- "current": "M9 / T9.2",
- "next": "HTML map at Stop and the map command.",
+ "current": "M9 / T9.3",
+ "next": "Live check and docs.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -489,12 +489,17 @@
    "dl": [
     "DL-075",
     "DL-076"
-   ]
+   ],
+   "commit": "32a195d"
   },
   "T9.2": {
    "milestone": "M9",
    "title": "HTML session map, written at Stop, and map skill (FR-30)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_sessionmap.py -k 'html or repo_text or stop_ or map_failure or map_command or map_skill'; claude plugin validate ./legacyguard | tail -1; ls -la eval/work/mapdemo/billing-api/.legacyguard/reports | tail -2 | cut -c30-\n.......                                                                  [100%]\n7 passed, 10 deselected in 6.67s\n✔ Validation passed\nya  staff  20628 Nov  5 12:54 demo.html\nya  staff   1437 Nov  5 12:54 demo.md\n(exit 0)\nChecked in the in-app browser on a sample billing-api session (eval/work/mapdemo): 14 nodes, 14 edges, 6 of them name-only. Clicking aging_bucket lit 5 nodes and dimmed 9. Dark colors, the fade checkbox, horizontal scroll inside the map box and the stacked narrow layout all worked. No page-level overflow.",
+   "dl": [
+    "DL-077"
+   ]
   },
   "T9.3": {
    "milestone": "M9",

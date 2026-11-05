@@ -103,6 +103,7 @@ flowchart LR
   subgraph M9
     DL075["DL-075 Add a session map as milestone M9"]
     DL076["DL-076 Map model and a text tree of the blast radi…"]
+    DL077["DL-077 Session map: one offline HTML file per sess…"]
   end
   DL015 -->|caused| DL060
   DL058 -->|caused| DL060
@@ -137,14 +138,40 @@ flowchart LR
 | M6 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | M7 | 2 | 2 | 1 | 1 | 0 | 0 | 3 | 9 |
 | M8 | 2 | 2 | 1 | 1 | 1 | 1 | 0 | 8 |
-| M9 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 2 |
-| **All** | **38** | **8** | **3** | **18** | **1** | **1** | **7** | **76** |
+| M9 | 2 | 0 | 0 | 1 | 0 | 0 | 0 | 3 |
+| **All** | **39** | **8** | **3** | **18** | **1** | **1** | **7** | **77** |
 
 ## Entries, newest first
 
+### DL-077 · Session map: one offline HTML file per session
+
+**feature** · M9 · T9.2 · 2026-11-05T12:57-06:00 · commit `pending`
+
+- **Context:** FR-30: the developer's second read, for when something is flagged.
+- **What:** sessionmap.render_html writes .legacyguard/reports/<session>.html with inline CSS and JS: status counts, a left-to-right map (changed functions, then callers by step), a details panel with the counterexample or the untested reason plus the waive and pin commands, and the findings table. The Stop hook writes it after the Markdown report, and /legacyguard:map writes and opens it.
+- **Why:** Columns laid out deterministically read the same every time and need no library. The map is written inside a try block, so a map bug can never cost the developer the report.
+- **Impact:** Stop's summary line now ends with the map's path. The map skill is developer-only, because it opens a browser. Colors mean the five statuses or test reach; there is no score and the page never says safe.
+- **Files:** `legacyguard/guardlib/sessionmap.py`, `legacyguard/scripts/stop_audit.py`, `legacyguard/scripts/lg_more.py`, `legacyguard/skills/map/SKILL.md`, `legacyguard/guardlib/report.py`
+- **Requirements:** `FR-30`, `FR-18`, `FR-19`, `FR-22`, `NFR-06`, `NFR-11`
+- **Decisions:** `D-038`
+- **Open questions:** none
+- **Tests:** `tests/test_sessionmap.py::test_stop_writes_the_map_next_to_the_report`, `tests/test_sessionmap.py::test_a_map_failure_never_costs_the_report`, `tests/test_sessionmap.py::test_repo_text_cannot_break_out_of_the_page`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_sessionmap.py -k 'html or repo_text or stop_ or map_failure or map_command or map_skill'; claude plugin validate ./legacyguard | tail -1; ls -la eval/work/mapdemo/billing-api/.legacyguard/reports | tail -2 | cut -c30-
+.......                                                                  [100%]
+7 passed, 10 deselected in 6.67s
+✔ Validation passed
+ya  staff  20628 Nov  5 12:54 demo.html
+ya  staff   1437 Nov  5 12:54 demo.md
+(exit 0)
+Checked in the in-app browser on a sample billing-api session (eval/work/mapdemo): 14 nodes, 14 edges, 6 of them name-only. Clicking aging_bucket lit 5 nodes and dimmed 9. Dark colors, the fade checkbox, horizontal scroll inside the map box and the stacked narrow layout all worked. No page-level overflow.
+```
+
 ### DL-076 · Map model and a text tree of the blast radius
 
-**feature** · M9 · T9.1 · 2026-11-05T12:57-06:00 · commit `pending`
+**feature** · M9 · T9.1 · 2026-11-05T12:57-06:00 · commit `32a195d`
 
 - **Context:** FR-30: show what a change reaches, from data the guard already has.
 - **What:** guardlib/sessionmap.build joins the findings ledger with the impact tables: each changed function with its status, its callers up to 3 hops with whether any test reaches them, API routes, and edges. Impact callers now record which function they call, and routes record their handler. /legacyguard:impact also prints the radius as an indented tree.
@@ -176,7 +203,7 @@ compute_late_fee  billing/fees.py
 
 ### DL-075 · Add a session map as milestone M9
 
-**decision** · M9 · T9.1 · 2026-11-05T12:57-06:00 · commit `pending`
+**decision** · M9 · T9.1 · 2026-11-05T12:57-06:00 · commit `32a195d`
 
 - **Context:** After the one-pass run, the team asked for a map or tree of what changed and its blast radius, and approved building it with the words Build the map.
 - **What:** Recorded D-038 and FR-30, added M9 with tasks T9.1 to T9.3 to the plan, and extended the dev log map's lanes to M9.

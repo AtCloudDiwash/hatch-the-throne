@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M9 / T9.2
-- **Next step:** HTML map at Stop and the map command.
+- **Current milestone and task:** M9 / T9.3
+- **Next step:** Live check and docs.
 
 ## Status
 
@@ -54,8 +54,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T8.2 | M8 | done | [x] Live E2E-1 to E2E-8 | DL-068 | 5a50665 |
 | T8.3 | M8 | skipped | [-] Dry-run steps, backup video, names and roles | DL-071 | 87396d3 |
 | T8.4 | M8 | done | [x] Final report | DL-072 DL-073 DL-074 | 382d096 |
-| T9.1 | M9 | done | [x] Map data and impact text tree (FR-30) | DL-075 DL-076 |  |
-| T9.2 | M9 | pending | [ ] HTML session map, written at Stop, and map skill (FR-30) |  |  |
+| T9.1 | M9 | done | [x] Map data and impact text tree (FR-30) | DL-075 DL-076 | 32a195d |
+| T9.2 | M9 | done | [x] HTML session map, written at Stop, and map skill (FR-30) | DL-077 |  |
 | T9.3 | M9 | pending | [ ] Live check, browser check and docs for the map |  |  |
 
 ## Milestone summaries
@@ -661,5 +661,18 @@ compute_late_fee  billing/fees.py
    |- invoice_aging  billing/api/reports.py  [names]  no test reaches it  <- GET /reports/aging/{invoice_id}
    `- aging_report  reports/aging.py  [names]  no test reaches it
 (exit 0)
+```
+
+### T9.2 HTML session map, written at Stop, and map skill (FR-30) (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_sessionmap.py -k 'html or repo_text or stop_ or map_failure or map_command or map_skill'; claude plugin validate ./legacyguard | tail -1; ls -la eval/work/mapdemo/billing-api/.legacyguard/reports | tail -2 | cut -c30-
+.......                                                                  [100%]
+7 passed, 10 deselected in 6.67s
+✔ Validation passed
+ya  staff  20628 Nov  5 12:54 demo.html
+ya  staff   1437 Nov  5 12:54 demo.md
+(exit 0)
+Checked in the in-app browser on a sample billing-api session (eval/work/mapdemo): 14 nodes, 14 edges, 6 of them name-only. Clicking aging_bucket lit 5 nodes and dimmed 9. Dark colors, the fade checkbox, horizontal scroll inside the map box and the stacked narrow layout all worked. No page-level overflow.
 ```
 
