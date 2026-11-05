@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M4 / T4.6
-- **Next step:** Frozen and scope rules.
+- **Current milestone and task:** M4 / live check
+- **Next step:** Live hook check on billing-api, then M5.
 
 ## Status
 
@@ -33,8 +33,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T4.2 | M4 | done | [x] UserPromptSubmit context (FR-11) | DL-040 | 7ca69c9 |
 | T4.3 | M4 | done | [x] Virtual apply and symbol diff (FR-12) | DL-041 | 5658c0e |
 | T4.4 | M4 | done | [x] Contract and test-integrity checks (FR-12, FR-17) | DL-042 | 19961bb |
-| T4.5 | M4 | done | [x] Decision policy, modes, budget (FR-12, FR-20, FR-23) | DL-043 |  |
-| T4.6 | M4 | pending | [ ] Frozen and scope rules |  |  |
+| T4.5 | M4 | done | [x] Decision policy, modes, budget (FR-12, FR-20, FR-23) | DL-043 | cb7934b |
+| T4.6 | M4 | done | [x] Frozen and scope rules | DL-044 DL-045 |  |
 | T5.1 | M5 | pending | [ ] Runner subprocesses (FR-14) |  |  |
 | T5.2 | M5 | pending | [ ] Network block (FR-14) |  |  |
 | T5.3 | M5 | pending | [ ] Input sources (FR-14) |  |  |
@@ -358,6 +358,15 @@ $ .venv/bin/pytest -q tests/test_pre_edit.py -k 'dropped or openapi or route_rem
 $ .venv/bin/pytest -q tests/test_pre_edit.py -k 'policy or fixture or fourth or waiver or mode_change or fast'
 ................                                                         [100%]
 16 passed, 31 deselected in 6.91s
+(exit 0)
+```
+
+### T4.6 Frozen and scope rules (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'frozen or outside or guard_state or old_string or unparsable or invalid_config'
+........                                                                 [100%]
+8 passed, 39 deselected in 5.44s
 (exit 0)
 ```
 

@@ -1,6 +1,6 @@
 {
- "current": "M4 / T4.6",
- "next": "Frozen and scope rules.",
+ "current": "M4 / live check",
+ "next": "Live hook check on billing-api, then M5.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -267,12 +267,18 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'policy or fixture or fourth or waiver or mode_change or fast'\n................                                                         [100%]\n16 passed, 31 deselected in 6.91s\n(exit 0)",
    "dl": [
     "DL-043"
-   ]
+   ],
+   "commit": "cb7934b"
   },
   "T4.6": {
    "milestone": "M4",
    "title": "Frozen and scope rules",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'frozen or outside or guard_state or old_string or unparsable or invalid_config'\n........                                                                 [100%]\n8 passed, 39 deselected in 5.44s\n(exit 0)",
+   "dl": [
+    "DL-044",
+    "DL-045"
+   ]
   },
   "T5.1": {
    "milestone": "M5",

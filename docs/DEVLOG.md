@@ -60,6 +60,8 @@ flowchart LR
     DL041["DL-041 Virtual apply and symbol diff"]
     DL042["DL-042 Contract and test-integrity checks"]
     DL043["DL-043 Decision policy, modes and prompt budget"]
+    DL044["DL-044 Frozen files denied in every mode; out-of-s…"]
+    DL045["DL-045 Claude cannot edit the guard's own state fi…"]
   end
 ```
 
@@ -71,14 +73,58 @@ flowchart LR
 | M1 | 4 | 2 | 1 | 0 | 0 | 0 | 0 | 7 |
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | M3 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
-| M4 | 5 | 1 | 0 | 0 | 0 | 0 | 0 | 6 |
-| **All** | **21** | **3** | **1** | **14** | **0** | **0** | **4** | **43** |
+| M4 | 6 | 2 | 0 | 0 | 0 | 0 | 0 | 8 |
+| **All** | **22** | **4** | **1** | **14** | **0** | **0** | **4** | **45** |
 
 ## Entries, newest first
 
+### DL-045 · Claude cannot edit the guard's own state files
+
+**change** · M4 · T4.6 · 2026-11-05T11:51-06:00 · commit `pending`
+
+- **Context:** The model must not grade its own output. An Edit to waivers.json or config.yaml would let Claude waive its own findings or switch to advisory.
+- **What:** PreToolUse denies Edit and Write under .legacyguard/ in every mode. waive, pin, mode and index skills set disable-model-invocation.
+- **Why:** CLAUDE.md constraint 8. This is an extension beyond the written FR list, so it is logged here.
+- **Impact:** Known gap: a Bash command could still write these files, because Bash is not hooked in the MVP (FR-13 is Future). Listed in the final report's limitations.
+- **Files:** `legacyguard/scripts/pre_edit.py`
+- **Requirements:** `FR-12`, `FR-24`
+- **Decisions:** `D-018`
+- **Open questions:** none
+- **Tests:** `tests/test_pre_edit.py::test_guard_state_is_protected_in_every_mode`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'frozen or outside or guard_state or old_string or unparsable or invalid_config'
+........                                                                 [100%]
+8 passed, 39 deselected in 5.44s
+(exit 0)
+```
+
+### DL-044 · Frozen files denied in every mode; out-of-scope edits get a notice
+
+**feature** · M4 · T4.6 · 2026-11-05T11:51-06:00 · commit `pending`
+
+- **Context:** D-034 denies frozen files even in advisory. D-010 says out-of-scope edits get a warning and no check.
+- **What:** pre_edit.py denies frozen files, notifies once per out-of-scope file, and fails open on invalid config.
+- **Why:** A frozen file is an explicit developer rule.
+- **Impact:** Deviation from FR-23's advisory cell, following D-034.
+- **Files:** `legacyguard/scripts/pre_edit.py`
+- **Requirements:** `FR-12`, `FR-23`
+- **Decisions:** `D-034`, `D-010`
+- **Open questions:** `OQ-N8`
+- **Tests:** `tests/test_pre_edit.py::test_frozen_denied_in_every_mode`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'frozen or outside or guard_state or old_string or unparsable or invalid_config'
+........                                                                 [100%]
+8 passed, 39 deselected in 5.44s
+(exit 0)
+```
+
 ### DL-043 · Decision policy, modes and prompt budget
 
-**feature** · M4 · T4.5 · 2026-11-05T11:51-06:00 · commit `pending`
+**feature** · M4 · T4.5 · 2026-11-05T11:51-06:00 · commit `cb7934b`
 
 - **Context:** D-013, D-018 and the TESTING.md fixture table define who gets interrupted and when.
 - **What:** policy.py decides allow, ask or deny from mode, prompts used and waiver. pre_edit.py applies it, records findings once, and sends context with every ask. Risk signals are context only, and sent once per symbol. A waiver holds only for the same code hash.
