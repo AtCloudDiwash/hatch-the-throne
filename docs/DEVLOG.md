@@ -95,6 +95,7 @@ flowchart LR
     DL066["DL-066 Correction: DL-064 replaced DL-063"]
     DL067["DL-067 Timeline lanes position dots per milestone;…"]
     DL068["DL-068 E2E-1 to E2E-7 pass live through claude -p"]
+    DL071["DL-071 Interactive-terminal checks moved to MANUAL…"]
   end
   DL015 -->|caused| DL060
   DL058 -->|caused| DL060
@@ -108,6 +109,7 @@ flowchart LR
   DL069 -.- DL068
   DL070 -.- DL061
   DL070 -.- DL064
+  DL071 -.- DL018
 ```
 
 ## Summary
@@ -122,14 +124,48 @@ flowchart LR
 | M5 | 6 | 0 | 0 | 1 | 0 | 0 | 0 | 7 |
 | M6 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | M7 | 2 | 2 | 1 | 1 | 0 | 0 | 3 | 9 |
-| M8 | 1 | 2 | 0 | 1 | 0 | 0 | 0 | 4 |
-| **All** | **36** | **8** | **2** | **17** | **0** | **0** | **7** | **70** |
+| M8 | 1 | 2 | 0 | 1 | 1 | 0 | 0 | 5 |
+| **All** | **36** | **8** | **2** | **17** | **1** | **0** | **7** | **71** |
 
 ## Entries, newest first
 
+### DL-071 · Interactive-terminal checks moved to MANUAL_CHECKS.md
+
+**fallback** · M8 · T8.3 · 2026-11-05T12:26-06:00 · commit `pending`
+
+- **Context:** The build prompt's fallback: anything that needs a human at an interactive terminal is written as numbered steps, and the run continues.
+- **What:** MC-1 prompt label, MC-2 plugin panels, MC-3 live API key warning, MC-4 visibility of wake-ups, MC-5 waive and pin by hand, MC-6 rehearsal and video, MC-7 team decisions. Commands were also checked live with claude -p where possible: mode changes config, waive reports an unknown ID, status prints.
+- **Why:** A headless run cannot see what a developer sees.
+- **Impact:** T8.3 is marked skipped for rehearsal and video. Its script, docs/DEMO_SCRIPT.md, is written. Product name stays legacyguard (D-027); OQ-N10, N11 and N12 stay open.
+- **Files:** `docs/MANUAL_CHECKS.md`, `docs/DEMO_SCRIPT.md`, `docs/OPEN_QUESTIONS.md`, `README.md`, `CLAUDE.md`
+- **Requirements:** `FR-12`, `FR-22`, `NFR-10`
+- **Decisions:** `D-027`
+- **Open questions:** `OQ-B5`, `OQ-N10`, `OQ-N11`, `OQ-N12`
+- **Tests:** none
+- **Related:** `DL-018`
+- **Evidence:**
+
+```text
+Test map: 557 test-function pairs; suite status: ok.
+### /legacyguard:mode strict
+Mode is now strict. It applies to the next edit.
+### /legacyguard:waive LG-9 "finance asked for it"
+Shell command failed for pattern "!`python3 "/Users/diwashkuskusmiya/Desktop/Life Lane/Projects/Hatchathon/legacyguard/scripts/lg.py" waive "LG-9" "finance asked for it" 2>&1`": [s
+LG-9: no such finding in this session. /legacyguard:status lists them.
+### /legacyguard:status
+Session `612e99e6-2331-4bec-b2da-14e5334861c7`. Mode **strict**. Baseline `525f41557a`.
+Prompts used **0 of 3**. Claude wake-ups **0**. Edits seen 0.
+
+No changes to guarded code were found this session.
+
+Limits: the behavioral diff compares return values and exception type and message, not side effects such as database or file writes (D-029). Edits made through shell commands are o
+3:mode: strict
+Not done, because each needs a person: timed rehearsal, backup video, pitch lead, team roles, GitHub org (MC-6, MC-7).
+```
+
 ### DL-070 · Report the wake-up miss and change no signals
 
-**decision** · M7 · T7.4 · 2026-11-05T12:26-06:00 · commit `pending`
+**decision** · M7 · T7.4 · 2026-11-05T12:26-06:00 · commit `7f25cbf`
 
 - **Context:** T7.4 and D-013: if targets are missed, downgrade signals from ask to context, starting with history-only signals, but never downgrade evidence.
 - **What:** Prompts 0.21 per 10 edits (met), wrong blocks 0 (met), wake-ups 1.27 per 20 edits (missed). Wake-ups are evidence findings, and no ask signal is over budget, so D-013 allows no downgrade. The earlier fix for invalid guessed inputs stays.

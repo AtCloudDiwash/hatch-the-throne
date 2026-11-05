@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M8 / T8.3
-- **Next step:** Demo steps and manual checks.
+- **Current milestone and task:** M8 / T8.4
+- **Next step:** Final report.
 
 ## Status
 
@@ -49,10 +49,10 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T7.1 | M7 | done | [x] Backtest harness (FR-28) | DL-058 DL-061 | 35253d5 |
 | T7.2 | M7 | done | [x] Seeded bugs (FR-28) | DL-062 | 03e727b |
 | T7.3 | M7 | done | [x] Guard on/off (FR-29) | DL-059 DL-060 DL-069 | df2f4cb |
-| T7.4 | M7 | done | [x] Budget check (D-013) | DL-063 DL-064 DL-070 | 0389a9e |
+| T7.4 | M7 | done | [x] Budget check (D-013) | DL-063 DL-064 DL-070 | 7f25cbf |
 | T8.1 | M8 | done | [x] Pin minimum Claude Code version (NFR-10) | DL-065 DL-066 DL-067 | 6bf8ad6 |
 | T8.2 | M8 | done | [x] Live E2E-1 to E2E-8 | DL-068 | 5a50665 |
-| T8.3 | M8 | pending | [ ] Dry-run steps, backup video, names and roles |  |  |
+| T8.3 | M8 | skipped | [-] Dry-run steps, backup video, names and roles | DL-071 |  |
 | T8.4 | M8 | pending | [ ] Final report |  |  |
 
 ## Milestone summaries
@@ -598,5 +598,25 @@ E2E-8 offline: tests/test_session_start.py::test_api_key_warning; live is MC-3
 (exit 0)
 All five hooks fired in the E2E-1 debug log. No guard.log errors in any E2E repo. Largest additionalContext in the E2E debug logs: 1,371 characters.
 E2E-1 total live runs: 3 (2 under T5.6, in which Sonnet avoided the trap, then this one). That is 1 over the cap of 1 run plus 1 retry.
+```
+
+### T8.3 Dry-run steps, backup video, names and roles (skipped)
+
+```text
+Test map: 557 test-function pairs; suite status: ok.
+### /legacyguard:mode strict
+Mode is now strict. It applies to the next edit.
+### /legacyguard:waive LG-9 "finance asked for it"
+Shell command failed for pattern "!`python3 "/Users/diwashkuskusmiya/Desktop/Life Lane/Projects/Hatchathon/legacyguard/scripts/lg.py" waive "LG-9" "finance asked for it" 2>&1`": [s
+LG-9: no such finding in this session. /legacyguard:status lists them.
+### /legacyguard:status
+Session `612e99e6-2331-4bec-b2da-14e5334861c7`. Mode **strict**. Baseline `525f41557a`.
+Prompts used **0 of 3**. Claude wake-ups **0**. Edits seen 0.
+
+No changes to guarded code were found this session.
+
+Limits: the behavioral diff compares return values and exception type and message, not side effects such as database or file writes (D-029). Edits made through shell commands are o
+3:mode: strict
+Not done, because each needs a person: timed rehearsal, backup video, pitch lead, team roles, GitHub org (MC-6, MC-7).
 ```
 

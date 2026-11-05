@@ -1,6 +1,6 @@
 {
- "current": "M8 / T8.3",
- "next": "Demo steps and manual checks.",
+ "current": "M8 / T8.4",
+ "next": "Final report.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -435,7 +435,7 @@
     "DL-064",
     "DL-070"
    ],
-   "commit": "0389a9e"
+   "commit": "7f25cbf"
   },
   "T8.1": {
    "milestone": "M8",
@@ -462,7 +462,11 @@
   "T8.3": {
    "milestone": "M8",
    "title": "Dry-run steps, backup video, names and roles",
-   "status": "pending"
+   "status": "skipped",
+   "evidence": "Test map: 557 test-function pairs; suite status: ok.\n### /legacyguard:mode strict\nMode is now strict. It applies to the next edit.\n### /legacyguard:waive LG-9 \"finance asked for it\"\nShell command failed for pattern \"!`python3 \"/Users/diwashkuskusmiya/Desktop/Life Lane/Projects/Hatchathon/legacyguard/scripts/lg.py\" waive \"LG-9\" \"finance asked for it\" 2>&1`\": [s\nLG-9: no such finding in this session. /legacyguard:status lists them.\n### /legacyguard:status\nSession `612e99e6-2331-4bec-b2da-14e5334861c7`. Mode **strict**. Baseline `525f41557a`.\nPrompts used **0 of 3**. Claude wake-ups **0**. Edits seen 0.\n\nNo changes to guarded code were found this session.\n\nLimits: the behavioral diff compares return values and exception type and message, not side effects such as database or file writes (D-029). Edits made through shell commands are o\n3:mode: strict\nNot done, because each needs a person: timed rehearsal, backup video, pitch lead, team roles, GitHub org (MC-6, MC-7).",
+   "dl": [
+    "DL-071"
+   ]
   },
   "T8.4": {
    "milestone": "M8",
