@@ -2,16 +2,16 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M0 / T0.2
-- **Next step:** Measure runnable share.
+- **Current milestone and task:** M0 / T0.3
+- **Next step:** Hook behavior spike.
 
 ## Status
 
 | Task | Milestone | Status | Title | Dev log | Commit |
 | --- | --- | --- | --- | --- | --- |
 | T0.0 | M0 | done | [x] Setup: docs, progress, dev log tools, default decisions | DL-001 DL-002 DL-003 DL-004 DL-005 DL-006 DL-007 DL-008 DL-009 DL-010 DL-011 DL-012 DL-013 DL-014 DL-015 | 121c203 |
-| T0.1 | M0 | done | [x] django-oscar on SQLite (OQ-B1) | DL-016 |  |
-| T0.2 | M0 | pending | [ ] Runnable-function share (OQ-B1) |  |  |
+| T0.1 | M0 | done | [x] django-oscar on SQLite (OQ-B1) | DL-016 | b9dcf7d |
+| T0.2 | M0 | done | [x] Runnable-function share (OQ-B1) | DL-017 |  |
 | T0.3 | M0 | pending | [ ] Hook behavior check (OQ-B5, NFR-10) |  |  |
 | T0.4 | M0 | pending | [ ] Plan usage of headless runs (OQ-N6) |  |  |
 | T1.1 | M1 | pending | [ ] Manifest and wiring |  |  |
@@ -72,5 +72,13 @@ $ .venv/bin/pytest -q tests/tools
 $ DATABASE_ENGINE=django.db.backends.sqlite3 DATABASE_NAME=:memory: pytest tests -q -n 4
 7 failed, 1803 passed, 2 skipped, 3721 warnings, 104 subtests passed in 69.07s (0:01:09)
 FAILED: 3 checkout ThankYouView, 2 catalogue category moves, 2 concurrent order placement. None in offer or basket pricing.
+```
+
+### T0.2 Runnable-function share (OQ-B1) (done)
+
+```text
+$ python spikes/t02_runnable.py   (in the oscar checkout, DB dummy backend)
+{"total_defs": 367, "returned_value": 28, "ran_including_app_exceptions": 142, "share_returned": 0.076, "share_ran": 0.387,
+ "by_kind": {"model-method": {"noinstance": 159, "raises": 33, "db": 4, "ok": 5}, "plain-method": {"noinstance": 35, "raises": 25, "ok": 18}, "module-level": {"raises": 18}, "view/form-method": {"noinstance": 24, "ok": 5, "raises": 38, "db": 3}}}
 ```
 

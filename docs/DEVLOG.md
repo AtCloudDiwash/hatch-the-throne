@@ -25,6 +25,7 @@ flowchart LR
     DL014["DL-014 Give the project its own git repo and gener…"]
     DL015["DL-015 Dev log tooling, progress tracking and thei…"]
     DL016["DL-016 django-oscar's test suite runs on SQLite"]
+    DL017["DL-017 Only 7.6% of oscar offer/basket functions r…"]
   end
 ```
 
@@ -32,14 +33,35 @@ flowchart LR
 
 | Milestone | feature | change | fix | decision | fallback | blocked | spike | Total |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| M0 | 1 | 0 | 0 | 14 | 0 | 0 | 1 | 16 |
-| **All** | **1** | **0** | **0** | **14** | **0** | **0** | **1** | **16** |
+| M0 | 1 | 0 | 0 | 14 | 0 | 0 | 2 | 17 |
+| **All** | **1** | **0** | **0** | **14** | **0** | **0** | **2** | **17** |
 
 ## Entries, newest first
 
+### DL-017 · Only 7.6% of oscar offer/basket functions return a value in isolation
+
+**spike** · M0 · T0.2 · 2026-11-05T11:25-06:00 · commit `pending`
+
+- **Context:** OQ-B1 asked what share of real functions the behavioral diff can call.
+- **What:** spikes/t02_runnable.py tried all 367 defs with the DB disabled, sockets blocked and naive inputs.
+- **Why:** The honest share sets expectations for the backtest before any numbers are reported.
+- **Impact:** Most oscar functions will come out Untested. Catch rate will be limited, and the final report must say why.
+- **Files:** `spikes/t02_runnable.py`, `docs/OPEN_QUESTIONS.md`
+- **Requirements:** `FR-14`, `FR-28`
+- **Decisions:** none
+- **Open questions:** `OQ-B1`
+- **Tests:** none
+- **Evidence:**
+
+```text
+$ python spikes/t02_runnable.py   (in the oscar checkout, DB dummy backend)
+{"total_defs": 367, "returned_value": 28, "ran_including_app_exceptions": 142, "share_returned": 0.076, "share_ran": 0.387,
+ "by_kind": {"model-method": {"noinstance": 159, "raises": 33, "db": 4, "ok": 5}, "plain-method": {"noinstance": 35, "raises": 25, "ok": 18}, "module-level": {"raises": 18}, "view/form-method": {"noinstance": 24, "ok": 5, "raises": 38, "db": 3}}}
+```
+
 ### DL-016 · django-oscar's test suite runs on SQLite
 
-**spike** · M0 · T0.1 · 2026-11-05T11:25-06:00 · commit `pending`
+**spike** · M0 · T0.1 · 2026-11-05T11:25-06:00 · commit `b9dcf7d`
 
 - **Context:** OQ-B1 had to establish whether the real backtest repo works without PostgreSQL.
 - **What:** Cloned v4.2.2 and ran its full suite with SQLite in memory through environment variables. Confirmed its BSD-style license text.

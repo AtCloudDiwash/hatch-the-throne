@@ -1,6 +1,6 @@
 {
- "current": "M0 / T0.2",
- "next": "Measure runnable share.",
+ "current": "M0 / T0.3",
+ "next": "Hook behavior spike.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -33,12 +33,17 @@
    "evidence": "$ DATABASE_ENGINE=django.db.backends.sqlite3 DATABASE_NAME=:memory: pytest tests -q -n 4\n7 failed, 1803 passed, 2 skipped, 3721 warnings, 104 subtests passed in 69.07s (0:01:09)\nFAILED: 3 checkout ThankYouView, 2 catalogue category moves, 2 concurrent order placement. None in offer or basket pricing.",
    "dl": [
     "DL-016"
-   ]
+   ],
+   "commit": "b9dcf7d"
   },
   "T0.2": {
    "milestone": "M0",
    "title": "Runnable-function share (OQ-B1)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ python spikes/t02_runnable.py   (in the oscar checkout, DB dummy backend)\n{\"total_defs\": 367, \"returned_value\": 28, \"ran_including_app_exceptions\": 142, \"share_returned\": 0.076, \"share_ran\": 0.387,\n \"by_kind\": {\"model-method\": {\"noinstance\": 159, \"raises\": 33, \"db\": 4, \"ok\": 5}, \"plain-method\": {\"noinstance\": 35, \"raises\": 25, \"ok\": 18}, \"module-level\": {\"raises\": 18}, \"view/form-method\": {\"noinstance\": 24, \"ok\": 5, \"raises\": 38, \"db\": 3}}}",
+   "dl": [
+    "DL-017"
+   ]
   },
   "T0.3": {
    "milestone": "M0",
