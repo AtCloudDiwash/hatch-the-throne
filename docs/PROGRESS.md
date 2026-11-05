@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M7 / T7.4
-- **Next step:** Budget check.
+- **Current milestone and task:** M8 / T8.3
+- **Next step:** Demo steps and manual checks.
 
 ## Status
 
@@ -48,8 +48,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T6.5 | M6 | done | [x] Status skill and remaining MCP tools (FR-21, FR-22) | DL-057 | f9483e9 |
 | T7.1 | M7 | done | [x] Backtest harness (FR-28) | DL-058 DL-061 | 35253d5 |
 | T7.2 | M7 | done | [x] Seeded bugs (FR-28) | DL-062 | 03e727b |
-| T7.3 | M7 | done | [x] Guard on/off (FR-29) | DL-059 DL-060 DL-069 | a1ba430 |
-| T7.4 | M7 | in_progress | [~] Budget check (D-013) | DL-063 DL-064 | 0389a9e |
+| T7.3 | M7 | done | [x] Guard on/off (FR-29) | DL-059 DL-060 DL-069 | df2f4cb |
+| T7.4 | M7 | done | [x] Budget check (D-013) | DL-063 DL-064 DL-070 | 0389a9e |
 | T8.1 | M8 | done | [x] Pin minimum Claude Code version (NFR-10) | DL-065 DL-066 DL-067 | 6bf8ad6 |
 | T8.2 | M8 | done | [x] Live E2E-1 to E2E-8 | DL-068 | 5a50665 |
 | T8.3 | M8 | pending | [ ] Dry-run steps, backup video, names and roles |  |  |
@@ -554,15 +554,17 @@ t10 on Stopped for human back 0 wakes 0
 Model sonnet, 10 tasks x 2 conditions, one run each. 479 s and $2.25 notional in total. /usage after: session 20%, week 12%.
 ```
 
-### T7.4 Budget check (D-013) (in_progress)
+### T7.4 Budget check (D-013) (done)
 
 ```text
-$ .venv/bin/pytest -q tests/test_runner.py -k guessed; python3 -c "import json;[print(n,json.load(open(f'eval/results/backtest/replay{n}.json'))['summary']['wake_up_rate_per_20_edits'],json.load(open(f'eval/results/backtest/planted{n}.json'))['catch_rate_proved_by_execution']) for n in ('_before_filter','_broad_filter','')]"
-...                                                                      [100%]
-3 passed, 45 deselected in 1.90s
-_before_filter 1.432 0.4
-_broad_filter 1.273 0.3
- 1.273 0.4
+$ python3 eval/budget_check.py
+Developer prompts per 10 edits: 0.212 (target at most 1): met
+Harmless wake-ups per 20 edits: 1.273 (target at most 1): MISSED
+Wrong blocks (denies on real commits): 0 (target 0): met
+Prompts per session: most in any A/B or E2E session was 0 (cap 3, enforced by test)
+Catch rate, any status except Verified pass: 90%; proved by execution: 40% (no target, D-033)
+Functions: {'Verified pass': 21, 'Behavior difference — intent unknown': 27, 'Untested': 140}
+{"on": {"runs": 10, "Arrived": 6, "Fell": 0, "Stopped for human": 4, "Incomplete": 0, "turned_back": 1, "prompts": 0, "wake_ups": 1, "seconds": 247, "cost_notional_usd": 1.03}, "off": {"runs": 10, "Arrived": 6, "Fell": 2, "Stopped for human": 2, "Incomplete": 0, "turned_back": 0, "prompts": 0, "wake_ups": 0, "seconds": 232, "cost_notional_usd": 1.22}}
 (exit 0)
 ```
 

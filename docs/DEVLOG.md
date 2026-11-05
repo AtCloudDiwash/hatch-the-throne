@@ -88,6 +88,7 @@ flowchart LR
     DL063["DL-063 Drop guessed inputs that old code rejects, …"]
     DL064["DL-064 Keep the filter only when both versions rej…"]
     DL069["DL-069 Guard on and off: 0 Fell against 2 Fell, wi…"]
+    DL070["DL-070 Report the wake-up miss and change no signa…"]
   end
   subgraph M8
     DL065["DL-065 Pin Claude Code v2.1.318 as the minimum"]
@@ -105,6 +106,8 @@ flowchart LR
   DL068 -.- DL052
   DL069 -.- DL059
   DL069 -.- DL068
+  DL070 -.- DL061
+  DL070 -.- DL064
 ```
 
 ## Summary
@@ -118,15 +121,43 @@ flowchart LR
 | M4 | 6 | 2 | 0 | 0 | 0 | 0 | 0 | 8 |
 | M5 | 6 | 0 | 0 | 1 | 0 | 0 | 0 | 7 |
 | M6 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
-| M7 | 2 | 2 | 1 | 0 | 0 | 0 | 3 | 8 |
+| M7 | 2 | 2 | 1 | 1 | 0 | 0 | 3 | 9 |
 | M8 | 1 | 2 | 0 | 1 | 0 | 0 | 0 | 4 |
-| **All** | **36** | **8** | **2** | **16** | **0** | **0** | **7** | **69** |
+| **All** | **36** | **8** | **2** | **17** | **0** | **0** | **7** | **70** |
 
 ## Entries, newest first
 
+### DL-070 · Report the wake-up miss and change no signals
+
+**decision** · M7 · T7.4 · 2026-11-05T12:26-06:00 · commit `pending`
+
+- **Context:** T7.4 and D-013: if targets are missed, downgrade signals from ask to context, starting with history-only signals, but never downgrade evidence.
+- **What:** Prompts 0.21 per 10 edits (met), wrong blocks 0 (met), wake-ups 1.27 per 20 edits (missed). Wake-ups are evidence findings, and no ask signal is over budget, so D-013 allows no downgrade. The earlier fix for invalid guessed inputs stays.
+- **Why:** Suppressing evidence to reach a target would break the rule the target exists to serve.
+- **Impact:** The miss stands in the final report. Part of it is expected: real commits change behavior on purpose, and D-024 gives no automatic requested label. These targets were chosen, not measured.
+- **Files:** `eval/budget_check.py`
+- **Requirements:** `NFR-07`, `FR-20`
+- **Decisions:** `D-013`, `D-024`
+- **Open questions:** none
+- **Tests:** none
+- **Related:** `DL-061`, `DL-064`
+- **Evidence:**
+
+```text
+$ python3 eval/budget_check.py
+Developer prompts per 10 edits: 0.212 (target at most 1): met
+Harmless wake-ups per 20 edits: 1.273 (target at most 1): MISSED
+Wrong blocks (denies on real commits): 0 (target 0): met
+Prompts per session: most in any A/B or E2E session was 0 (cap 3, enforced by test)
+Catch rate, any status except Verified pass: 90%; proved by execution: 40% (no target, D-033)
+Functions: {'Verified pass': 21, 'Behavior difference — intent unknown': 27, 'Untested': 140}
+{"on": {"runs": 10, "Arrived": 6, "Fell": 0, "Stopped for human": 4, "Incomplete": 0, "turned_back": 1, "prompts": 0, "wake_ups": 1, "seconds": 247, "cost_notional_usd": 1.03}, "off": {"runs": 10, "Arrived": 6, "Fell": 2, "Stopped for human": 2, "Incomplete": 0, "turned_back": 0, "prompts": 0, "wake_ups": 0, "seconds": 232, "cost_notional_usd": 1.22}}
+(exit 0)
+```
+
 ### DL-069 · Guard on and off: 0 Fell against 2 Fell, with limits on what that shows
 
-**spike** · M7 · T7.3 · 2026-11-05T12:26-06:00 · commit `pending`
+**spike** · M7 · T7.3 · 2026-11-05T12:26-06:00 · commit `df2f4cb`
 
 - **Context:** FR-29: same 10 tasks, same model, guard on versus off, one run each.
 - **What:** Guard on: 6 Arrived, 4 Stopped for human, 0 Fell. Guard off: 6 Arrived, 2 Stopped for human, 2 Fell. Prompts 0, wake-ups 1, turned back 1 (by the metric).

@@ -1,6 +1,6 @@
 {
- "current": "M7 / T7.4",
- "next": "Budget check.",
+ "current": "M8 / T8.3",
+ "next": "Demo steps and manual checks.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -423,16 +423,17 @@
     "DL-060",
     "DL-069"
    ],
-   "commit": "a1ba430"
+   "commit": "df2f4cb"
   },
   "T7.4": {
    "milestone": "M7",
    "title": "Budget check (D-013)",
-   "status": "in_progress",
-   "evidence": "$ .venv/bin/pytest -q tests/test_runner.py -k guessed; python3 -c \"import json;[print(n,json.load(open(f'eval/results/backtest/replay{n}.json'))['summary']['wake_up_rate_per_20_edits'],json.load(open(f'eval/results/backtest/planted{n}.json'))['catch_rate_proved_by_execution']) for n in ('_before_filter','_broad_filter','')]\"\n...                                                                      [100%]\n3 passed, 45 deselected in 1.90s\n_before_filter 1.432 0.4\n_broad_filter 1.273 0.3\n 1.273 0.4\n(exit 0)",
+   "status": "done",
+   "evidence": "$ python3 eval/budget_check.py\nDeveloper prompts per 10 edits: 0.212 (target at most 1): met\nHarmless wake-ups per 20 edits: 1.273 (target at most 1): MISSED\nWrong blocks (denies on real commits): 0 (target 0): met\nPrompts per session: most in any A/B or E2E session was 0 (cap 3, enforced by test)\nCatch rate, any status except Verified pass: 90%; proved by execution: 40% (no target, D-033)\nFunctions: {'Verified pass': 21, 'Behavior difference — intent unknown': 27, 'Untested': 140}\n{\"on\": {\"runs\": 10, \"Arrived\": 6, \"Fell\": 0, \"Stopped for human\": 4, \"Incomplete\": 0, \"turned_back\": 1, \"prompts\": 0, \"wake_ups\": 1, \"seconds\": 247, \"cost_notional_usd\": 1.03}, \"off\": {\"runs\": 10, \"Arrived\": 6, \"Fell\": 2, \"Stopped for human\": 2, \"Incomplete\": 0, \"turned_back\": 0, \"prompts\": 0, \"wake_ups\": 0, \"seconds\": 232, \"cost_notional_usd\": 1.22}}\n(exit 0)",
    "dl": [
     "DL-063",
-    "DL-064"
+    "DL-064",
+    "DL-070"
    ],
    "commit": "0389a9e"
   },
