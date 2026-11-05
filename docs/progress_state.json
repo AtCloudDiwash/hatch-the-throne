@@ -1,6 +1,6 @@
 {
- "current": "M5 / T5.4",
- "next": "Self-diff.",
+ "current": "M5 / T5.5",
+ "next": "Untested classification.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -308,12 +308,17 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_runner.py -k 'generated or harvested or signature_we'\n....                                                                     [100%]\n4 passed, 39 deselected in 1.45s\n(exit 0)",
    "dl": [
     "DL-048"
-   ]
+   ],
+   "commit": "a9c72a7"
   },
   "T5.4": {
    "milestone": "M5",
    "title": "Self-diff filter (FR-14)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_runner.py -k 'nondeterministic or ordering'\n.....                                                                    [100%]\n5 passed, 38 deselected in 1.99s\n(exit 0)",
+   "dl": [
+    "DL-049"
+   ]
   },
   "T5.5": {
    "milestone": "M5",

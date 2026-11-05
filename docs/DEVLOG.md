@@ -67,6 +67,7 @@ flowchart LR
     DL046["DL-046 Behavioral diff runs old and new code in se…"]
     DL047["DL-047 Runner blocks network, databases, file writ…"]
     DL048["DL-048 Inputs from real tests first, then Hypothes…"]
+    DL049["DL-049 Self-diff drops inputs where old code disag…"]
   end
 ```
 
@@ -79,14 +80,36 @@ flowchart LR
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | M3 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | M4 | 6 | 2 | 0 | 0 | 0 | 0 | 0 | 8 |
-| M5 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
-| **All** | **25** | **4** | **1** | **14** | **0** | **0** | **4** | **48** |
+| M5 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| **All** | **26** | **4** | **1** | **14** | **0** | **0** | **4** | **49** |
 
 ## Entries, newest first
 
+### DL-049 · Self-diff drops inputs where old code disagrees with itself
+
+**feature** · M5 · T5.4 · 2026-11-05T11:56-06:00 · commit `pending`
+
+- **Context:** FR-14 step 4 and D-013: time, randomness and ordering must not raise false alarms.
+- **What:** Old code runs twice in separate processes; disagreeing inputs are dropped. If half or more are dropped, the function is Untested as non-deterministic. All runs use PYTHONHASHSEED=0.
+- **Why:** The half rule came from a failing test: dice(0) agreed with itself, which would have turned a random function into a Verified pass on one input.
+- **Impact:** No false differences on time.time(), random, set or dict order.
+- **Files:** `legacyguard/runner/diff.py`
+- **Requirements:** `FR-14`, `NFR-07`
+- **Decisions:** `D-013`
+- **Open questions:** none
+- **Tests:** `tests/test_runner.py::test_nondeterministic_function_gives_no_false_difference`, `tests/test_runner.py::test_ordering_gives_no_false_difference`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_runner.py -k 'nondeterministic or ordering'
+.....                                                                    [100%]
+5 passed, 38 deselected in 1.99s
+(exit 0)
+```
+
 ### DL-048 · Inputs from real tests first, then Hypothesis
 
-**feature** · M5 · T5.3 · 2026-11-05T11:56-06:00 · commit `pending`
+**feature** · M5 · T5.3 · 2026-11-05T11:56-06:00 · commit `a9c72a7`
 
 - **Context:** FR-14 step 1: at least one harvested and one generated input for compute_late_fee.
 - **What:** runner/inputs.py takes harvested calls first, then derandomized Hypothesis examples from type hints and defaults, capped at max_inputs. Decimal hints get both money-like and rate-like values. Hypothesis's cache stays under .legacyguard/.
