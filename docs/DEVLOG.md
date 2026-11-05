@@ -50,6 +50,7 @@ flowchart LR
     DL033["DL-033 Routes from the framework; HTTP, DB and eve…"]
     DL034["DL-034 Git co-change with support and confidence"]
     DL035["DL-035 Incremental index refresh"]
+    DL036["DL-036 Impact library returns sources per item"]
   end
 ```
 
@@ -60,14 +61,41 @@ flowchart LR
 | M0 | 1 | 0 | 0 | 14 | 0 | 0 | 4 | 19 |
 | M1 | 4 | 2 | 1 | 0 | 0 | 0 | 0 | 7 |
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| M3 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
-| **All** | **14** | **2** | **1** | **14** | **0** | **0** | **4** | **35** |
+| M3 | 6 | 0 | 0 | 0 | 0 | 0 | 0 | 6 |
+| **All** | **15** | **2** | **1** | **14** | **0** | **0** | **4** | **36** |
 
 ## Entries, newest first
 
+### DL-036 · Impact library returns sources per item
+
+**feature** · M3 · T3.6 · 2026-11-05T11:45-06:00 · commit `pending`
+
+- **Context:** FR-09: answer who depends on a function, with each item labeled so a static guess never poses as proof.
+- **What:** guardlib/impact.py walks callers up to 3 hops by name, adds routes, tests and co-changed files, and renders text capped at 1,500 characters with a truncation count.
+- **Why:** One shared library keeps hooks and the MCP server consistent, and name matching was chosen over a call graph in D-005.
+- **Impact:** Output for compute_late_fee reproduces the FR-09 example with billing-api's real data.
+- **Files:** `legacyguard/guardlib/impact.py`, `tests/test_impact.py`
+- **Requirements:** `FR-09`, `NFR-04`
+- **Decisions:** `D-005`, `D-006`
+- **Open questions:** none
+- **Tests:** `tests/test_impact.py::test_fr09_output_for_compute_late_fee`, `tests/test_impact.py::test_every_item_carries_sources`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_impact.py; cd demo/billing-api && CLAUDE_PROJECT_DIR=$PWD ../../.venv/bin/python ../../legacyguard/scripts/lg.py impact compute_late_fee
+........                                                                 [100%]
+8 passed in 3.10s
+compute_late_fee (billing/fees.py)
+callers  fee_for_balance() [names,tests]  accrue_late_fee() [names,tests]  projected_fee() [names,history 71%] no test reaches it  aging_bucket() [names] no test reaches it  settle_invoice() [names,tests]  close_month() [names,history 71%] no test reaches it  invoice_aging() [names] no test reaches it  aging_report() [names] no test reaches it  +1 more
+routes   GET /reports/aging/{invoice_id} [routes]  POST /invoices/{invoice_id}/settle [routes]
+tests    9 [tests]
+co-change db/rates.sql [history 82%]  jobs/close_month.py [history 71%]
+(exit 0)
+```
+
 ### DL-035 · Incremental index refresh
 
-**feature** · M3 · T3.5 · 2026-11-05T11:45-06:00 · commit `pending`
+**feature** · M3 · T3.5 · 2026-11-05T11:45-06:00 · commit `d684f19`
 
 - **Context:** FR-08: re-index quickly on every session start.
 - **What:** indexer/__main__.py refreshes names by blob SHA, rebuilds contracts, rebuilds routes only when code changed, rebuilds history only when HEAD moved, and runs tests only on request.

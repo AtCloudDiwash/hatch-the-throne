@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M3 / T3.6
-- **Next step:** Impact library.
+- **Current milestone and task:** M3 / T3.7
+- **Next step:** MCP tool and skills, live check.
 
 ## Status
 
@@ -26,8 +26,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T3.2 | M3 | done | [x] Coverage map (FR-05) | DL-032 | 98a84ce |
 | T3.3 | M3 | done | [x] Routes and contracts (FR-06) | DL-033 | 337ad6a |
 | T3.4 | M3 | done | [x] Co-change (FR-07) | DL-034 | 46abd2a |
-| T3.5 | M3 | done | [x] Incremental re-index (FR-08) | DL-035 |  |
-| T3.6 | M3 | pending | [ ] Impact library (FR-09) |  |  |
+| T3.5 | M3 | done | [x] Incremental re-index (FR-08) | DL-035 | d684f19 |
+| T3.6 | M3 | done | [x] Impact library (FR-09) | DL-036 |  |
 | T3.7 | M3 | pending | [ ] MCP impact tool and index/impact skills (FR-21, FR-22) |  |  |
 | T4.1 | M4 | pending | [ ] Baseline worktree and session state (FR-10) |  |  |
 | T4.2 | M4 | pending | [ ] UserPromptSubmit context (FR-11) |  |  |
@@ -273,6 +273,20 @@ $ .venv/bin/pytest -q tests/test_index_parts.py -k 'cochange or planted'
 $ .venv/bin/pytest -q tests/test_names.py::test_incremental_touches_one_file
 .                                                                        [100%]
 1 passed in 0.41s
+(exit 0)
+```
+
+### T3.6 Impact library (FR-09) (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_impact.py; cd demo/billing-api && CLAUDE_PROJECT_DIR=$PWD ../../.venv/bin/python ../../legacyguard/scripts/lg.py impact compute_late_fee
+........                                                                 [100%]
+8 passed in 3.10s
+compute_late_fee (billing/fees.py)
+callers  fee_for_balance() [names,tests]  accrue_late_fee() [names,tests]  projected_fee() [names,history 71%] no test reaches it  aging_bucket() [names] no test reaches it  settle_invoice() [names,tests]  close_month() [names,history 71%] no test reaches it  invoice_aging() [names] no test reaches it  aging_report() [names] no test reaches it  +1 more
+routes   GET /reports/aging/{invoice_id} [routes]  POST /invoices/{invoice_id}/settle [routes]
+tests    9 [tests]
+co-change db/rates.sql [history 82%]  jobs/close_month.py [history 71%]
 (exit 0)
 ```
 
