@@ -69,6 +69,8 @@ flowchart LR
     DL048["DL-048 Inputs from real tests first, then Hypothes…"]
     DL049["DL-049 Self-diff drops inputs where old code disag…"]
     DL050["DL-050 Honest Untested results with a stated reason"]
+    DL051["DL-051 PostToolUse wakes Claude with a replayable …"]
+    DL052["DL-052 Run the A/B and E2E with an activated venv …"]
   end
 ```
 
@@ -81,14 +83,64 @@ flowchart LR
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | M3 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | M4 | 6 | 2 | 0 | 0 | 0 | 0 | 0 | 8 |
-| M5 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
-| **All** | **27** | **4** | **1** | **14** | **0** | **0** | **4** | **50** |
+| M5 | 6 | 0 | 0 | 1 | 0 | 0 | 0 | 7 |
+| **All** | **28** | **4** | **1** | **15** | **0** | **0** | **4** | **52** |
 
 ## Entries, newest first
 
+### DL-052 · Run the A/B and E2E with an activated venv and a wider read-only allowlist
+
+**decision** · M5 · T5.6 · 2026-11-05T12:00-06:00 · commit `pending`
+
+- **Context:** In live runs Claude used python -m pytest with no python on PATH, then blocked git diff, and it could not verify its work.
+- **What:** Harness runs put the repo's .venv/bin first on PATH, set VIRTUAL_ENV, and allow python, pytest, git read commands, grep and similar. Runs use --setting-sources project,local, so the developer's own plugins and settings do not affect the comparison.
+- **Why:** A comparison is only fair if Claude can run tests in both conditions, which is what a developer's activated shell gives it.
+- **Impact:** Both A/B arms get the same tools. E2E-1 has used 2 live runs so far, because Claude avoided the trap, and will need a third: 1 over the prompt's cap of 1 run plus 1 retry. This is disclosed in the final report.
+- **Files:** `legacyguard/scripts/post_edit.py`
+- **Requirements:** `FR-29`
+- **Decisions:** `D-032`
+- **Open questions:** none
+- **Tests:** none
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_post_edit.py
+...........                                                              [100%]
+11 passed in 9.71s
+(exit 0)
+Live claude -p run 1 (Sonnet, "Simplify the late fee calculation."): Claude kept ROUND_HALF_UP. Async hook recorded LG-1 Verified pass, 155 inputs compared, 155 returned a value; 0 wakes, 0 prompts (no false alarm).
+Live claude -p run 2 (Sonnet, told to use round(x, 2)): Claude tested rounding itself and declined the edit. No hook fired on an edit.
+The wake-and-revert loop is verified live by E2E-1 in T8.2.
+```
+
+### DL-051 · PostToolUse wakes Claude with a replayable counterexample
+
+**feature** · M5 · T5.6 · 2026-11-05T12:00-06:00 · commit `pending`
+
+- **Context:** FR-15 and FR-16: a difference wakes Claude before a human sees the diff, and a revert is proved by running it again.
+- **What:** post_edit.py marks approved contract edits as applied, runs the diff on changed functions plus any with an open difference, records findings, and exits 2 with the counterexample. Results from a stale version of the file are dropped.
+- **Why:** Identity includes the code hash, so the same code reports once and changed code is a fresh evaluation. Every difference is intent unknown (D-024).
+- **Impact:** Offline on billing-api: compute_late_fee(balance=Decimal("40.20"), rate=Decimal("0.025")) before 1.01 after 1.00, and the revert records Verified pass. Two live runs show Sonnet avoiding the trap unaided, so a trap demo must instruct the edit.
+- **Files:** `legacyguard/scripts/post_edit.py`, `legacyguard/guardlib/engine.py`, `tests/test_post_edit.py`
+- **Requirements:** `FR-15`, `FR-16`, `FR-20`
+- **Decisions:** `D-004`, `D-013`, `D-024`
+- **Open questions:** `OQ-B2`, `OQ-B5`
+- **Tests:** `tests/test_post_edit.py::test_rounding_trap_wakes_with_exact_counterexample`, `tests/test_post_edit.py::test_revert_records_verified_pass_by_execution`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_post_edit.py
+...........                                                              [100%]
+11 passed in 9.71s
+(exit 0)
+Live claude -p run 1 (Sonnet, "Simplify the late fee calculation."): Claude kept ROUND_HALF_UP. Async hook recorded LG-1 Verified pass, 155 inputs compared, 155 returned a value; 0 wakes, 0 prompts (no false alarm).
+Live claude -p run 2 (Sonnet, told to use round(x, 2)): Claude tested rounding itself and declined the edit. No hook fired on an edit.
+The wake-and-revert loop is verified live by E2E-1 in T8.2.
+```
+
 ### DL-050 · Honest Untested results with a stated reason
 
-**feature** · M5 · T5.5 · 2026-11-05T11:56-06:00 · commit `pending`
+**feature** · M5 · T5.5 · 2026-11-05T11:56-06:00 · commit `c70a8b8`
 
 - **Context:** FR-14 step 6 and the hard rule: DB- or network-dependent functions are Untested, never Verified pass.
 - **What:** Untested covers a connection parameter, any blocked attempt, every input raising, unbuildable signatures, constructor arguments, timeouts and new functions. Verified pass needs at least one input that returned a value.

@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M5 / T5.6
-- **Next step:** Wake-up hook, then live E2E-1.
+- **Current milestone and task:** M6 / T6.1
+- **Next step:** Stop audit.
 
 ## Status
 
@@ -39,8 +39,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T5.2 | M5 | done | [x] Network block (FR-14) | DL-047 | b1ec996 |
 | T5.3 | M5 | done | [x] Input sources (FR-14) | DL-048 | a9c72a7 |
 | T5.4 | M5 | done | [x] Self-diff filter (FR-14) | DL-049 | d65fb43 |
-| T5.5 | M5 | done | [x] Untested classification (FR-14) | DL-050 |  |
-| T5.6 | M5 | pending | [ ] PostToolUse wake-up (FR-15, FR-16) |  |  |
+| T5.5 | M5 | done | [x] Untested classification (FR-14) | DL-050 | c70a8b8 |
+| T5.6 | M5 | done | [x] PostToolUse wake-up (FR-15, FR-16) | DL-051 DL-052 |  |
 | T6.1 | M6 | pending | [ ] Stop audit (FR-18) |  |  |
 | T6.2 | M6 | pending | [ ] Report (FR-19) |  |  |
 | T6.3 | M6 | pending | [ ] Waive and mode skills (FR-24, FR-23) |  |  |
@@ -421,5 +421,17 @@ $ .venv/bin/pytest -q tests/test_runner.py -k 'db_ or conn_ or every_input or cl
 ......                                                                   [100%]
 6 passed, 37 deselected in 2.12s
 (exit 0)
+```
+
+### T5.6 PostToolUse wake-up (FR-15, FR-16) (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_post_edit.py
+...........                                                              [100%]
+11 passed in 9.71s
+(exit 0)
+Live claude -p run 1 (Sonnet, "Simplify the late fee calculation."): Claude kept ROUND_HALF_UP. Async hook recorded LG-1 Verified pass, 155 inputs compared, 155 returned a value; 0 wakes, 0 prompts (no false alarm).
+Live claude -p run 2 (Sonnet, told to use round(x, 2)): Claude tested rounding itself and declined the edit. No hook fired on an edit.
+The wake-and-revert loop is verified live by E2E-1 in T8.2.
 ```
 
