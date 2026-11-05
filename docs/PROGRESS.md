@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M3 / T3.5
-- **Next step:** Incremental index entry point.
+- **Current milestone and task:** M3 / T3.6
+- **Next step:** Impact library.
 
 ## Status
 
@@ -25,8 +25,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T3.1 | M3 | done | [x] Names table (FR-04) | DL-031 | c457cce |
 | T3.2 | M3 | done | [x] Coverage map (FR-05) | DL-032 | 98a84ce |
 | T3.3 | M3 | done | [x] Routes and contracts (FR-06) | DL-033 | 337ad6a |
-| T3.4 | M3 | done | [x] Co-change (FR-07) | DL-034 |  |
-| T3.5 | M3 | pending | [ ] Incremental re-index (FR-08) |  |  |
+| T3.4 | M3 | done | [x] Co-change (FR-07) | DL-034 | 46abd2a |
+| T3.5 | M3 | done | [x] Incremental re-index (FR-08) | DL-035 |  |
 | T3.6 | M3 | pending | [ ] Impact library (FR-09) |  |  |
 | T3.7 | M3 | pending | [ ] MCP impact tool and index/impact skills (FR-21, FR-22) |  |  |
 | T4.1 | M4 | pending | [ ] Baseline worktree and session state (FR-10) |  |  |
@@ -264,6 +264,15 @@ $ .venv/bin/pytest -q tests/test_index_parts.py -k 'openapi or http or db_schema
 $ .venv/bin/pytest -q tests/test_index_parts.py -k 'cochange or planted'
 ..                                                                       [100%]
 2 passed, 18 deselected in 3.00s
+(exit 0)
+```
+
+### T3.5 Incremental re-index (FR-08) (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_names.py::test_incremental_touches_one_file
+.                                                                        [100%]
+1 passed in 0.41s
 (exit 0)
 ```
 

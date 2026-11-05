@@ -49,6 +49,7 @@ flowchart LR
     DL032["DL-032 Test map from coverage contexts, plus a har…"]
     DL033["DL-033 Routes from the framework; HTTP, DB and eve…"]
     DL034["DL-034 Git co-change with support and confidence"]
+    DL035["DL-035 Incremental index refresh"]
   end
 ```
 
@@ -59,14 +60,36 @@ flowchart LR
 | M0 | 1 | 0 | 0 | 14 | 0 | 0 | 4 | 19 |
 | M1 | 4 | 2 | 1 | 0 | 0 | 0 | 0 | 7 |
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| M3 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| **All** | **13** | **2** | **1** | **14** | **0** | **0** | **4** | **34** |
+| M3 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| **All** | **14** | **2** | **1** | **14** | **0** | **0** | **4** | **35** |
 
 ## Entries, newest first
 
+### DL-035 · Incremental index refresh
+
+**feature** · M3 · T3.5 · 2026-11-05T11:45-06:00 · commit `pending`
+
+- **Context:** FR-08: re-index quickly on every session start.
+- **What:** indexer/__main__.py refreshes names by blob SHA, rebuilds contracts, rebuilds routes only when code changed, rebuilds history only when HEAD moved, and runs tests only on request.
+- **Why:** Each table has a different cost, so each has its own trigger.
+- **Impact:** Re-indexing after a one-file change parses one file.
+- **Files:** `legacyguard/indexer/__main__.py`
+- **Requirements:** `FR-08`
+- **Decisions:** none
+- **Open questions:** none
+- **Tests:** `tests/test_names.py::test_incremental_touches_one_file`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_names.py::test_incremental_touches_one_file
+.                                                                        [100%]
+1 passed in 0.41s
+(exit 0)
+```
+
 ### DL-034 · Git co-change with support and confidence
 
-**feature** · M3 · T3.4 · 2026-11-05T11:45-06:00 · commit `pending`
+**feature** · M3 · T3.4 · 2026-11-05T11:45-06:00 · commit `46abd2a`
 
 - **Context:** FR-07: tell Claude which files usually change together.
 - **What:** history.py mines git log, ignores commits touching more than 30 files, and keeps pairs with at least 3 shared commits.
