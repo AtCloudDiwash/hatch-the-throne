@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M2 / T2.4
-- **Next step:** A/B task set.
+- **Current milestone and task:** M3 / T3.1
+- **Next step:** Names table.
 
 ## Status
 
@@ -20,8 +20,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T1.4 | M1 | done | [x] SessionStart basics (FR-10 steps 5-6) | DL-026 | 91c211e |
 | T2.1 | M2 | done | [x] billing-api service | DL-027 | 1c33f86 |
 | T2.2 | M2 | done | [x] Planted traps | DL-028 | a3bd3f8 |
-| T2.3 | M2 | done | [x] Planted history | DL-029 |  |
-| T2.4 | M2 | pending | [ ] A/B task set |  |  |
+| T2.3 | M2 | done | [x] Planted history | DL-029 | 68e1680 |
+| T2.4 | M2 | done | [x] A/B task set | DL-030 |  |
 | T3.1 | M3 | pending | [ ] Names table (FR-04) |  |  |
 | T3.2 | M3 | pending | [ ] Coverage map (FR-05) |  |  |
 | T3.3 | M3 | pending | [ ] Routes and contracts (FR-06) |  |  |
@@ -211,6 +211,15 @@ README.md
 
 billing/fees.py
 db/rates.sql
+(exit 0)
+```
+
+### T2.4 A/B task set (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_ab_checks.py
+.............                                                            [100%]
+13 passed in 6.85s
 (exit 0)
 ```
 

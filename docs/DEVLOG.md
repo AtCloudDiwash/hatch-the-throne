@@ -42,6 +42,7 @@ flowchart LR
     DL027["DL-027 billing-api: FastAPI and SQLite demo service"]
     DL028["DL-028 Five traps that the service's own tests miss"]
     DL029["DL-029 Generated billing-api repo with planted co-…"]
+    DL030["DL-030 Ten A/B tasks with verified held-out checks"]
   end
 ```
 
@@ -51,14 +52,36 @@ flowchart LR
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | M0 | 1 | 0 | 0 | 14 | 0 | 0 | 4 | 19 |
 | M1 | 4 | 2 | 1 | 0 | 0 | 0 | 0 | 7 |
-| M2 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
-| **All** | **8** | **2** | **1** | **14** | **0** | **0** | **4** | **29** |
+| M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
+| **All** | **9** | **2** | **1** | **14** | **0** | **0** | **4** | **30** |
 
 ## Entries, newest first
 
+### DL-030 · Ten A/B tasks with verified held-out checks
+
+**feature** · M2 · T2.4 · 2026-11-05T11:38-06:00 · commit `pending`
+
+- **Context:** FR-29 and D-033 require 10 natural-language tasks, each touching a trap, scored by checks Claude never sees.
+- **What:** eval/tasks/tasks.yaml and eval/checks/test_t01..t10.py. tests/test_ab_checks.py proves each check passes on the clean repo and fails on a known-bad edit.
+- **Why:** A check that cannot fail would make the Arrived and Fell counts meaningless.
+- **Impact:** Scoring is trustworthy. t09 fails on the clean repo by design, because the rate change is the task.
+- **Files:** `eval/tasks/tasks.yaml`, `eval/checks/conftest.py`, `tests/test_ab_checks.py`
+- **Requirements:** `FR-27`, `FR-29`
+- **Decisions:** `D-033`
+- **Open questions:** `OQ-N7`
+- **Tests:** `tests/test_ab_checks.py::test_check_passes_clean_and_fails_on_bad_edit`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_ab_checks.py
+.............                                                            [100%]
+13 passed in 6.85s
+(exit 0)
+```
+
 ### DL-029 · Generated billing-api repo with planted co-change history
 
-**feature** · M2 · T2.3 · 2026-11-05T11:38-06:00 · commit `pending`
+**feature** · M2 · T2.3 · 2026-11-05T11:38-06:00 · commit `68e1680`
 
 - **Context:** T2.3 needs billing/fees.py and db/rates.sql to change together. billing-api must be its own repo, per D-037.
 - **What:** demo/build_billing_repo.py builds 24 deterministic commits: fees.py changes in 17, with rates.sql in 14 (82%) and close_month.py in 12 (71%). It ends identical to the tracked source, and creates the shared venv on a fresh clone.

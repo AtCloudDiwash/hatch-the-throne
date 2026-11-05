@@ -1,6 +1,6 @@
 {
- "current": "M2 / T2.4",
- "next": "A/B task set.",
+ "current": "M3 / T3.1",
+ "next": "Names table.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -136,12 +136,17 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_ab_checks.py::test_planted_history; git -C demo/billing-api log --format='%h %s' --name-only -3 | head -12\n.                                                                        [100%]\n1 passed in 1.27s\n15ff4cc Current rate table\n\nbilling/fees.py\ndb/rates.sql\njobs/close_month.py\n0c8fd35 Note audit export\n\nREADME.md\n0a7bd47 Mid-year rates\n\nbilling/fees.py\ndb/rates.sql\n(exit 0)",
    "dl": [
     "DL-029"
-   ]
+   ],
+   "commit": "68e1680"
   },
   "T2.4": {
    "milestone": "M2",
    "title": "A/B task set",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_ab_checks.py\n.............                                                            [100%]\n13 passed in 6.85s\n(exit 0)",
+   "dl": [
+    "DL-030"
+   ]
   },
   "T3.1": {
    "milestone": "M3",
