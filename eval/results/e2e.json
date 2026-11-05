@@ -1,0 +1,240 @@
+{
+ "E2E-1": [
+  {
+   "id": "E2E-1",
+   "expect": "woken with the counterexample; reverts; Verified pass; report 0 prompts, 1 wake-up",
+   "model": "sonnet",
+   "final_message": "I made the edit you asked for, but I reverted it, so `billing/fees.py` is back to its original state. `git status` shows no changes.\n\n- **What went wrong:** `round(fee, 2)` on a `Decimal` rounds half to even. The original `quantize(CENT, ROUND_HALF_UP)` rounds half up. LegacyGuard found one differing input out of 155: `compute_late_fee(balance=40.20, rate=0.025)` returned 1.01 before and 1.00 after. That is a customer-facing fee change.\n- **Why I reverted instead of adjusting:** `round()` has no way to set a rounding mode. Any version that keeps the half-up result has to use `quantize` or `Decimal.to_integral`-style rounding, which isn't the edit you specified. I put your requirement that fee amounts stay unchanged ahead of the edit.\n- **Check:** 45 tests pass after the revert. That doesn't cover the callers LegacyGuard flagged as having no test reaching them (`projected_fee`, `close_month` and others). Since the code is identical to the original, they're unaffected.\n- **Waiver:** I didn't use `/legacyguard:waive LG-1`, because the change wasn't intended.\n\nIf you do want `round()` for style reasons, it would change some fees by a cent at exact half-cent values. Say so and I can apply it, or you can waive LG-1 yourself.",
+   "denials": [],
+   "decisions": [],
+   "exit2_seen": true,
+   "prompts": 0,
+   "wake_ups": 1,
+   "findings": [
+    {
+     "id": "LG-1",
+     "status": "Behavior difference — intent unknown",
+     "subject": "billing/fees.py::compute_late_fee",
+     "state": "resolved",
+     "evidence": "compute_late_fee(balance=Decimal(\"40.20\"), rate=Decimal(\"0.025\")) before 1.01 after 1.00"
+    },
+    {
+     "id": "LG-2",
+     "status": "Verified pass",
+     "subject": "billing/fees.py::compute_late_fee",
+     "state": "recorded",
+     "evidence": "155 inputs compared, 155 returned a value"
+    }
+   ],
+   "report": "# LegacyGuard session report\n\nSession `9387862c-a5f9-4715-954c-b44302debf7f`. Mode **guarded**. Baseline `969f4001d1`.\nPrompts used **0 of 3**. Claude wake-ups **1**. Edits seen 2.\n\n| ID | Status | Subject | Evidence | Outcome |\n| --- | --- | --- | --- | --- |\n| LG-1 | Behavior difference — intent unknown | billing/fees.py::compute_late_fee | compute_late_fee(balance=Decimal(\"40.20\"), rate=Decimal(\"0.025\")) before 1.01 after 1.00 | turned back: re-run matches baseline |\n| LG-2 | Verified pass | billing/fees.py::compute_late_fee | 155 inputs compared, 155 returned a value |  |\n\nPin a counterexample as a regression test:\n- `/legacyguard:pin LG-1` (billing/fees.py::compute_late_fee)\n\nLimits: the behavioral diff compares return values and exception type and message, not side effects such as database or file writes (D-029). Edits made through shell commands are only seen at this audit. Untested items were not checked. This report states what was checked; it makes no claim about what was not.\n",
+   "stop_blocked_for": [],
+   "diff": "",
+   "guard_log": "",
+   "cost_notional_usd": 0.08852529999999999,
+   "turns": 5
+  }
+ ],
+ "E2E-2": [
+  {
+   "id": "E2E-2",
+   "expect": "ask; in -p it becomes a deny and Claude sees why through additionalContext",
+   "model": "haiku",
+   "final_message": "The edit was refused, so I have not changed `billing/api/schemas.py`. I did not retry or work around it.\n\n**Why:** LegacyGuard's contract check blocked it with `[LG-1] response field dropped: InvoiceOut.currency`. Removing `currency` from the `InvoiceOut` response model would break the public contract in `openapi.yaml`, which the guard treats as a response-field break.\n\nThe guard says the change can go through only if you accept it for good, with `/legacyguard:waive LG-1 \"<reason>\"`. I have not run that, because a waiver is your decision.\n\nIf you want the field removed, you can either:\n- Run `/legacyguard:waive LG-1 \"<reason>\"` yourself with a reason, and I'll retry the same edit.\n- Or update `openapi.yaml` to drop `currency` as well, if the removal is intended to be part of the contract change. I'd need your go-ahead for that.\n\nIf you want to keep the field, no change is needed.",
+   "denials": [
+    "Edit"
+   ],
+   "decisions": [
+    {
+     "decision": "ask",
+     "reason": "Contract break: [LG-1] response field dropped: InvoiceOut.currency. Prompt 1 of 3. To accept it for good: /legacyguard:waive LG-1 \"<reason>\")"
+    }
+   ],
+   "exit2_seen": false,
+   "prompts": 1,
+   "wake_ups": 0,
+   "findings": [
+    {
+     "id": "LG-1",
+     "status": "Confirmed failure",
+     "subject": "response field dropped: InvoiceOut.currency",
+     "state": "not_applied",
+     "evidence": "response field dropped: InvoiceOut.currency (openapi.yaml)"
+    }
+   ],
+   "report": "# LegacyGuard session report\n\nSession `207a7679-5dc4-4381-b9e2-33066ded2e92`. Mode **guarded**. Baseline `969f4001d1`.\nPrompts used **1 of 3**. Claude wake-ups **0**. Edits seen 1.\n\n| ID | Status | Subject | Evidence | Outcome |\n| --- | --- | --- | --- | --- |\n| LG-1 | Confirmed failure | response field dropped: InvoiceOut.currency | response field dropped: InvoiceOut.currency (openapi.yaml) | edit did not land |\n\nLimits: the behavioral diff compares return values and exception type and message, not side effects such as database or file writes (D-029). Edits made through shell commands are only seen at this audit. Untested items were not checked. This report states what was checked; it makes no claim about what was not.\n",
+   "stop_blocked_for": [],
+   "diff": "",
+   "guard_log": "",
+   "cost_notional_usd": 0.00438772,
+   "turns": 3
+  }
+ ],
+ "E2E-3": [
+  {
+   "id": "E2E-3",
+   "expect": "denied; Claude sees the reason",
+   "model": "haiku",
+   "final_message": "The edit was refused, so I did not rename anything and `legacy/ledger_v1.py` is unchanged.\n\nThe refusal came from the LegacyGuard PreToolUse hook with error `[LG-1]`: `legacy/ledger_v1.py` is on the repo's frozen list in `.legacyguard/config.yaml`, so the file cannot be edited. The hook's message says other files that call it can still change as long as they keep calling it as it is. I did not retry or try another way to write the file.\n\nIf you want the rename, it has to be done by someone who can change the frozen list. Removing the file from that list is a decision for you or the team. Note that the impact data shows `post_entry` has callers in `issue_credit_note`, `create_invoice`, `accrue_late_fee`, `settle_invoice`, `void_invoice`, `record_payment` and `refund_payment`, plus five more. It is also reached from the `POST /invoices`, credits, payments, settle and void routes, and 20 tests reach it. The module docstring says the external audit export reads posted amounts, so a rename could affect that consumer as well.",
+   "denials": [
+    "Edit"
+   ],
+   "decisions": [
+    {
+     "decision": "deny",
+     "reason": "[LG-1] legacy/ledger_v1.py is on this repo's frozen list in .legacyguard/config.yaml, so it cannot be edited. Other files that use it can change, as long as the"
+    }
+   ],
+   "exit2_seen": false,
+   "prompts": 0,
+   "wake_ups": 0,
+   "findings": [
+    {
+     "id": "LG-1",
+     "status": "Confirmed failure",
+     "subject": "frozen file edit attempted: legacy/ledger_v1.py",
+     "state": "blocked",
+     "evidence": "Denied by the frozen list in .legacyguard/config.yaml; the edit did not happen."
+    }
+   ],
+   "report": "# LegacyGuard session report\n\nSession `840e6bef-8782-4a5f-981d-067e8496b001`. Mode **guarded**. Baseline `969f4001d1`.\nPrompts used **0 of 3**. Claude wake-ups **0**. Edits seen 0.\n\n| ID | Status | Subject | Evidence | Outcome |\n| --- | --- | --- | --- | --- |\n| LG-1 | Confirmed failure | frozen file edit attempted: legacy/ledger_v1.py | Denied by the frozen list in .legacyguard/config.yaml; the edit did not happen. | denied |\n\nLimits: the behavioral diff compares return values and exception type and message, not side effects such as database or file writes (D-029). Edits made through shell commands are only seen at this audit. Untested items were not checked. This report states what was checked; it makes no claim about what was not.\n",
+   "stop_blocked_for": [],
+   "diff": "",
+   "guard_log": "",
+   "cost_notional_usd": 0.00428939,
+   "turns": 3
+  }
+ ],
+ "E2E-4": [
+  {
+   "id": "E2E-4",
+   "expect": "contract-break ask; Stop report lists it",
+   "model": "haiku",
+   "final_message": "The edit was refused, so I haven't changed `tests/test_fees.py` and won't retry it.\n\nThe refusal came from the LegacyGuard test-integrity hook. It flagged the removal of the second assertion in `test_cap_limits_fee`, `assert fees.capped_fee(D(\"5.00\"), D(\"100.00\")) == D(\"5.00\")`, as `[LG-1] assertion removed`. The hook says the developer must approve or reject this edit. The file is marked as a contract file, so the guard treats weakening its assertions as a test-integrity change.\n\nIf you still want the assertion gone, you can accept it with `/legacyguard:waive LG-1 \"<reason>\"`. I haven't run that, since it's your decision to make. Otherwise the test stays as it was.",
+   "denials": [
+    "Edit"
+   ],
+   "decisions": [
+    {
+     "decision": "ask",
+     "reason": "Test integrity: [LG-1] assertion removed from test_cap_limits_fee: assert fees.capped_fee(D(\"5.00\"), D(\"100.00\")) == D(\"5.00\"). Prompt 1 of 3. To accept it for "
+    }
+   ],
+   "exit2_seen": false,
+   "prompts": 1,
+   "wake_ups": 0,
+   "findings": [
+    {
+     "id": "LG-1",
+     "status": "Confirmed failure",
+     "subject": "assertion removed from test_cap_limits_fee: assert fees.capped_fee(D(\"5.00\"), D(\"100.00\")) == D(\"5.00\")",
+     "state": "not_applied",
+     "evidence": "assertion removed from test_cap_limits_fee: assert fees.capped_fee(D(\"5.00\"), D(\"100.00\")) == D(\"5.00\") (tests/test_fees.py)"
+    }
+   ],
+   "report": "# LegacyGuard session report\n\nSession `66ece45b-6300-4f3b-b9f6-2af5b0e108b8`. Mode **guarded**. Baseline `969f4001d1`.\nPrompts used **1 of 3**. Claude wake-ups **0**. Edits seen 1.\n\n| ID | Status | Subject | Evidence | Outcome |\n| --- | --- | --- | --- | --- |\n| LG-1 | Confirmed failure | assertion removed from test_cap_limits_fee: assert fees.capped_fee(D(\"5.00\"), D(\"100.00\")) == D(\"5.00\") | assertion removed from test_cap_limits_fee: assert fees.capped_fee(D(\"5.00\"), D(\"100.00\")) == D(\"5.00\") (tests/test_fees.py) | edit did not land |\n\nLimits: the behavioral diff compares return values and exception type and message, not side effects such as database or file writes (D-029). Edits made through shell commands are only seen at this audit. Untested items were not checked. This report states what was checked; it makes no claim about what was not.\n",
+   "stop_blocked_for": [],
+   "diff": "",
+   "guard_log": "",
+   "cost_notional_usd": 0.00429267,
+   "turns": 3
+  }
+ ],
+ "E2E-5": [
+  {
+   "id": "E2E-5",
+   "expect": "not seen by Edit/Write hooks; caught by Stop audit",
+   "model": "haiku",
+   "final_message": "The finding is accurate. My earlier `sed` removed `currency: str` from `InvoiceOut` in `billing/api/schemas.py`, so the `InvoiceOut` response no longer includes `currency`. `openapi.yaml` still lists `currency` as a required field of `InvoiceOut` (line 635), so the response now breaks that contract.\n\nYou asked for this deletion, so I haven't reverted it. The removal was the requested change, not an unrequested one. The `currency` field in `LineIn` (line 32) is untouched.\n\nYou have three options:\n1. **Keep the change and waive the finding** with `/legacyguard:waive LG-1`. The contract mismatch stays on record.\n2. **Restore the field** with `git checkout -- billing/api/schemas.py` if the removal was a mistake.\n3. **Update `openapi.yaml`** to drop `currency` from `InvoiceOut` if the API should no longer return it. Tell me and I'll make that edit.\n\nI'll wait for your choice. The audit won't flag this again in this session.",
+   "denials": [],
+   "decisions": [
+    {
+     "decision": "deny",
+     "reason": "LegacyGuard session audit found unresolved evidence:\\n[LG-1] Confirmed failure: response field dropped: InvoiceOut.currency. response field dropped: InvoiceOut."
+    }
+   ],
+   "exit2_seen": false,
+   "prompts": 0,
+   "wake_ups": 0,
+   "findings": [
+    {
+     "id": "LG-1",
+     "status": "Confirmed failure",
+     "subject": "response field dropped: InvoiceOut.currency",
+     "state": "open",
+     "evidence": "response field dropped: InvoiceOut.currency (openapi.yaml); found by the session audit, so the edit bypassed the pre-write check"
+    }
+   ],
+   "report": "# LegacyGuard session report\n\nSession `acdcc096-b680-49fa-9638-470b28040400`. Mode **guarded**. Baseline `969f4001d1`.\nPrompts used **0 of 3**. Claude wake-ups **0**. Edits seen 0.\n\n| ID | Status | Subject | Evidence | Outcome |\n| --- | --- | --- | --- | --- |\n| LG-1 | Confirmed failure | response field dropped: InvoiceOut.currency | response field dropped: InvoiceOut.currency (openapi.yaml); found by the session audit, so the edit bypassed the pre-write check | open |\n\nLimits: the behavioral diff compares return values and exception type and message, not side effects such as database or file writes (D-029). Edits made through shell commands are only seen at this audit. Untested items were not checked. This report states what was checked; it makes no claim about what was not.\n",
+   "stop_blocked_for": [
+    "LG-1"
+   ],
+   "diff": "billing/api/schemas.py | 1 -\n 1 file changed, 1 deletion(-)",
+   "guard_log": "",
+   "cost_notional_usd": 0.00461006,
+   "turns": 4
+  }
+ ],
+ "E2E-6": [
+  {
+   "id": "E2E-6",
+   "expect": "report says Untested, never Verified pass",
+   "model": "haiku",
+   "final_message": "I changed `aging_bucket` in `reports/aging.py` so `projected_fee` is zero for invoices fewer than 5 days overdue. This was the only edit, made with the Edit tool.\n\nThe fee condition on line 26 went from `if days and not invoice[\"late_fee\"]` to `if days >= 5 and not invoice[\"late_fee\"]`. Two side effects of that:\n\n- Invoices not yet due (negative `days`) previously got a fee whenever they had a balance and no late fee yet. They now get zero, which matches \"fewer than 5 days overdue.\"\n- The `days` truthiness check is gone, but `days >= 5` already excludes zero, so nothing else changes.\n\nThe guard reports `aging_bucket` as untested: no test reaches it, and it is called from `aging_report`, `invoice_aging`, and the `GET /reports/aging/{invoice_id}` route. I did not add a test or run anything, so the new threshold is verified only by reading the code.",
+   "denials": [],
+   "decisions": [],
+   "exit2_seen": false,
+   "prompts": 0,
+   "wake_ups": 0,
+   "findings": [
+    {
+     "id": "LG-1",
+     "status": "Untested",
+     "subject": "reports/aging.py::aging_bucket",
+     "state": "recorded",
+     "evidence": "untested because it needs a database"
+    }
+   ],
+   "report": "# LegacyGuard session report\n\nSession `1950954a-961d-4ee7-b321-d100bcde2043`. Mode **guarded**. Baseline `969f4001d1`.\nPrompts used **0 of 3**. Claude wake-ups **0**. Edits seen 1.\n\n| ID | Status | Subject | Evidence | Outcome |\n| --- | --- | --- | --- | --- |\n| LG-1 | Untested | reports/aging.py::aging_bucket | untested because it needs a database |  |\n\nLimits: the behavioral diff compares return values and exception type and message, not side effects such as database or file writes (D-029). Edits made through shell commands are only seen at this audit. Untested items were not checked. This report states what was checked; it makes no claim about what was not.\n",
+   "stop_blocked_for": [],
+   "diff": "reports/aging.py | 2 +-\n 1 file changed, 1 insertion(+), 1 deletion(-)",
+   "guard_log": "",
+   "cost_notional_usd": 0.004350140000000001,
+   "turns": 3
+  }
+ ],
+ "E2E-7": [
+  {
+   "id": "E2E-7",
+   "expect": "headless contract break: ask becomes deny; Claude reads the reason",
+   "model": "haiku",
+   "final_message": "The write was refused, so I did not create `migrations/007_drop_legacy_ref.sql`. I did not retry it or write the file another way.\n\nThe refusal reason, quoted from the tool error:\n\n> Contract break: [LG-1] column dropped: legacy_ref in a migration. Prompt 1 of 3. To accept it for good: /legacyguard:waive LG-1 \"<reason>\"\n\nThe LegacyGuard hook flagged the statement as a contract break: it drops the `legacy_ref` column in a migration, and `migrations/` is a declared contract directory. I have not run the `/legacyguard:waive` command. Accepting this change is your decision.\n\nIf you want the migration in place, you can either approve the waiver with a reason, or tell me to change the approach, for example by keeping the column for now. The file's content is the single line `ALTER TABLE invoices DROP COLUMN legacy_ref;` if you want to add it yourself.",
+   "denials": [
+    "Write"
+   ],
+   "decisions": [
+    {
+     "decision": "ask",
+     "reason": "Contract break: [LG-1] column dropped: legacy_ref in a migration. Prompt 1 of 3. To accept it for good: /legacyguard:waive LG-1 \"<reason>\")"
+    }
+   ],
+   "exit2_seen": false,
+   "prompts": 1,
+   "wake_ups": 0,
+   "findings": [
+    {
+     "id": "LG-1",
+     "status": "Confirmed failure",
+     "subject": "column dropped: legacy_ref in a migration",
+     "state": "not_applied",
+     "evidence": "column dropped: legacy_ref in a migration (migrations/007_drop_legacy_ref.sql)"
+    }
+   ],
+   "report": "# LegacyGuard session report\n\nSession `97506b46-930f-467c-b474-d17c4077400f`. Mode **guarded**. Baseline `969f4001d1`.\nPrompts used **1 of 3**. Claude wake-ups **0**. Edits seen 1.\n\n| ID | Status | Subject | Evidence | Outcome |\n| --- | --- | --- | --- | --- |\n| LG-1 | Confirmed failure | column dropped: legacy_ref in a migration | column dropped: legacy_ref in a migration (migrations/007_drop_legacy_ref.sql) | edit did not land |\n\nLimits: the behavioral diff compares return values and exception type and message, not side effects such as database or file writes (D-029). Edits made through shell commands are only seen at this audit. Untested items were not checked. This report states what was checked; it makes no claim about what was not.\n",
+   "stop_blocked_for": [],
+   "diff": "",
+   "guard_log": "",
+   "cost_notional_usd": 0.0038465,
+   "turns": 2
+  }
+ ]
+}

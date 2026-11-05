@@ -83,9 +83,11 @@ flowchart LR
     DL058["DL-058 Backtest harness replays commits and plante…"]
     DL059["DL-059 A/B harness around claude -p with held-out …"]
     DL060["DL-060 Two wrong test expectations, and close-out …"]
+    DL061["DL-061 Backtest on 100 real oscar commits: prompts…"]
   end
   DL015 -->|caused| DL060
   DL058 -->|caused| DL060
+  DL061 -.- DL058
 ```
 
 ## Summary
@@ -99,14 +101,38 @@ flowchart LR
 | M4 | 6 | 2 | 0 | 0 | 0 | 0 | 0 | 8 |
 | M5 | 6 | 0 | 0 | 1 | 0 | 0 | 0 | 7 |
 | M6 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
-| M7 | 2 | 0 | 1 | 0 | 0 | 0 | 0 | 3 |
-| **All** | **35** | **4** | **2** | **15** | **0** | **0** | **4** | **60** |
+| M7 | 2 | 0 | 1 | 0 | 0 | 0 | 1 | 4 |
+| **All** | **35** | **4** | **2** | **15** | **0** | **0** | **5** | **61** |
 
 ## Entries, newest first
 
+### DL-061 · Backtest on 100 real oscar commits: prompts within target, wake-ups over it
+
+**spike** · M7 · T7.1 · 2026-11-05T12:15-06:00 · commit `pending`
+
+- **Context:** FR-28 and D-013: measure false alarms on commits presumed good.
+- **What:** Replayed 100 commits, 377 file edits. 8 prompts (0.21 per 10 edits, target at most 1), 24 wake-ups (1.27 per 20 edits, target at most 1), 0 denies (target 0). Of 188 changed functions: 21 Verified pass, 27 Behavior difference, 140 Untested.
+- **Why:** Real numbers on code the team did not write.
+- **Impact:** The wake-up target is missed. 74% of changed functions are Untested, consistent with the T0.2 spike. Real commits often change behavior on purpose, so some wake-ups are correct but unwanted: 7 of 24 come from version bumps.
+- **Files:** `eval/results/backtest/replay.json`, `eval/results/backtest/replay_before_filter.json`
+- **Requirements:** `FR-28`, `NFR-07`
+- **Decisions:** `D-013`, `D-033`
+- **Open questions:** `OQ-N7`
+- **Tests:** `tests/test_backtest.py::test_replay_counts`
+- **Related:** `DL-058`
+- **Evidence:**
+
+```text
+$ python3 -c "import json;s=json.load(open('eval/results/backtest/replay.json'))['summary'];print({k:s[k] for k in ('edits','prompts','wake_ups','denies','prompt_rate_per_10_edits','wake_up_rate_per_20_edits','function_statuses')})"; .venv/bin/pytest -q tests/test_backtest.py
+{'edits': 377, 'prompts': 8, 'wake_ups': 24, 'denies': 0, 'prompt_rate_per_10_edits': 0.212, 'wake_up_rate_per_20_edits': 1.273, 'function_statuses': {'Verified pass': 21, 'Behavior difference — intent unknown': 27, 'Untested': 140}}
+...                                                                      [100%]
+3 passed in 2.73s
+(exit 0)
+```
+
 ### DL-060 · Two wrong test expectations, and close-out no longer commits on failing evidence
 
-**fix** · M7 · T7.3 · 2026-11-05T12:08-06:00 · commit `pending`
+**fix** · M7 · T7.3 · 2026-11-05T12:08-06:00 · commit `a1ba430`
 
 - **Context:** The previous commit (DL-058) went in with two failing tests, because finish_task only gated on status done.
 - **What:** Corrected test_replay_counts for the fixture's extra commit and rewrote the Popen test to use a committed baseline. finish_task now refuses to commit on failing evidence for in_progress as well.
@@ -130,7 +156,7 @@ $ .venv/bin/pytest -q tests/test_ab_harness.py tests/test_backtest.py tests/test
 
 ### DL-059 · A/B harness around claude -p with held-out scoring
 
-**feature** · M7 · T7.3 · 2026-11-05T12:08-06:00 · commit `pending`
+**feature** · M7 · T7.3 · 2026-11-05T12:08-06:00 · commit `a1ba430`
 
 - **Context:** FR-29 and D-032: same tasks, guard on and off, scored by checks Claude never sees.
 - **What:** eval/run_ab.py builds a fresh repo per run, indexes it for guard-on, runs claude -p in a clean environment with an activated venv, scores with the held-out check and the repo's suite, and saves after each run so it can resume. It stops if it sees a usage limit.

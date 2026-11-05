@@ -43,6 +43,7 @@ class Result:
     inputs_compared: int = 0
     inputs_completed: int = 0
     dropped_nondeterministic: int = 0
+    dropped_invalid: int = 0
     differences: list[dict] = field(default_factory=list)
 
     @property
@@ -195,6 +196,11 @@ def compare_one(target: Target, items: list[dict], a: dict | None, b: dict | Non
             continue
         ca, cn = _comparable(oa), _comparable(on)
         if ca is None or cn is None:
+            continue
+        if item.get("weak") and ca["k"] == "raise" and cn["k"] == "raise":
+            # Both versions reject a guessed value: it was never a valid call, so two different rejections prove nothing.
+            # If new code accepts what old code rejected, that is a real change and stays.
+            r.dropped_invalid += 1
             continue
         if use_self_diff:
             cb = _comparable(ob)

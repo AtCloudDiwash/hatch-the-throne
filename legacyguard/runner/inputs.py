@@ -91,7 +91,10 @@ def _generated(sym, count: int, state_dir: Path) -> list[dict]:
         return [{"args": [], "source": "generated"}]
     hypothesis, st = _hypothesis(state_dir)
     strategies = {}
+    weak = False
     for p in params:
+        if not p.get("annotation") and not p.get("default"):
+            weak = True  # nothing says what this parameter accepts, so a value may simply be invalid
         strat = _strategy_for(p.get("annotation"), p.get("default"), st)
         if strat is None:
             if p.get("default") is not None:
@@ -117,7 +120,7 @@ def _generated(sym, count: int, state_dir: Path) -> list[dict]:
         sig = json.dumps(args, sort_keys=True)
         if sig not in seen:
             seen.add(sig)
-            out.append({"args": args, "source": "generated"})
+            out.append({"args": args, "source": "generated", "weak": weak})
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")

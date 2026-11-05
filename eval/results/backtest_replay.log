@@ -1,0 +1,136 @@
+harvest has 871 functions, 3777 calls
+[1/100] a5ed3c9c 1 files, wakes 1, asks 0, 1.0s: chore ♻️ bump version to 4.2.2
+[2/100] 88b8c9d4 6 files, wakes 1, asks 0, 2.4s: [FEAT] Store two-step bulk-action selections as queries, not IDs (#4644)
+[3/100] 16353384 2 files, wakes 0, asks 0, 0.1s: Facet product type on an untokenized field (#4468) (#4634)
+[4/100] e9356a0e 1 files, wakes 1, asks 0, 0.4s: feat ✨ release 4.2.1
+[5/100] f7ef277c 1 files, wakes 0, asks 0, 0.1s: Don't HTML-escape email subject templates (#3737) (#4631)
+[6/100] 73a6876f 4 files, wakes 0, asks 1, 0.5s: hide date fields when date is not supported (#4630)
+[7/100] 954e1414 3 files, wakes 0, asks 0, 0.9s: Fix Unicode slug redirect loop (#4599) (#4619)
+[8/100] 63390038 2 files, wakes 0, asks 0, 0.5s: Fix MultipleObjectsReturned when reordering a product with multiple option varia
+[9/100] 605be07d 2 files, wakes 1, asks 0, 0.5s: Fix the search views crashing on an invalid form (#4625)
+[10/100] 076197f4 2 files, wakes 0, asks 0, 0.5s: fix error when there is an empty option group (#4629)
+[11/100] 0dfeaa79 2 files, wakes 0, asks 0, 0.5s: Fix voucher set usage sorting (#4616)
+[12/100] 97f3e4a9 2 files, wakes 0, asks 0, 0.5s: Fix switching an offer benefit or condition back from a pre-defined one (#4617)
+[13/100] eec2a517 2 files, wakes 0, asks 0, 0.5s: Raise ImproperlyConfigured when a custom Benefit has no range (#4620)
+[14/100] b40a18ed 2 files, wakes 0, asks 0, 0.1s: fix 🐛 add get_queryset to notification UpdateView (#4623)
+[15/100] e35ee85a 3 files, wakes 0, asks 0, 0.5s: fix: bulk actions discarding a returned HttpResponse (#4614)
+[16/100] 04a6e277 1 files, wakes 1, asks 0, 0.4s: feat ✨ release 4.2 (#4611)
+[17/100] 87d6cd37 1 files, wakes 0, asks 0, 0.1s: lint
+[18/100] 4f7c51d9 2 files, wakes 0, asks 0, 0.5s: feat ⭐ preserve basket line order when creating order lines (#4598)
+[19/100] d9a23752 14 files, wakes 0, asks 0, 1.5s: rework bulk actions in the catalogue dashboard (#4570)
+[20/100] 7cbc4a57 4 files, wakes 0, asks 0, 0.5s: [Fix] Prevent deadlock between concurrent order placements (#4594)
+[21/100] c0608e0d 2 files, wakes 0, asks 0, 0.1s: Fix warning caused by Category manager not subclassing Treebeard's manager (#458
+[22/100] d116b86a 1 files, wakes 0, asks 0, 0.5s: Add hok for attributes to copy to the new lines
+[23/100] f37ec037 3 files, wakes 0, asks 0, 0.5s: feat ⭐ allow guest checkout for customers with an existing account (#4581)
+[24/100] 41a6736d 1 files, wakes 0, asks 0, 0.5s: early exit when there are no options (#4578)
+[25/100] d35782ec 2 files, wakes 0, asks 0, 0.1s: refactor 📦 enable extending shippingeventquantity model (#4577)
+[26/100] 2f2f9c3f 1 files, wakes 0, asks 0, 0.5s: add email to report (#4576)
+[27/100] dc6de5a4 1 files, wakes 0, asks 0, 0.1s: fix #4557: add Django 6 support (#4564)
+[28/100] 9d823f80 1 files, wakes 0, asks 0, 0.6s: fix: correct namespace for notifications-inbox (#4567)
+[29/100] eeb5a7dd 2 files, wakes 0, asks 0, 0.9s: [FEAT] Make email search more flexible (#4558)
+[30/100] c4ca87c6 2 files, wakes 1, asks 0, 0.5s: deps: compatibility with django-treebeard 5.0 (#4556)
+[31/100] de217920 3 files, wakes 0, asks 0, 0.1s: feat ⭐ add code in product review model (#4552)
+[32/100] 16df1e75 13 files, wakes 0, asks 0, 0.3s: [FEAT] Add code in address models (#4551)
+[33/100] 112fc570 12 files, wakes 0, asks 0, 0.2s: [FEAT] Add missing search fields in django admin models (#4543)
+[34/100] 125b5917 6 files, wakes 0, asks 0, 0.2s: [FEAT] Bulk update public visibility in product and category listing (#4537)
+[35/100] 1d273d4a 2 files, wakes 0, asks 0, 0.5s: [FEAT] Add option to select objects across all pages (#4535)
+[36/100] ce8f44c2 4 files, wakes 1, asks 0, 0.5s: [FEAT] Category search form in dashboard (#4536)
+[37/100] 23d04a76 35 files, wakes 1, asks 2, 6.1s: Add custom granular permission checks for dashboards (#4507)
+[38/100] 8c4c1b30 1 files, wakes 1, asks 0, 0.4s: feat ✨ release 4.1 (#4526)
+[39/100] 4441ac89 2 files, wakes 0, asks 0, 0.5s: feat ⭐ update product value attribute if its different (#4509)
+[40/100] cc6581c8 2 files, wakes 0, asks 0, 0.5s: [Fix] Exclude categories from menu if their ancestor is excluded (#4525)
+[41/100] a76dce81 1 files, wakes 1, asks 0, 0.5s: use get_extra_context for the confirmation email (#4521)
+[42/100] 91770098 4 files, wakes 0, asks 0, 0.5s: feat ⭐ track order analytics event (#4520)
+[43/100] 8908ff35 5 files, wakes 0, asks 1, 0.5s: add email check for anonymous order status view (#4503)
+[44/100] ae5edd43 1 files, wakes 0, asks 0, 0.4s: fix: prevent ThankYouView from just showing the last order to superusers (#4501)
+[45/100] f0179c43 2 files, wakes 1, asks 0, 0.7s: fix: validate redirect_url to prevent invalid redirects (#4495)
+[46/100] 9c8a8fca 6 files, wakes 0, asks 0, 0.6s: posibility for exclude menu items from menu (#4491)
+[47/100] 2a891e83 2 files, wakes 0, asks 0, 0.5s: Fix: Avoid crash when Benefit.range is None (#4489)
+[48/100] 9bc53134 14 files, wakes 0, asks 0, 0.3s: Admin logout button should use POST as django 5 no longer supports is through GE
+[49/100] b87254a8 1 files, wakes 0, asks 0, 0.5s: Correction of the if condition in product_list.html because would never enter in
+[50/100] ff901927 1 files, wakes 0, asks 0, 0.1s: Fix migration for verbose name texts (#4469)
+[51/100] 8192e3c0 2 files, wakes 0, asks 0, 0.9s: get product category hierarchy with get_model instead of get_class
+[52/100] c1f24c02 12 files, wakes 1, asks 1, 1.7s: FEAT: Add postgres materialised view to the ProductCategory model to increase pe
+[53/100] 6625d697 1 files, wakes 1, asks 0, 0.4s: revert back the version change
+[54/100] 70dbe49b 1 files, wakes 1, asks 0, 0.4s: Up versions
+[55/100] b74d83ca 6 files, wakes 2, asks 0, 1.1s: [Fix] Resolve rounding errors (#4455)
+[56/100] 0eac1729 1 files, wakes 0, asks 0, 0.4s: fix 🐛 resolve multiple backend error in race condition (#4457)
+[57/100] c14f6fbc 1 files, wakes 0, asks 0, 0.5s: bug fix: AbstractProduct.primary_images() should check against ProductImage._met
+[58/100] bc4d1386 3 files, wakes 1, asks 0, 0.9s: [Fix] Resolve rounding error (#4448)
+[59/100] 4dc248a6 1 files, wakes 0, asks 0, 0.0s: Make setuptools get dynamic version from setup.py rather than the pyprojectoml. 
+[60/100] c0ef4468 6 files, wakes 0, asks 0, 1.0s: [Fix] Number of orders sorting fix in dashboard customer listing (#4435)
+[61/100] 90d35a8f 1 files, wakes 0, asks 0, 0.4s: Fix string formatting not showing which attribute is reserved (#4429)
+[62/100] 83d18427 2 files, wakes 0, asks 0, 0.5s: [FIXED] Issue #4344 NoneType error when discount.offer is None (#4424)
+[63/100] 3eefa17a 4 files, wakes 1, asks 0, 1.3s: [FEAT] Improve Percentage discount benefit accuracy (#4423)
+[64/100] d0e715d1 31 files, wakes 1, asks 0, 5.9s: [FEAT] Add method to get all dashboard permissions (#4392)
+[65/100] 20ebf5bb 2 files, wakes 0, asks 0, 0.5s: Solr: restore price range in search facets (#4376)
+[66/100] f97893c8 9 files, wakes 0, asks 0, 2.5s: Implement pyproject.toml (#4404)
+[67/100] acf629df 4 files, wakes 0, asks 0, 0.2s: Product code (#4402)
+[68/100] fb4201ee 1 files, wakes 1, asks 0, 0.4s: If product is child and parent is not public, it's not viewable! (#4401)
+[69/100] 2c06e671 1 files, wakes 0, asks 0, 0.5s: fix pylint (#4395)
+[70/100] 6efd5e16 1 files, wakes 0, asks 0, 0.5s: put line and line_created in attributes (#4394)
+[71/100] 2b08af5a 1 files, wakes 0, asks 1, 0.1s: fix :wrench: order search form must have at least one field
+[72/100] 4c89087f 1 files, wakes 0, asks 0, 0.0s: Fix test
+[73/100] f985384b 1 files, wakes 0, asks 0, 0.0s: Add blocks to basket messages (#4390)
+[74/100] 047f39ab 2 files, wakes 1, asks 0, 0.5s: Fix a typo which caused a typeerror on string formatting (#4274)
+[75/100] 7b7aee46 4 files, wakes 0, asks 1, 0.5s: tests :white_check_mark: add more tests
+[76/100] b152eb51 34 files, wakes 0, asks 0, 5.9s: feat :star: oscar dashboard permissions
+[77/100] 12ee5083 1 files, wakes 0, asks 0, 0.1s: Get public children on category
+[78/100] ef5539a2 1 files, wakes 1, asks 0, 0.4s: Oscar 4.0a1
+[79/100] cdb2dcab 1 files, wakes 1, asks 0, 0.4s: release django oscar version 3.2.5 (#4354)
+[80/100] deaef6ff 3 files, wakes 1, asks 0, 1.0s: Fix result of prefetch attribute values for children (#4352)
+[81/100] 2b32fc1c 1 files, wakes 0, asks 0, 0.1s: lint
+[82/100] e70a56f7 3 files, wakes 0, asks 0, 0.1s: Add priority field (#4351)
+[83/100] a79c8c21 10 files, wakes 1, asks 0, 2.1s: Add useful prefetch methods for bulk processing (#4350)
+[84/100] 97ba35f3 2 files, wakes 1, asks 0, 0.5s: Fix basket check id and translation (#4283)
+[85/100] fb65f157 1 files, wakes 0, asks 0, 0.5s: Don’t allow adding a product with negative quantity (#4338)
+[86/100] e2f77276 6 files, wakes 0, asks 0, 1.0s: Add support for Python 3.12 and Django 5.0 + 5.1. (#4345)
+[87/100] c6583f60 2 files, wakes 0, asks 0, 0.5s: [FEAT] Auto select existing user when an account already exists (#4325)
+[88/100] ce8380f2 1 files, wakes 0, asks 0, 0.4s: Prevent error when search query is not passed at all
+[89/100] 292742f7 1 files, wakes 0, asks 0, 0.4s: lint
+[90/100] b4a9528b 2 files, wakes 0, asks 0, 0.1s: fix: remove communication unused config files (#4282)
+[91/100] 9c6cc48e 2 files, wakes 0, asks 0, 0.1s: Missed django 4.2 upgrade DeleteView override fix (#4316)
+[92/100] 5ba48d98 2 files, wakes 0, asks 0, 0.5s: fix: typo in has_children value and tests of annotated list extra info (#4284)
+[93/100] 5cf3e2d7 2 files, wakes 0, asks 0, 0.1s: tests :white_check_mark: add missing line.num_allocated in test
+[94/100] 091e8179 4 files, wakes 0, asks 0, 0.2s: fix: typos in model field verbose name (#4285)
+[95/100] 67bb18e7 1 files, wakes 1, asks 0, 0.5s: fix: handle broken link for the missing image file (#4287)
+[96/100] 31287878 3 files, wakes 0, asks 1, 0.5s: fix :wrench: num_allocated in order line cannot be null
+[97/100] c25cf235 2 files, wakes 0, asks 0, 0.5s: refactor :package: raise value error if num_allocated is None while checking all
+[98/100] 20719874 1 files, wakes 0, asks 0, 0.0s: feat :star: add migration to set num_allocated to quantity if it is None
+[99/100] 0904f826 1 files, wakes 0, asks 0, 0.5s: fix :wrench: decline allocations when num_allocated is None
+[100/100] 5bc406d4 1 files, wakes 0, asks 0, 0.7s: fix: prevent insert error when creating deferred transaction by using sane defau
+{
+ "edits": 377,
+ "prompts": 8,
+ "wake_ups": 27,
+ "denies": 0,
+ "prompt_rate_per_10_edits": 0.212,
+ "wake_up_rate_per_20_edits": 1.432,
+ "function_statuses": {
+  "Verified pass": 21,
+  "Behavior difference \u2014 intent unknown": 32,
+  "Untested": 135
+ },
+ "top_untested_reasons": [
+  [
+   "inputs could not be set up (TypeError",
+   61
+  ],
+  [
+   "no input ran to completion",
+   45
+  ],
+  [
+   "needs a database",
+   26
+  ],
+  [
+   "inputs could not be set up (GuardBlocked",
+   2
+  ],
+  [
+   "needs a database connection (parameter connection)",
+   1
+  ]
+ ]
+}

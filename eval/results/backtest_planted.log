@@ -1,0 +1,15 @@
+harvest: tests exit 1; 4 failed, 613 passed, 1 skipped, 1358 warnings in 106.08s (0:01:46)
+/Users/diwashkuskusmiya/Desktop/Life Lane/Projects/Hatchathon/eval/work/oscar/src/oscar/apps/analytics/reports.py:93: RemovedInDjango2028Warning: Calling select_related() with no arguments is deprecated. Specify the fields to fetch instead.
+  queryset = UserRecord._default_manager.select_related().all()
+harvest has 871 functions, 3777 calls
+B01 flagged=True proved=False [('PercentageDiscountBenefit.apply', 'Untested', 'needs a database')]
+B02 flagged=True proved=False [('PercentageDiscountBenefit.apply', 'Untested', 'needs a database')]
+B03 flagged=True proved=False [('AbsoluteDiscountBenefit.apply', 'Untested', 'needs a database')]
+B04 flagged=True proved=True [('ShippingAbsoluteDiscountBenefit.shipping_discount', 'Behavior difference — intent unknown', '')]
+B05 flagged=True proved=True [('ShippingFixedPriceBenefit.shipping_discount', 'Behavior difference — intent unknown', '')]
+B06 flagged=True proved=True [('ShippingPercentageDiscountBenefit.shipping_discount', 'Behavior difference — intent unknown', '')]
+B07 flagged=True proved=True [('AbstractBenefit.round', 'Behavior difference — intent unknown', '')]
+B08 flagged=True proved=False [('CountCondition.is_satisfied', 'Untested', 'needs a database')]
+B09 flagged=True proved=False [('AbstractOrderAndItemCharges.calculate', 'Untested', 'needs a database')]
+B10 flagged=False proved=False [('FixedPrice.incl_tax', 'Verified pass', '')]
+{"applied": 10, "catch_rate_any_non_pass": 0.9, "catch_rate_proved_by_execution": 0.4}

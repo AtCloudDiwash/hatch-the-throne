@@ -369,3 +369,31 @@ def test_library_subclassing_popen_still_imports(svc):
     r = run_diff(svc, src, ["same", "uses_sub"])
     assert r["same"].status == differ.DONE
     assert r["uses_sub"].status == differ.UNTESTED and "subprocess" in r["uses_sub"].reason
+
+
+def test_guessed_inputs_that_old_code_rejects_are_not_evidence(svc):
+    base = "def h(request):\n    return request.user\n\ndef typed(n: int):\n    if n < 0:\n        raise ValueError('neg')\n    return n\n"
+    (svc / "svc.py").write_text(base)
+    commit_all(svc, "h")
+    assert run_script("session_start", {"cwd": str(svc), "session_id": "s3", "source": "startup"}).returncode == 0
+    r = run_diff(svc, "def h(request):\n    return request.user.name\n\ndef typed(n: int):\n    if n < 0:\n        raise ValueError('negative')\n    return n\n", ["h", "typed"])
+    assert r["h"].status == differ.UNTESTED and r["h"].dropped_invalid > 0 and not r["h"].differences
+    assert r["typed"].status == differ.DIFFERENT, "a typed parameter says the input was valid, so its exception still counts"
+
+
+def test_guessed_input_that_only_new_code_accepts_still_counts(svc):
+    base = "def h(x):\n    return x.real\n"
+    (svc / "svc.py").write_text(base)
+    commit_all(svc, "h")
+    assert run_script("session_start", {"cwd": str(svc), "session_id": "s3", "source": "startup"}).returncode == 0
+    r = run_diff(svc, "def h(x):\n    return getattr(x, 'real', None)\n", ["h"])
+    assert r["h"].status == differ.DIFFERENT
+
+
+def test_guessed_input_that_old_code_accepts_still_counts(svc):
+    base = "def h(x):\n    return str(x)\n"
+    (svc / "svc.py").write_text(base)
+    commit_all(svc, "h")
+    assert run_script("session_start", {"cwd": str(svc), "session_id": "s3", "source": "startup"}).returncode == 0
+    r = run_diff(svc, "def h(x):\n    return str(x) + '!'\n", ["h"])
+    assert r["h"].status == differ.DIFFERENT

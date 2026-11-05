@@ -1,6 +1,6 @@
 {
- "current": "M7 / T7.1 and T7.3",
- "next": "Run the A/B and the backtest; then compute T7.4.",
+ "current": "M7 / T7.2",
+ "next": "Record planted-bug results.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -395,10 +395,11 @@
   "T7.1": {
    "milestone": "M7",
    "title": "Backtest harness (FR-28)",
-   "status": "in_progress",
-   "evidence": "$ .venv/bin/pytest -q tests/test_backtest.py\nF..                                                                      [100%]\n=================================== FAILURES ===================================\n______________________________ test_replay_counts ______________________________\n\nhist = PosixPath('/private/var/folders/dw/qc6ky71119z0qhshhk8rl88r0000gn/T/pytest-of-diwashkuskusmiya/pytest-89/test_replay_counts0/svc')\ntmp_path = PosixPath('/private/var/folders/dw/qc6ky71119z0qhshhk8rl88r0000gn/T/pytest-of-diwashkuskusmiya/pytest-89/test_replay_counts0')\n\n    def test_replay_counts(hist, tmp_path):\n        cfg = cfgmod.load_config(str(hist))\n        r = backtest.replay(cfg, 10, (\"\",), {}, tmp_path / \"r.json\", log=lambda *_: None)\n        s = r[\"summary\"]\n>       assert s[\"edits\"] == 4 and s[\"wake_ups\"] == 1 and s[\"prompts\"] == 1 and s[\"denies\"] == 0\nE       assert (5 == 4)\n\ntests/test_backtest.py:32: AssertionError\n=========================== short test summary info ============================\nFAILED tests/test_backtest.py::test_replay_counts - assert (5 == 4)\n1 failed, 2 passed in 2.41s\n(exit 1)",
+   "status": "done",
+   "evidence": "$ python3 -c \"import json;s=json.load(open('eval/results/backtest/replay.json'))['summary'];print({k:s[k] for k in ('edits','prompts','wake_ups','denies','prompt_rate_per_10_edits','wake_up_rate_per_20_edits','function_statuses')})\"; .venv/bin/pytest -q tests/test_backtest.py\n{'edits': 377, 'prompts': 8, 'wake_ups': 24, 'denies': 0, 'prompt_rate_per_10_edits': 0.212, 'wake_up_rate_per_20_edits': 1.273, 'function_statuses': {'Verified pass': 21, 'Behavior difference — intent unknown': 27, 'Untested': 140}}\n...                                                                      [100%]\n3 passed in 2.73s\n(exit 0)",
    "dl": [
-    "DL-058"
+    "DL-058",
+    "DL-061"
    ],
    "commit": "eb3db24"
   },
@@ -415,7 +416,8 @@
    "dl": [
     "DL-059",
     "DL-060"
-   ]
+   ],
+   "commit": "a1ba430"
   },
   "T7.4": {
    "milestone": "M7",

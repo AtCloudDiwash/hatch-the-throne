@@ -1,0 +1,213 @@
+{
+ "bugs": [
+  {
+   "id": "B01",
+   "what": "Percentage benefit divides by 10, not 100",
+   "file": "src/oscar/apps/offer/benefits.py",
+   "applied": true,
+   "flagged": true,
+   "proved": false,
+   "functions": [
+    {
+     "qualname": "PercentageDiscountBenefit.apply",
+     "status": "Untested",
+     "reason": "needs a database",
+     "inputs_compared": 70,
+     "dropped": 0,
+     "example": null
+    }
+   ],
+   "breaks": []
+  },
+  {
+   "id": "B02",
+   "what": "Percentage benefit loses its 100% cap",
+   "file": "src/oscar/apps/offer/benefits.py",
+   "applied": true,
+   "flagged": true,
+   "proved": false,
+   "functions": [
+    {
+     "qualname": "PercentageDiscountBenefit.apply",
+     "status": "Untested",
+     "reason": "needs a database",
+     "inputs_compared": 70,
+     "dropped": 0,
+     "example": null
+    }
+   ],
+   "breaks": []
+  },
+  {
+   "id": "B03",
+   "what": "Absolute benefit can exceed the value of the items",
+   "file": "src/oscar/apps/offer/benefits.py",
+   "applied": true,
+   "flagged": true,
+   "proved": false,
+   "functions": [
+    {
+     "qualname": "AbsoluteDiscountBenefit.apply",
+     "status": "Untested",
+     "reason": "needs a database",
+     "inputs_compared": 70,
+     "dropped": 0,
+     "example": null
+    }
+   ],
+   "breaks": []
+  },
+  {
+   "id": "B04",
+   "what": "Absolute shipping discount can exceed the charge",
+   "file": "src/oscar/apps/offer/benefits.py",
+   "applied": true,
+   "flagged": true,
+   "proved": true,
+   "functions": [
+    {
+     "qualname": "ShippingAbsoluteDiscountBenefit.shipping_discount",
+     "status": "Behavior difference \u2014 intent unknown",
+     "reason": "",
+     "inputs_compared": 78,
+     "dropped": 0,
+     "example": {
+      "call": "shipping_discount(charge='', currency='')",
+      "before": "raises TypeError: '<' not supported between instances of 'NoneType' and 'str'",
+      "after": "None"
+     }
+    }
+   ],
+   "breaks": []
+  },
+  {
+   "id": "B05",
+   "what": "Fixed-price shipping returns the price, not the discount",
+   "file": "src/oscar/apps/offer/benefits.py",
+   "applied": true,
+   "flagged": true,
+   "proved": true,
+   "functions": [
+    {
+     "qualname": "ShippingFixedPriceBenefit.shipping_discount",
+     "status": "Behavior difference \u2014 intent unknown",
+     "reason": "",
+     "inputs_compared": 78,
+     "dropped": 0,
+     "example": {
+      "call": "shipping_discount(charge=Decimal(\"10.00\"), currency='GBP')",
+      "before": "9.00",
+      "after": "1.00"
+     }
+    }
+   ],
+   "breaks": []
+  },
+  {
+   "id": "B06",
+   "what": "Shipping percentage discount rounds to ten cents",
+   "file": "src/oscar/apps/offer/benefits.py",
+   "applied": true,
+   "flagged": true,
+   "proved": true,
+   "functions": [
+    {
+     "qualname": "ShippingPercentageDiscountBenefit.shipping_discount",
+     "status": "Behavior difference \u2014 intent unknown",
+     "reason": "",
+     "inputs_compared": 78,
+     "dropped": 0,
+     "example": {
+      "call": "shipping_discount(charge=Decimal(\"12.00\"), currency='GBP')",
+      "before": "6.00",
+      "after": "6.0"
+     }
+    }
+   ],
+   "breaks": []
+  },
+  {
+   "id": "B07",
+   "what": "Benefit rounding helper rounds to ten cents",
+   "file": "src/oscar/apps/offer/abstract_models.py",
+   "applied": true,
+   "flagged": true,
+   "proved": true,
+   "functions": [
+    {
+     "qualname": "AbstractBenefit.round",
+     "status": "Behavior difference \u2014 intent unknown",
+     "reason": "",
+     "inputs_compared": 10,
+     "dropped": 0,
+     "example": {
+      "call": "round(amount=Decimal(\"1.500\"), currency='GBP', round_type='ROUND_DOWN')",
+      "before": "1.50",
+      "after": "1.5"
+     }
+    }
+   ],
+   "breaks": []
+  },
+  {
+   "id": "B08",
+   "what": "Count condition needs one more item than configured",
+   "file": "src/oscar/apps/offer/conditions.py",
+   "applied": true,
+   "flagged": true,
+   "proved": false,
+   "functions": [
+    {
+     "qualname": "CountCondition.is_satisfied",
+     "status": "Untested",
+     "reason": "needs a database",
+     "inputs_compared": 67,
+     "dropped": 0,
+     "example": null
+    }
+   ],
+   "breaks": []
+  },
+  {
+   "id": "B09",
+   "what": "Per-item shipping ignores quantity",
+   "file": "src/oscar/apps/shipping/abstract_models.py",
+   "applied": true,
+   "flagged": true,
+   "proved": false,
+   "functions": [
+    {
+     "qualname": "AbstractOrderAndItemCharges.calculate",
+     "status": "Untested",
+     "reason": "needs a database",
+     "inputs_compared": 0,
+     "dropped": 0,
+     "example": null
+    }
+   ],
+   "breaks": []
+  },
+  {
+   "id": "B10",
+   "what": "Fixed price with tax drops the tax",
+   "file": "src/oscar/apps/partner/prices.py",
+   "applied": true,
+   "flagged": false,
+   "proved": false,
+   "functions": [
+    {
+     "qualname": "FixedPrice.incl_tax",
+     "status": "Verified pass",
+     "reason": "",
+     "inputs_compared": 10,
+     "dropped": 0,
+     "example": null
+    }
+   ],
+   "breaks": []
+  }
+ ],
+ "applied": 10,
+ "catch_rate_any_non_pass": 0.9,
+ "catch_rate_proved_by_execution": 0.4
+}

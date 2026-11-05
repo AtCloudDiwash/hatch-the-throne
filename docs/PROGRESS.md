@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M7 / T7.1 and T7.3
-- **Next step:** Run the A/B and the backtest; then compute T7.4.
+- **Current milestone and task:** M7 / T7.2
+- **Next step:** Record planted-bug results.
 
 ## Status
 
@@ -46,9 +46,9 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T6.3 | M6 | done | [x] Waive and mode skills (FR-24, FR-23) | DL-055 | f1634f9 |
 | T6.4 | M6 | done | [x] Pin (FR-25) | DL-056 | f36de53 |
 | T6.5 | M6 | done | [x] Status skill and remaining MCP tools (FR-21, FR-22) | DL-057 | f9483e9 |
-| T7.1 | M7 | in_progress | [~] Backtest harness (FR-28) | DL-058 | eb3db24 |
+| T7.1 | M7 | done | [x] Backtest harness (FR-28) | DL-058 DL-061 | eb3db24 |
 | T7.2 | M7 | pending | [ ] Seeded bugs (FR-28) |  |  |
-| T7.3 | M7 | in_progress | [~] Guard on/off (FR-29) | DL-059 DL-060 |  |
+| T7.3 | M7 | in_progress | [~] Guard on/off (FR-29) | DL-059 DL-060 | a1ba430 |
 | T7.4 | M7 | pending | [ ] Budget check (D-013) |  |  |
 | T8.1 | M8 | pending | [ ] Pin minimum Claude Code version (NFR-10) |  |  |
 | T8.2 | M8 | pending | [ ] Live E2E-1 to E2E-8 |  |  |
@@ -497,29 +497,14 @@ $ .venv/bin/pytest -q tests/test_stop_controls.py -k 'status_lists or contract_a
 (exit 0)
 ```
 
-### T7.1 Backtest harness (FR-28) (in_progress)
+### T7.1 Backtest harness (FR-28) (done)
 
 ```text
-$ .venv/bin/pytest -q tests/test_backtest.py
-F..                                                                      [100%]
-=================================== FAILURES ===================================
-______________________________ test_replay_counts ______________________________
-
-hist = PosixPath('/private/var/folders/dw/qc6ky71119z0qhshhk8rl88r0000gn/T/pytest-of-diwashkuskusmiya/pytest-89/test_replay_counts0/svc')
-tmp_path = PosixPath('/private/var/folders/dw/qc6ky71119z0qhshhk8rl88r0000gn/T/pytest-of-diwashkuskusmiya/pytest-89/test_replay_counts0')
-
-    def test_replay_counts(hist, tmp_path):
-        cfg = cfgmod.load_config(str(hist))
-        r = backtest.replay(cfg, 10, ("",), {}, tmp_path / "r.json", log=lambda *_: None)
-        s = r["summary"]
->       assert s["edits"] == 4 and s["wake_ups"] == 1 and s["prompts"] == 1 and s["denies"] == 0
-E       assert (5 == 4)
-
-tests/test_backtest.py:32: AssertionError
-=========================== short test summary info ============================
-FAILED tests/test_backtest.py::test_replay_counts - assert (5 == 4)
-1 failed, 2 passed in 2.41s
-(exit 1)
+$ python3 -c "import json;s=json.load(open('eval/results/backtest/replay.json'))['summary'];print({k:s[k] for k in ('edits','prompts','wake_ups','denies','prompt_rate_per_10_edits','wake_up_rate_per_20_edits','function_statuses')})"; .venv/bin/pytest -q tests/test_backtest.py
+{'edits': 377, 'prompts': 8, 'wake_ups': 24, 'denies': 0, 'prompt_rate_per_10_edits': 0.212, 'wake_up_rate_per_20_edits': 1.273, 'function_statuses': {'Verified pass': 21, 'Behavior difference — intent unknown': 27, 'Untested': 140}}
+...                                                                      [100%]
+3 passed in 2.73s
+(exit 0)
 ```
 
 ### T7.3 Guard on/off (FR-29) (in_progress)

@@ -1,0 +1,5519 @@
+{
+ "summary": {
+  "edits": 377,
+  "prompts": 8,
+  "wake_ups": 24,
+  "denies": 0,
+  "prompt_rate_per_10_edits": 0.212,
+  "wake_up_rate_per_20_edits": 1.273,
+  "function_statuses": {
+   "Verified pass": 21,
+   "Behavior difference \u2014 intent unknown": 27,
+   "Untested": 140
+  },
+  "top_untested_reasons": [
+   [
+    "inputs could not be set up (TypeError",
+    61
+   ],
+   [
+    "no input ran to completion",
+    49
+   ],
+   [
+    "needs a database",
+    27
+   ],
+   [
+    "inputs could not be set up (GuardBlocked",
+    2
+   ],
+   [
+    "needs a database connection (parameter connection)",
+    1
+   ]
+  ]
+ },
+ "commits": [
+  {
+   "commit": "a5ed3c9c17d4cf6ee18aa9795b493172416ab68b",
+   "subject": "chore \u267b\ufe0f bump version to 4.2.2",
+   "edits": [
+    {
+     "file": "src/oscar/__init__.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "get_short_version",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "get_version",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": {
+        "call": "get_version()",
+        "before": "'4.2.1'",
+        "after": "'4.2.2'"
+       }
+      }
+     ]
+    }
+   ],
+   "seconds": 0.8
+  },
+  {
+   "commit": "88b8c9d454533b9cfeba655fa0e9c092bf043df0",
+   "subject": "[FEAT] Store two-step bulk-action selections as queries, not IDs (#4644)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/bulk_actions.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "SetProductPriceAction.execute",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ProductBulkActionForm.__init__",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 75,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "SetProductPriceForm.__init__",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 75,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "SetProductPriceForm.clean",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ProductBulkActionConfirmView.get_context_data",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 80,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "ProductBulkActionConfirmView.get_form_kwargs",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "ProductBulkActionConfirmView.get_objects",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "ProductBulkActionConfirmView.get_parent_queryset",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "ProductBulkActionConfirmView.get_selectable_queryset",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "ProductBulkActionConfirmView.get_standalone_queryset",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "ProductBulkActionConfirmView.get_structure_counts",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/defaults.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/views/generic.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "IntermediateBulkActionView.__init__",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "IntermediateBulkActionView.dispatch",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "IntermediateBulkActionView.get",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "IntermediateBulkActionView.get_context_data",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 80,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "IntermediateBulkActionView.post",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "IntermediateBulkEditMixin._handle_intermediate_action",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/functional/dashboard/test_catalogue_bulk_actions.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 2.0
+  },
+  {
+   "commit": "16353384039253cc4e6e9d7684d5bd63522dffbc",
+   "subject": "Facet product type on an untokenized field (#4468) (#4634)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/search/search_indexes.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/search/test_search_indexes.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "e9356a0e7db5eee516ab48ca7d3ef87eed9dfbf7",
+   "subject": "feat \u2728 release 4.2.1",
+   "edits": [
+    {
+     "file": "src/oscar/__init__.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "get_short_version",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "get_version",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": {
+        "call": "get_version()",
+        "before": "'4.2'",
+        "after": "'4.2.1'"
+       }
+      }
+     ]
+    }
+   ],
+   "seconds": 0.4
+  },
+  {
+   "commit": "f7ef277cc2522b99525174307d7f8a4f8896e3c4",
+   "subject": "Don't HTML-escape email subject templates (#3737) (#4631)",
+   "edits": [
+    {
+     "file": "tests/integration/communication/test_communicationeventtype.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "73a6876f6304866bf93a909d46f2a2c3a69e652a",
+   "subject": "hide date fields when date is not supported (#4630)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/dashboard/reports/forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ReportForm.clean",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/reports/reports.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_reports.py",
+     "deny": false,
+     "ask": true,
+     "breaks": [
+      "test deleted: ReportsDashboardTests.test_conditional_offers_with_date_range",
+      "test deleted: ReportsDashboardTests.test_conditional_offers_with_date_range_download"
+     ],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/dashboard/test_reports_form.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "954e1414d4936f14401f7c701f6823becce6383a",
+   "subject": "Fix Unicode slug redirect loop (#4599) (#4619)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ProductDetailView.redirect_if_necessary",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/search/views/catalogue.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ProductCategoryView.redirect_if_necessary",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/functional/catalogue/test_catalogue.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.9
+  },
+  {
+   "commit": "63390038740d6a7314cc341bf2f37230d2f282fd",
+   "subject": "Fix MultipleObjectsReturned when reordering a product with multiple option varia",
+   "edits": [
+    {
+     "file": "src/oscar/apps/order/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AbstractLine.is_available_to_reorder",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: Abstract models cannot be instantiated.)",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/integration/order/test_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "605be07d768ed018f1e2ed62df27a9343c90a733",
+   "subject": "Fix the search views crashing on an invalid form (#4625)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/search/views/base.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "BaseSearchView.get_context_data",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "BaseSearchView.get_queryset",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": {
+        "call": "get_queryset()",
+        "before": "<SearchQuerySet>",
+        "after": "<SearchQuerySet>"
+       }
+      }
+     ]
+    },
+    {
+     "file": "tests/integration/search/test_views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.4
+  },
+  {
+   "commit": "076197f4ccd5e1785dbbdf99075d601b3d510c7d",
+   "subject": "fix error when there is an empty option group (#4629)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ProductForm.add_attribute_fields",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: ProductForm.__init__() missing 1 required positional argument: 'product_class')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "_attr_multi_option_field",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "_attr_option_field",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/integration/dashboard/test_catalogue_form.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "0dfeaa797f4ed3c733e0449e70bc0a1da1a37203",
+   "subject": "Fix voucher set usage sorting (#4616)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/dashboard/vouchers/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "VoucherSetListView.get_queryset",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/integration/dashboard/test_voucher_views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "97f3e4a93621513f5645cb483af0aec6db74fbc7",
+   "subject": "Fix switching an offer benefit or condition back from a pre-defined one (#4617)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/dashboard/offers/forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "BenefitForm.save",
+       "status": "Untested",
+       "reason": "inputs could not be set up (GuardBlocked: database is blocked during the behavioral diff)",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "ConditionForm.save",
+       "status": "Untested",
+       "reason": "inputs could not be set up (GuardBlocked: database is blocked during the behavioral diff)",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/integration/dashboard/test_offer_forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "eec2a517c1bb3bc4cbd12d1228c5f6c158fdf058",
+   "subject": "Raise ImproperlyConfigured when a custom Benefit has no range (#4620)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/offer/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AbstractBenefit.get_applicable_lines",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/integration/offer/test_benefit.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.6
+  },
+  {
+   "commit": "b40a18ed1f3f5731e50d0ffe981a7bb6d84260ef",
+   "subject": "fix \ud83d\udc1b add get_queryset to notification UpdateView (#4623)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/communication/notifications/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/customer/test_notification.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "e35ee85a643d85b5eadaa3c273a26167afcb7a1d",
+   "subject": "fix: bulk actions discarding a returned HttpResponse (#4614)",
+   "edits": [
+    {
+     "file": "src/oscar/views/generic.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "BulkEditMixin.post",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/functional/dashboard/test_order.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_review.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "04a6e277bca2f473a1e695a63d309890fefb93b6",
+   "subject": "feat \u2728 release 4.2 (#4611)",
+   "edits": [
+    {
+     "file": "src/oscar/__init__.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "get_short_version",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": {
+        "call": "get_short_version()",
+        "before": "'4.1'",
+        "after": "'4.2'"
+       }
+      },
+      {
+       "qualname": "get_version",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": {
+        "call": "get_version()",
+        "before": "'4.1'",
+        "after": "'4.2'"
+       }
+      }
+     ]
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "87d6cd37c3a4005abbf894383c154145d072949b",
+   "subject": "lint",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "4f7c51d918275835731bd3956447eec8dc9faf71",
+   "subject": "feat \u2b50 preserve basket line order when creating order lines (#4598)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/order/utils.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "OrderCreator.place_order",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/integration/order/test_creator.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "d9a2375224d03fe5001a6d2d3e0a75423c441ec8",
+   "subject": "rework bulk actions in the catalogue dashboard (#4570)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/communication/notifications/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "CatalogueDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "CatalogueDashboardConfig.get_urls",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "CatalogueDashboardConfig.ready",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/bulk_actions.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/mixins.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "PartnerProductFilterMixin.filter_queryset",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/tables.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/utils.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/defaults.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/templatetags/form_tags.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/views/generic.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "BulkEditMixin.get_objects",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "BulkEditMixin.post",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/functional/dashboard/test_catalogue.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_catalogue_bulk_actions.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/dashboard/test_catalogue_bulk_actions.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 1.6
+  },
+  {
+   "commit": "7cbc4a57b3bb685cc443660a2f7c75cb1903200d",
+   "subject": "[Fix] Prevent deadlock between concurrent order placements (#4594)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/order/utils.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "OrderCreator.place_order",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/test/utils.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/order/test_creator.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/order/test_stockrecord_locking.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.7
+  },
+  {
+   "commit": "c0608e0d167e5aadb0508a346afd3ad33b2961fe",
+   "subject": "Fix warning caused by Category manager not subclassing Treebeard's manager (#458",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/catalogue/managers.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "d116b86aa2a730744ee092cfca31a845125aca65",
+   "subject": "Add hok for attributes to copy to the new lines",
+   "edits": [
+    {
+     "file": "src/oscar/apps/customer/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "OrderDetailView.do_reorder",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "OrderLineView.do_reorder",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "f37ec037c44088fb95f2f48ffc797dffb03ac65f",
+   "subject": "feat \u2b50 allow guest checkout for customers with an existing account (#4581)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/checkout/forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "GatewayForm.clean",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/defaults.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/checkout/test_guest_checkout.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "41a6736de27f1566ff79804de4257ee2bd48cbc9",
+   "subject": "early exit when there are no options (#4578)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/basket/forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AddToBasketForm._create_product_fields",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: AddToBasketForm.__init__() missing 2 required positional arguments: 'basket' and 'product')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "d35782ec2493bcb335510cc4044dcc4844a3dc53",
+   "subject": "refactor \ud83d\udce6 enable extending shippingeventquantity model (#4577)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/order/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/order/models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "2f2f9c3f4c3304ddb267102cb38928a3a2c62650",
+   "subject": "add email to report (#4576)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/analytics/reports.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "UserReportCSVFormatter.generate_csv",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "dc6de5a44457f578650b54ea120b9a546e4bcc67",
+   "subject": "fix #4557: add Django 6 support (#4564)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ReverseStartsWith.process_lhs",
+       "status": "Untested",
+       "reason": "needs a database connection (parameter connection)",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "9d823f8006f75da4c59aab75750a3ea91769f9ee",
+   "subject": "fix: correct namespace for notifications-inbox (#4567)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/communication/notifications/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "UpdateView.get_success_response",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.4
+  },
+  {
+   "commit": "eeb5a7dd4af447f5fa9b08652e9a256bca326a56",
+   "subject": "[FEAT] Make email search more flexible (#4558)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/dashboard/users/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "IndexView.apply_search_filters",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/functional/dashboard/test_user.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "c4ca87c6b0dae7c0e6fd75ad537806d0e216047a",
+   "subject": "deps: compatibility with django-treebeard 5.0 (#4556)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "AbstractCategory.fix_tree",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 4,
+       "dropped": 0,
+       "example": {
+        "call": "fix_tree(destructive=True, fix_paths=True)",
+        "before": "raises AttributeError: Manager isn't available; AbstractCategory is abstract",
+        "after": "raises TypeError: AbstractCategory.fix_tree() takes from 1 to 2 positional arguments but 3 were given"
+       }
+      },
+      {
+       "qualname": "AbstractCategory.get_num_children",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: Abstract models cannot be instantiated.)",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "AbstractCategory.has_children",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: Abstract models cannot be instantiated.)",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/functional/dashboard/test_category.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "de217920de717fa894e40f425bfd61bc800721a2",
+   "subject": "feat \u2b50 add code in product review model (#4552)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/reviews/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/catalogue/reviews/admin.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/catalogue/reviews/migrations/0005_productreview_code.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "16df1e7597881c20fbfbf6580f6b6304ebb128a3",
+   "subject": "[FEAT] Add code in address models (#4551)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/address/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/address/admin.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/address/migrations/0007_useraddress_code.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/basket/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/catalogue/models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/order/admin.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/order/migrations/0021_billingaddress_code_shippingaddress_code.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/partner/migrations/0007_partneraddress_code.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/_site/apps/partner/migrations/0008_partneraddress_code.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/core/test_autoslugfield.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/core/test_loading.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.3
+  },
+  {
+   "commit": "112fc57029af07a218d73b36362a1ab9a44cd120",
+   "subject": "[FEAT] Add missing search fields in django admin models (#4543)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/address/admin.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/analytics/admin.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/basket/admin.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/catalogue/admin.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/communication/admin.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/customer/admin.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/offer/admin.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/order/admin.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/partner/admin.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/payment/admin.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/shipping/admin.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/wishlists/admin.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.2
+  },
+  {
+   "commit": "125b59170d60e112849fb0e464d8aa5ac63ba9f6",
+   "subject": "[FEAT] Bulk update public visibility in product and category listing (#4537)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/admin.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/mixins.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/tables.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_catalogue.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_category.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.2
+  },
+  {
+   "commit": "1d273d4a21c1485f94d4cf7e3df433677d7a06ab",
+   "subject": "[FEAT] Add option to select objects across all pages (#4535)",
+   "edits": [
+    {
+     "file": "src/oscar/views/generic.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "BulkEditMixin.post",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/functional/dashboard/test_order.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "ce8f44c2ac3419f8b45ac3045e8ecb768cbc3dd1",
+   "subject": "[FEAT] Category search form in dashboard (#4536)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/tables.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "CategoryDetailListView.get_context_data",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "CategoryListView.get_context_data",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "CategoryListView.get_queryset",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": {
+        "call": "get_queryset()",
+        "before": "raises AttributeError: 'ManagerFromCategoryQuerySet' object has no attribute 'get_root_nodes'",
+        "after": "raises AttributeError: 'CategoryListView' object has no attribute 'request'"
+       }
+      }
+     ]
+    },
+    {
+     "file": "tests/functional/dashboard/test_category.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "23d04a763cbec787b4ba3c70d71ae39276894a97",
+   "subject": "Add custom granular permission checks for dashboards (#4507)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "CatalogueDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/communications/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "CommunicationsDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/offers/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "OffersDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/orders/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "OrdersDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/pages/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "PagesDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/partners/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "PartnersDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/permissions.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "DashboardPermission.get",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 11,
+       "dropped": 0,
+       "example": {
+        "call": "get(cls=<type from a test>, app_label='myauth', 'view_user')",
+        "before": "raises KeyError: <class 'oscar.apps.dashboard.permissions.DashboardPermission'>",
+        "after": "[\"<class 'oscar.apps.dashboard.permissions.DashboardPermission'>.myauth\", \"<class 'oscar.apps.dashboard.permissions.DashboardPermission'>.view_user\"]"
+       }
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/ranges/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "RangesDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/reports/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ReportsDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/reviews/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ReviewsDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/shipping/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ShippingDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "ShippingDashboardConfig.ready",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/users/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "UsersDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/vouchers/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "VouchersDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/templatetags/dashboard_tags.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_catalogue.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_catalogue_option.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_catalogue_option_group.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_category.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_communication.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_dashboard.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_offer.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_order.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_page.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_partner.py",
+     "deny": false,
+     "ask": true,
+     "breaks": [
+      "test deleted: TestPartnerDashboard.test_allows_a_partner_user_to_be_created"
+     ],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_product.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_range.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_reports.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_review.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_shipping.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_user.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_voucher.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/dashboard/test_permissions.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/templatetags/test_dashboard_permissions.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/unit/dashboard/test_permissions.py",
+     "deny": false,
+     "ask": true,
+     "breaks": [
+      "test deleted: DashboardPermissionCheckTestCase.test_user_has_dashboard_permissions"
+     ],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/unit/dashboard/test_tables.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 5.5
+  },
+  {
+   "commit": "8c4c1b30bf6a47cff1010335b6dd165189ca3a97",
+   "subject": "feat \u2728 release 4.1 (#4526)",
+   "edits": [
+    {
+     "file": "src/oscar/__init__.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "get_short_version",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": {
+        "call": "get_short_version()",
+        "before": "'4.0'",
+        "after": "'4.1'"
+       }
+      },
+      {
+       "qualname": "get_version",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": {
+        "call": "get_version()",
+        "before": "'4.0.1a1'",
+        "after": "'4.1'"
+       }
+      }
+     ]
+    }
+   ],
+   "seconds": 0.4
+  },
+  {
+   "commit": "4441ac897182c8a82612a0bec57f7a87d187d45a",
+   "subject": "feat \u2b50 update product value attribute if its different (#4509)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/product_attributes.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ProductAttributesContainer.prepare_save",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 10,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/integration/catalogue/test_attributes.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "cc6581c8b96c1324c85c648af5777f221b55bec1",
+   "subject": "[Fix] Exclude categories from menu if their ancestor is excluded (#4525)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/managers.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "CategoryQuerySet.for_menu",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/integration/catalogue/test_category.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.4
+  },
+  {
+   "commit": "a76dce81f0838addcb17f5a925100adfebdd9403",
+   "subject": "use get_extra_context for the confirmation email (#4521)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/customer/alerts/utils.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "AlertsDispatcher.get_extra_context",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 77,
+       "dropped": 0,
+       "example": {
+        "call": "get_extra_context(alert=3, hurry_mode=3)",
+        "before": "{'alert': 3, 'hurry': 3}",
+        "after": "raises TypeError: AlertsDispatcher.get_extra_context() takes 2 positional arguments but 3 were given"
+       }
+      },
+      {
+       "qualname": "AlertsDispatcher.send_product_alert_confirmation_email_for_user",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "AlertsDispatcher.send_product_alert_email_for_user",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "917700987718d306c4be6c3f7d2e9c68cd966aef",
+   "subject": "feat \u2b50 track order analytics event (#4520)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/checkout/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ThankYouView.get_context_data",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/order/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/order/migrations/0019_order_analytics_tracked.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/order/migrations/0020_alter_order_analytics_tracked.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "8908ff3558a1fe069ac65a8c4204a060a42b3144",
+   "subject": "add email check for anonymous order status view (#4503)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/customer/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "CustomerConfig.get_urls",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "CustomerConfig.ready",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/customer/forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/customer/mixins.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/customer/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/customer/test_order_status.py",
+     "deny": false,
+     "ask": true,
+     "breaks": [
+      "test deleted: TestAnAnonymousUser.test_gets_a_404_when_requesting_an_unknown_order",
+      "test deleted: TestAnAnonymousUser.test_gets_404_when_using_incorrect_hash"
+     ],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "ae5edd439435baf9cb53d3eb99c3c5952934132f",
+   "subject": "fix: prevent ThankYouView from just showing the last order to superusers (#4501)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/checkout/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ThankYouView.get_object",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 80,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "f0179c430ea1d80469f4fe88f6709cd34ee34501",
+   "subject": "fix: validate redirect_url to prevent invalid redirects (#4495)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/customer/forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "EmailUserCreationForm.clean_redirect_url",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 5,
+       "dropped": 0,
+       "example": {
+        "call": "clean_redirect_url()",
+        "before": "'/not-a-real-view'",
+        "after": "'/accounts/'"
+       }
+      }
+     ]
+    },
+    {
+     "file": "tests/unit/customer/test_forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "9c8a8fca258e803ee15b29ae5d917ccaad103e85",
+   "subject": "posibility for exclude menu items from menu (#4491)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/catalogue/managers.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/catalogue/migrations/0032_category_exclude_from_menu_category_long_description.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/templatetags/category_tags.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "get_annotated_list",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 76,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/_site/apps/catalogue/migrations/0032_category_exclude_from_menu_category_long_description.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.6
+  },
+  {
+   "commit": "2a891e83afcc5c076db4f5e7a8df776805657cea",
+   "subject": "Fix: Avoid crash when Benefit.range is None (#4489)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/offer/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "BaseOfferMixin.description",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 4,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/functional/test_offer.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "9bc531349519c4448eaec5d4c402f9bdcebd85bb",
+   "subject": "Admin logout button should use POST as django 5 no longer supports is through GE",
+   "edits": [
+    {
+     "file": "tests/functional/dashboard/test_catalogue.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_catalogue_option.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_catalogue_option_group.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_category.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_communication.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_offer.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_page.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_partner.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_product.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_range.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_reports.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_review.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_shipping.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_user.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.3
+  },
+  {
+   "commit": "b87254a84f4d43145a94f5a9a2a8f73ebbe351d8",
+   "subject": "Correction of the if condition in product_list.html because would never enter in",
+   "edits": [
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ProductListView.get_context_data",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "ff901927e81738bc353fba982365a33bdafa8e6a",
+   "subject": "Fix migration for verbose name texts (#4469)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/migrations/0031_productcategoryhierarchy.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "8192e3c09a6d19d79a91ded46165519bcac0aca4",
+   "subject": "get product category hierarchy with get_model instead of get_class",
+   "edits": [
+    {
+     "file": "src/oscar/apps/offer/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AbstractRange.product_queryset",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: Abstract models cannot be instantiated.)",
+       "inputs_compared": 10,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/offer/queryset.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "RangeQuerySet.get_category_query",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 10,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.9
+  },
+  {
+   "commit": "c1f24c029ca7632cad8d13e845f7e2d6d05eb0ce",
+   "subject": "FEAT: Add postgres materialised view to the ProductCategory model to increase pe",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/catalogue/migrations/0030_auto_20250217_1247.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/catalogue/migrations/0031_productcategoryhierarchy.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/catalogue/models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/catalogue/receivers.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/offer/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AbstractRange.product_queryset",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: Abstract models cannot be instantiated.)",
+       "inputs_compared": 10,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/offer/queryset.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "RangeQuerySet.contains_product",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 10,
+       "dropped": 0,
+       "example": {
+        "call": "contains_product(product=<Product from a test>)",
+        "before": "<RangeQuerySet>",
+        "after": "<RangeQuerySet>"
+       }
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/checks.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "startup_check",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/defaults.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/_site/apps/catalogue/migrations/0030_auto_20250217_1247.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/_site/apps/catalogue/migrations/0031_productcategoryhierarchy.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/offer/test_range.py",
+     "deny": false,
+     "ask": true,
+     "breaks": [
+      "assertion removed from TestWholeSiteRange.test_category_blacklisting: self.assertNotIn(self.range, models.Range.objects.contains_product(self.prod))",
+      "assertion removed from TestRangeQuerySet.test_category: self.assertEqual( ranges.count(), 2, \"Since the parent category is part of the r"
+     ],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 1.5
+  },
+  {
+   "commit": "6625d6979a4a7c663b7b5263dabd737c908953a2",
+   "subject": "revert back the version change",
+   "edits": [
+    {
+     "file": "src/oscar/__init__.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "get_short_version",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "get_version",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": {
+        "call": "get_version()",
+        "before": "'4.0'",
+        "after": "'4.0.1a1'"
+       }
+      }
+     ]
+    }
+   ],
+   "seconds": 0.4
+  },
+  {
+   "commit": "70dbe49bf8ca39f57f6e64f0f12576a83b00b08c",
+   "subject": "Up versions",
+   "edits": [
+    {
+     "file": "src/oscar/__init__.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "get_short_version",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "get_version",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": {
+        "call": "get_version()",
+        "before": "'4.0a1'",
+        "after": "'4.0'"
+       }
+      }
+     ]
+    }
+   ],
+   "seconds": 0.4
+  },
+  {
+   "commit": "b74d83ca4a7479b5dbbc6843a4e79d0caaac2c6a",
+   "subject": "[Fix] Resolve rounding errors (#4455)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/basket/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "AbstractBasket._get_total",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 8,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "AbstractLine._tax_ratio",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 10,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "AbstractLine.get_price_breakdown",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 10,
+       "dropped": 0,
+       "example": {
+        "call": "get_price_breakdown()",
+        "before": "[(9.60000, 8.00, 2)]",
+        "after": "[(9.60000, 8.0000, 2)]"
+       }
+      },
+      {
+       "qualname": "AbstractLine.line_price_excl_tax_incl_discounts",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 10,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "AbstractLine.line_price_incl_tax_incl_discounts",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 10,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/partner/strategy.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/shipping/methods.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "TaxInclusiveOfferDiscount.calculate_excl_tax",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 4,
+       "dropped": 0,
+       "example": {
+        "call": "calculate_excl_tax(base_charge=<Price from a test>, incl_tax=Decimal(\"1.00\"))",
+        "before": "1.00",
+        "after": "1.0000"
+       }
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/core/utils.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/basket/test_total.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/order/test_creator.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 1.1
+  },
+  {
+   "commit": "0eac1729650f93dc9337dd69b12f5f2198584f36",
+   "subject": "fix \ud83d\udc1b resolve multiple backend error in race condition (#4457)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/customer/mixins.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "RegisterUserMixin.register_user",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "c14f6fbcb15b1b84d0f72329ee18062b10802f11",
+   "subject": "bug fix: AbstractProduct.primary_images() should check against ProductImage._met",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AbstractProduct.primary_image",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 3,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "bc4d13869d021f21179ed8796e6d697408acd2e9",
+   "subject": "[Fix] Resolve rounding error (#4448)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/basket/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "AbstractBasket._get_total",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 8,
+       "dropped": 0,
+       "example": {
+        "call": "_get_total(model_property='line_tax')",
+        "before": "87.2000",
+        "after": "87.20"
+       }
+      },
+      {
+       "qualname": "AbstractLine.line_price_excl_tax_incl_discounts",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 10,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/customer/alerts/utils.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AlertsDispatcher.send_product_alert_email_for_user",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/integration/order/test_creator.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.9
+  },
+  {
+   "commit": "4dc248a6382cbc26d95644925467e143fa6debcf",
+   "subject": "Make setuptools get dynamic version from setup.py rather than the pyprojectoml. ",
+   "edits": [
+    {
+     "file": "src/oscar/__init__.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.0
+  },
+  {
+   "commit": "c0ef4468b272d95879a7700f521bdfbc42175b79",
+   "subject": "[Fix] Number of orders sorting fix in dashboard customer listing (#4435)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/dashboard/users/tables.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/offer/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AbstractBenefit.round",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 10,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/offer/benefits.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AbsoluteDiscountBenefit.apply",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/integration/offer/test_benefit.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/offer/test_percentage_benefit.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/unit/dashboard/test_tables.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 1.0
+  },
+  {
+   "commit": "90d35a8f571dde7076380660d64049e9b7228bea",
+   "subject": "Fix string formatting not showing which attribute is reserved (#4429)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/product_attributes.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ProductAttributesContainer.__setattr__",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 10,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.4
+  },
+  {
+   "commit": "83d18427993584fd2983e4d1339ca9d268607992",
+   "subject": "[FIXED] Issue #4344 NoneType error when discount.offer is None (#4424)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/order/utils.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "OrderCreator.create_line_discount_models",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 8,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/integration/order/test_creator.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "3eefa17ad27f5c17cc18c979573f9bf354ca8c18",
+   "subject": "[FEAT] Improve Percentage discount benefit accuracy (#4423)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/offer/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "AbstractBenefit.round",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 10,
+       "dropped": 0,
+       "example": {
+        "call": "round(amount=Decimal(\"1.500\"), currency='GBP', round_type='ROUND_DOWN')",
+        "before": "raises TypeError: AbstractBenefit.round() takes from 2 to 3 positional arguments but 4 were given",
+        "after": "1.50"
+       }
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/offer/benefits.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AbsoluteDiscountBenefit.apply",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "PercentageDiscountBenefit.apply",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/integration/offer/test_benefit.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/offer/test_percentage_benefit.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 1.0
+  },
+  {
+   "commit": "d0e715d1c43bef9cedb39a92ffcfda642b59f3ab",
+   "subject": "[FEAT] Add method to get all dashboard permissions (#4392)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "CatalogueDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/communications/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "CommunicationsDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/offers/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "OffersDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/orders/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "OrdersDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/pages/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "PagesDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/partners/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "PartnersDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/permissions.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "DashboardPermission.get",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 11,
+       "dropped": 0,
+       "example": {
+        "call": "get(cls=<type from a test>, app_label='myauth', 'view_user')",
+        "before": "raises TypeError: attribute name must be string, not 'type'",
+        "after": "raises KeyError: <class 'oscar.apps.dashboard.permissions.DashboardPermission'>"
+       }
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/ranges/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "RangesDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/reports/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ReportsDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/reviews/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ReviewsDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/shipping/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ShippingDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/users/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "UsersDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/vouchers/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "VouchersDashboardConfig.configure_permissions",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/functional/dashboard/test_catalogue.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_catalogue_option.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_catalogue_option_group.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_category.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_communication.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_offer.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_order.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_page.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_partner.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_product.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_range.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_reports.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_review.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_shipping.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_user.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_voucher.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/dashboard/test_permissions.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/unit/dashboard/test_permissions.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 5.5
+  },
+  {
+   "commit": "20ebf5bb8bfa67f7089c9eea9ffa5206e80a13f1",
+   "subject": "Solr: restore price range in search facets (#4376)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/search/facets.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "FacetMunger.munge_query_facet",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: FacetMunger.__init__() missing 3 required positional arguments: 'path', 'selected_multi_facets', and 'facet_c)",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/unit/customer/test_forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "f97893c83122c64170f1e2cf3864d8ce3e4b75da",
+   "subject": "Implement pyproject.toml (#4404)",
+   "edits": [
+    {
+     "file": "src/oscar/__init__.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/checkout/mixins.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "OrderPlacementMixin.handle_order_placement",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "OrderPlacementMixin.place_order",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/checkout/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "PaymentDetailsView.submit",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/customer/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "UserManager.create_user",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/offer/benefits.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AbsoluteDiscountBenefit.apply",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "FixedUnitDiscountBenefit.apply",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "PercentageDiscountBenefit.apply",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/order/utils.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "OrderCreator.create_order_model",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "OrderCreator.place_order",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/test/factories/__init__.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/forms/test_widget.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/unit/catalogue/test_views_reviews.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 2.5
+  },
+  {
+   "commit": "acf629df84ab72b9ecf5c3ba20fa478fdddb7ac9",
+   "subject": "Product code (#4402)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/catalogue/migrations/0029_product_code.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/_site/apps/catalogue/migrations/0029_product_code.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/unit/catalogue/test_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "fb4201ee4797b50a69cfd446664c500fd731a8fa",
+   "subject": "If product is child and parent is not public, it's not viewable! (#4401)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ProductDetailView.is_viewable",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "2c06e6712fdce0484b363d47015ae7c04a548a08",
+   "subject": "fix pylint (#4395)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/basket/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "BasketAddView.form_valid",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "6efd5e162ed4308863d8087fac2dd22cd1122fbc",
+   "subject": "put line and line_created in attributes (#4394)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/basket/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "BasketAddView.form_valid",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "2b08af5ae1ade186b1c5691a50afedcb56f15131",
+   "subject": "fix :wrench: order search form must have at least one field",
+   "edits": [
+    {
+     "file": "tests/unit/customer/test_forms.py",
+     "deny": false,
+     "ask": true,
+     "breaks": [
+      "assertion removed from TestOrderSearchForm.test_orders_descriptions: self.assertTrue(form.is_valid())"
+     ],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "4c89087f1e5acef9e4a2129ec36fe02d6743e774",
+   "subject": "Fix test",
+   "edits": [
+    {
+     "file": "tests/unit/customer/test_forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "f985384bd81cb4b2bec1670c13fd9c5cfbcdced1",
+   "subject": "Add blocks to basket messages (#4390)",
+   "edits": [
+    {
+     "file": "tests/unit/customer/test_forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "047f39ab30702201d7e4814c0156121d1e5dd4ac",
+   "subject": "Fix a typo which caused a typeerror on string formatting (#4274)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/customer/forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "OrderSearchForm._orders_description",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 75,
+       "dropped": 0,
+       "example": {
+        "call": "_orders_description(date_from=date.fromisoformat(\"2023-01-01\"), date_to=date.fromisoformat(\"2023-01-02\"), order_number='')",
+        "before": "raises TypeError: not enough arguments for format string",
+        "after": "'Orders placed between 2023-01-01 and 2023-01-02'"
+       }
+      }
+     ]
+    },
+    {
+     "file": "tests/unit/customer/test_forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "7b7aee46ece42a46177e70df6ddd69f63694d2b7",
+   "subject": "tests :white_check_mark: add more tests",
+   "edits": [
+    {
+     "file": "src/oscar/apps/dashboard/ranges/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "RangeReorderView.post",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/test/testcases.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_offer.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/dashboard/test_permissions.py",
+     "deny": false,
+     "ask": true,
+     "breaks": [
+      "test deleted: CatalogueDashboardPermissionTests.test_product_createupdate_view_access"
+     ],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "b152eb5100317cd1acb1878165ac0221a2d90df4",
+   "subject": "feat :star: oscar dashboard permissions",
+   "edits": [
+    {
+     "file": "src/oscar/apps/customer/migrations/0008_assign_permissions_to_staff.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/dashboard/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "DashboardConfig.ready",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "CatalogueDashboardConfig.ready",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/communications/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "CommunicationsDashboardConfig.ready",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/offers/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "OffersDashboardConfig.ready",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/orders/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "OrdersDashboardConfig.ready",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/pages/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "PagesDashboardConfig.ready",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/partners/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "PartnersDashboardConfig.ready",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/permissions.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/dashboard/ranges/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "RangesDashboardConfig.ready",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/reports/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ReportsDashboardConfig.ready",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/reviews/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ReviewsDashboardConfig.ready",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/shipping/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ShippingDashboardConfig.ready",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/users/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "UsersDashboardConfig.ready",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/dashboard/vouchers/apps.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "VouchersDashboardConfig.ready",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: OscarConfigMixin.__init__() missing 2 required positional arguments: 'app_name' and 'app_module')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/test/testcases.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_catalogue.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_catalogue_option.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_catalogue_option_group.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_category.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_communication.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_dashboard.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_offer.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_order.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_page.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_partner.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_product.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_range.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_reports.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_review.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_shipping.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_user.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_voucher.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/dashboard/test_permissions.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 5.8
+  },
+  {
+   "commit": "12ee5083a9e0be4af0168e2dee35137c298cfef4",
+   "subject": "Get public children on category",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "ef5539a24caa341ae59c7738fe12fa70dee5b8c0",
+   "subject": "Oscar 4.0a1",
+   "edits": [
+    {
+     "file": "src/oscar/__init__.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "get_short_version",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": {
+        "call": "get_short_version()",
+        "before": "'3.2'",
+        "after": "'4.0'"
+       }
+      },
+      {
+       "qualname": "get_version",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": {
+        "call": "get_version()",
+        "before": "'3.2.5'",
+        "after": "'4.0a1'"
+       }
+      }
+     ]
+    }
+   ],
+   "seconds": 0.4
+  },
+  {
+   "commit": "cdb2dcaba8734328cdae8619c9af4147742ab76b",
+   "subject": "release django oscar version 3.2.5 (#4354)",
+   "edits": [
+    {
+     "file": "src/oscar/__init__.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "get_short_version",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "get_version",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": {
+        "call": "get_version()",
+        "before": "'3.2.6'",
+        "after": "'3.2.5'"
+       }
+      }
+     ]
+    }
+   ],
+   "seconds": 0.4
+  },
+  {
+   "commit": "deaef6ffb80b7fe7f8a7f321ec97d16aef9c4af2",
+   "subject": "Fix result of prefetch attribute values for children (#4352)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AbstractProduct.get_attribute_values",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/catalogue/managers.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "ProductQuerySet.prefetch_attribute_values",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 9,
+       "dropped": 0,
+       "example": {
+        "call": "prefetch_attribute_values(include_parent_children_attributes=False)",
+        "before": "<ProductQuerySet>",
+        "after": "<ProductQuerySet>"
+       }
+      }
+     ]
+    },
+    {
+     "file": "tests/unit/catalogue/test_managers.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.9
+  },
+  {
+   "commit": "2b32fc1c64abac2ee37787853e4c1a328766ecd5",
+   "subject": "lint",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "e70a56f7f86dd49d5ef89c69fd638e0def6222d1",
+   "subject": "Add priority field (#4351)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/catalogue/migrations/0028_product_priority.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/_site/apps/catalogue/migrations/0028_product_priority.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "a79c8c2190ee684e6246166aa135341946fbe493",
+   "subject": "Add useful prefetch methods for bulk processing (#4350)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/basket/forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AddToBasketForm._create_parent_product_fields",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: AddToBasketForm.__init__() missing 2 required positional arguments: 'basket' and 'product')",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/catalogue/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AbstractProduct.get_attribute_values",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "AbstractProduct.get_categories",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 10,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/catalogue/managers.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/catalogue/product_attributes.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AttributesQuerysetCache.attribute_values",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: AttributesQuerysetCache.__init__() missing 1 required positional argument: 'product')",
+       "inputs_compared": 10,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "QuerysetCache.__init__",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 10,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/partner/strategy.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "Structured.select_children_stockrecords",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/integration/basket/test_forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/catalogue/test_product.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/partner/test_strategy.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/unit/catalogue/test_managers.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/unit/catalogue/test_product_attributes.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 2.0
+  },
+  {
+   "commit": "97ba35f3fd497b0f128522c0393f72092e9e0472",
+   "subject": "Fix basket check id and translation (#4283)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/basket/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "AbstractBasket.basket_quantity",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "AbstractBasket.contains_a_voucher",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 2,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "AbstractBasket.line_quantity",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": {
+        "call": "line_quantity(product=<Product from a test>, stockrecord=<StockRecord from a test>, options=None)",
+        "before": "raises ValueError: 'Basket' instance needs to have a primary key value before this relationship can be used.",
+        "after": "0"
+       }
+      },
+      {
+       "qualname": "AbstractBasket.product_quantity",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "AbstractLine.get_warning",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: Abstract models cannot be instantiated.)",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/integration/basket/test_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.6
+  },
+  {
+   "commit": "fb65f1571c799ab7d93e30ee3bf4b5d27d3fef60",
+   "subject": "Don\u2019t allow adding a product with negative quantity (#4338)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/basket/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AbstractBasket.add_product",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "e2f77276ba74a78722d38e4420f79ed50c311781",
+   "subject": "Add support for Python 3.12 and Django 5.0 + 5.1. (#4345)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AbstractProduct.refresh_from_db",
+       "status": "Untested",
+       "reason": "needs a database",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/payment/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AbstractBankcard.expiry_month",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: Abstract models cannot be instantiated.)",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/functional/test_basket.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/core/test_customisation.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/management_commands/test_oscar_fork_statics.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/settings.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 1.0
+  },
+  {
+   "commit": "c6583f6079e1e88f8cd2e5ae74a7e92a08ffe7d4",
+   "subject": "[FEAT] Auto select existing user when an account already exists (#4325)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/checkout/forms.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "GatewayForm.clean",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 1,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/functional/checkout/test_guest_checkout.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "ce8380f2c0597e5ddc337877469057a159172ffa",
+   "subject": "Prevent error when search query is not passed at all",
+   "edits": [
+    {
+     "file": "src/oscar/apps/search/views/search.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "FacetedSearchView.dispatch",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "292742f782c0b30634ad4482d7da37c651d165e4",
+   "subject": "lint",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/managers.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "ProductQuerySet.base_queryset",
+       "status": "Verified pass",
+       "reason": "",
+       "inputs_compared": 2,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "b4a9528b85b8b75ffe5550a3dbd0e79a987451a8",
+   "subject": "fix: remove communication unused config files (#4282)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/communication/app.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/communication/config.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "9c6cc48e166f5bc68447242063a9577ee5ba2df0",
+   "subject": "Missed django 4.2 upgrade DeleteView override fix (#4316)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/dashboard/catalogue/views.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/functional/dashboard/test_catalogue.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "5ba48d984087236017f11e92f8b6d158d66e0132",
+   "subject": "fix: typo in has_children value and tests of annotated list extra info (#4284)",
+   "edits": [
+    {
+     "file": "src/oscar/templatetags/category_tags.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "get_annotated_list",
+       "status": "Untested",
+       "reason": "no input ran to completion",
+       "inputs_compared": 76,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/integration/catalogue/test_category.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "5cf3e2d79c6b73e3dd7062ede4739565856e8b39",
+   "subject": "tests :white_check_mark: add missing line.num_allocated in test",
+   "edits": [
+    {
+     "file": "src/oscar/test/factories/order.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/order/test_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "091e8179d7e3e83c1f5d6abc2623101f3ad51155",
+   "subject": "fix: typos in model field verbose name (#4285)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/order/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/order/migrations/0001_initial.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/order/migrations/0006_orderstatuschange.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "src/oscar/apps/order/migrations/0009_surcharge.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.2
+  },
+  {
+   "commit": "67bb18e70cf641f28e4c4872b594250f7949418c",
+   "subject": "fix: handle broken link for the missing image file (#4287)",
+   "edits": [
+    {
+     "file": "src/oscar/apps/catalogue/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": true,
+     "functions": [
+      {
+       "qualname": "MissingProductImage.symlink_missing_image",
+       "status": "Behavior difference \u2014 intent unknown",
+       "reason": "",
+       "inputs_compared": 80,
+       "dropped": 0,
+       "example": {
+        "call": "symlink_missing_image(media_file_path=0)",
+        "before": "None",
+        "after": "raises TypeError: lstat: path should be string, bytes or os.PathLike, not int"
+       }
+      }
+     ]
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "31287878aad56d66c9fbd886a42cdb634fa7dfb3",
+   "subject": "fix :wrench: num_allocated in order line cannot be null",
+   "edits": [
+    {
+     "file": "src/oscar/apps/order/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AbstractLine.cancel_allocation",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: Abstract models cannot be instantiated.)",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "AbstractLine.is_allocation_consumption_possible",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: Abstract models cannot be instantiated.)",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "src/oscar/apps/order/migrations/0018_alter_line_num_allocated.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    },
+    {
+     "file": "tests/integration/order/test_models.py",
+     "deny": false,
+     "ask": true,
+     "breaks": [
+      "test deleted: LineTests.test_is_allocation_consumption_possible_when_num_allocated_is_null"
+     ],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "c25cf235ba1dc81345d3e0beb30c7424c3b134f9",
+   "subject": "refactor :package: raise value error if num_allocated is None while checking all",
+   "edits": [
+    {
+     "file": "src/oscar/apps/order/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AbstractLine.is_allocation_consumption_possible",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: Abstract models cannot be instantiated.)",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    },
+    {
+     "file": "tests/integration/order/test_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "207198748986dd449cda5c92cf899ea4827b6e88",
+   "subject": "feat :star: add migration to set num_allocated to quantity if it is None",
+   "edits": [
+    {
+     "file": "src/oscar/apps/order/migrations/0017_set_num_allocated_to_quantity.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": []
+    }
+   ],
+   "seconds": 0.1
+  },
+  {
+   "commit": "0904f826cc8bb13e5053cfec438bb7964152623d",
+   "subject": "fix :wrench: decline allocations when num_allocated is None",
+   "edits": [
+    {
+     "file": "src/oscar/apps/order/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AbstractLine.cancel_allocation",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: Abstract models cannot be instantiated.)",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      },
+      {
+       "qualname": "AbstractLine.is_allocation_consumption_possible",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: Abstract models cannot be instantiated.)",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.5
+  },
+  {
+   "commit": "5bc406d4809460460b3a8a45b43dc7e8b62cbcc2",
+   "subject": "fix: prevent insert error when creating deferred transaction by using sane defau",
+   "edits": [
+    {
+     "file": "src/oscar/apps/payment/abstract_models.py",
+     "deny": false,
+     "ask": false,
+     "breaks": [],
+     "wake": false,
+     "functions": [
+      {
+       "qualname": "AbstractSource.create_deferred_transaction",
+       "status": "Untested",
+       "reason": "inputs could not be set up (TypeError: Abstract models cannot be instantiated.)",
+       "inputs_compared": 0,
+       "dropped": 0,
+       "example": null
+      }
+     ]
+    }
+   ],
+   "seconds": 0.5
+  }
+ ]
+}
