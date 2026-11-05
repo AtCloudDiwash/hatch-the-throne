@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M4 / T4.3
-- **Next step:** Virtual apply and symbol diff.
+- **Current milestone and task:** M4 / T4.4
+- **Next step:** Contract and test checks.
 
 ## Status
 
@@ -30,8 +30,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T3.6 | M3 | done | [x] Impact library (FR-09) | DL-036 | 9e3b897 |
 | T3.7 | M3 | done | [x] MCP impact tool and index/impact skills (FR-21, FR-22) | DL-037 | 58736b8 |
 | T4.1 | M4 | done | [x] Baseline worktree and session state (FR-10) | DL-038 DL-039 | e6c6ef6 |
-| T4.2 | M4 | done | [x] UserPromptSubmit context (FR-11) | DL-040 |  |
-| T4.3 | M4 | pending | [ ] Virtual apply and symbol diff (FR-12) |  |  |
+| T4.2 | M4 | done | [x] UserPromptSubmit context (FR-11) | DL-040 | 7ca69c9 |
+| T4.3 | M4 | done | [x] Virtual apply and symbol diff (FR-12) | DL-041 |  |
 | T4.4 | M4 | pending | [ ] Contract and test-integrity checks (FR-12, FR-17) |  |  |
 | T4.5 | M4 | pending | [ ] Decision policy, modes, budget (FR-12, FR-20, FR-23) |  |  |
 | T4.6 | M4 | pending | [ ] Frozen and scope rules |  |  |
@@ -331,6 +331,15 @@ $ .venv/bin/pytest -q tests/test_pre_edit.py -k 'baseline or compact or git_repo
 $ .venv/bin/pytest -q tests/test_pre_edit.py -k 'prompt_naming or prompt_words or prompt_stored'
 ...                                                                      [100%]
 3 passed, 44 deselected in 4.62s
+(exit 0)
+```
+
+### T4.3 Virtual apply and symbol diff (FR-12) (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'virtual or symbol_diff or identical'
+...                                                                      [100%]
+3 passed, 44 deselected in 0.29s
 (exit 0)
 ```
 

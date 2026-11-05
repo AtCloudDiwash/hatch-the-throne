@@ -1,6 +1,6 @@
 {
- "current": "M4 / T4.3",
- "next": "Virtual apply and symbol diff.",
+ "current": "M4 / T4.4",
+ "next": "Contract and test checks.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -237,12 +237,17 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'prompt_naming or prompt_words or prompt_stored'\n...                                                                      [100%]\n3 passed, 44 deselected in 4.62s\n(exit 0)",
    "dl": [
     "DL-040"
-   ]
+   ],
+   "commit": "7ca69c9"
   },
   "T4.3": {
    "milestone": "M4",
    "title": "Virtual apply and symbol diff (FR-12)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'virtual or symbol_diff or identical'\n...                                                                      [100%]\n3 passed, 44 deselected in 0.29s\n(exit 0)",
+   "dl": [
+    "DL-041"
+   ]
   },
   "T4.4": {
    "milestone": "M4",

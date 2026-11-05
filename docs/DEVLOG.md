@@ -57,6 +57,7 @@ flowchart LR
     DL038["DL-038 Session baseline worktree and findings ledg…"]
     DL039["DL-039 Compact and resume of the same session keep…"]
     DL040["DL-040 Blast-radius context for what the prompt na…"]
+    DL041["DL-041 Virtual apply and symbol diff"]
   end
 ```
 
@@ -68,14 +69,36 @@ flowchart LR
 | M1 | 4 | 2 | 1 | 0 | 0 | 0 | 0 | 7 |
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | M3 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
-| M4 | 2 | 1 | 0 | 0 | 0 | 0 | 0 | 3 |
-| **All** | **18** | **3** | **1** | **14** | **0** | **0** | **4** | **40** |
+| M4 | 3 | 1 | 0 | 0 | 0 | 0 | 0 | 4 |
+| **All** | **19** | **3** | **1** | **14** | **0** | **0** | **4** | **41** |
 
 ## Entries, newest first
 
+### DL-041 · Virtual apply and symbol diff
+
+**feature** · M4 · T4.3 · 2026-11-05T11:51-06:00 · commit `pending`
+
+- **Context:** FR-12 step 3: judge an edit before it happens.
+- **What:** virtual.py applies an Edit or Write in memory and returns None when the tool would fail by itself. symbol_diff.py classifies added, deleted, renamed, visibility_changed, signature_changed and body_changed.
+- **Why:** Identical bodies are ambiguous, so a rename is only claimed when exactly one pair matches. That avoids a false story about the edit.
+- **Impact:** A missing old_string gives no finding, and Claude's tool reports it instead.
+- **Files:** `legacyguard/guardlib/virtual.py`, `legacyguard/guardlib/symbol_diff.py`
+- **Requirements:** `FR-12`
+- **Decisions:** none
+- **Open questions:** none
+- **Tests:** `tests/test_pre_edit.py::test_virtual_apply_cases`, `tests/test_pre_edit.py::test_symbol_diff_kinds`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'virtual or symbol_diff or identical'
+...                                                                      [100%]
+3 passed, 44 deselected in 0.29s
+(exit 0)
+```
+
 ### DL-040 · Blast-radius context for what the prompt names
 
-**feature** · M4 · T4.2 · 2026-11-05T11:51-06:00 · commit `pending`
+**feature** · M4 · T4.2 · 2026-11-05T11:51-06:00 · commit `7ca69c9`
 
 - **Context:** FR-11: Claude should know the dependents before planning, and the prompt must never be changed.
 - **What:** prompt_context.py finds indexed files and functions named in the prompt, adds their impact, and stores the prompt text. Two consecutive words of a function name also match, so 'late fee' finds compute_late_fee.
