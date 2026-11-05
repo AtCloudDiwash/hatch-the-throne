@@ -2,15 +2,15 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M0 / T0.1
-- **Next step:** Run the django-oscar SQLite spike.
+- **Current milestone and task:** M0 / T0.2
+- **Next step:** Measure runnable share.
 
 ## Status
 
 | Task | Milestone | Status | Title | Dev log | Commit |
 | --- | --- | --- | --- | --- | --- |
-| T0.0 | M0 | done | [x] Setup: docs, progress, dev log tools, default decisions | DL-001 DL-002 DL-003 DL-004 DL-005 DL-006 DL-007 DL-008 DL-009 DL-010 DL-011 DL-012 DL-013 DL-014 DL-015 |  |
-| T0.1 | M0 | pending | [ ] django-oscar on SQLite (OQ-B1) |  |  |
+| T0.0 | M0 | done | [x] Setup: docs, progress, dev log tools, default decisions | DL-001 DL-002 DL-003 DL-004 DL-005 DL-006 DL-007 DL-008 DL-009 DL-010 DL-011 DL-012 DL-013 DL-014 DL-015 | 121c203 |
+| T0.1 | M0 | done | [x] django-oscar on SQLite (OQ-B1) | DL-016 |  |
 | T0.2 | M0 | pending | [ ] Runnable-function share (OQ-B1) |  |  |
 | T0.3 | M0 | pending | [ ] Hook behavior check (OQ-B5, NFR-10) |  |  |
 | T0.4 | M0 | pending | [ ] Plan usage of headless runs (OQ-N6) |  |  |
@@ -64,5 +64,13 @@ $ .venv/bin/pytest -q tests/tools
 ....                                                                     [100%]
 4 passed in 0.47s
 (exit 0)
+```
+
+### T0.1 django-oscar on SQLite (OQ-B1) (done)
+
+```text
+$ DATABASE_ENGINE=django.db.backends.sqlite3 DATABASE_NAME=:memory: pytest tests -q -n 4
+7 failed, 1803 passed, 2 skipped, 3721 warnings, 104 subtests passed in 69.07s (0:01:09)
+FAILED: 3 checkout ThankYouView, 2 catalogue category moves, 2 concurrent order placement. None in offer or basket pricing.
 ```
 

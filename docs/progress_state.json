@@ -1,6 +1,6 @@
 {
- "current": "M0 / T0.1",
- "next": "Run the django-oscar SQLite spike.",
+ "current": "M0 / T0.2",
+ "next": "Measure runnable share.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -23,12 +23,17 @@
     "DL-013",
     "DL-014",
     "DL-015"
-   ]
+   ],
+   "commit": "121c203"
   },
   "T0.1": {
    "milestone": "M0",
    "title": "django-oscar on SQLite (OQ-B1)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ DATABASE_ENGINE=django.db.backends.sqlite3 DATABASE_NAME=:memory: pytest tests -q -n 4\n7 failed, 1803 passed, 2 skipped, 3721 warnings, 104 subtests passed in 69.07s (0:01:09)\nFAILED: 3 checkout ThankYouView, 2 catalogue category moves, 2 concurrent order placement. None in offer or basket pricing.",
+   "dl": [
+    "DL-016"
+   ]
   },
   "T0.2": {
    "milestone": "M0",

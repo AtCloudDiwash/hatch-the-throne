@@ -24,6 +24,7 @@ flowchart LR
     DL013["DL-013 billing-api uses FastAPI and SQLite"]
     DL014["DL-014 Give the project its own git repo and gener…"]
     DL015["DL-015 Dev log tooling, progress tracking and thei…"]
+    DL016["DL-016 django-oscar's test suite runs on SQLite"]
   end
 ```
 
@@ -31,14 +32,35 @@ flowchart LR
 
 | Milestone | feature | change | fix | decision | fallback | blocked | spike | Total |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| M0 | 1 | 0 | 0 | 14 | 0 | 0 | 0 | 15 |
-| **All** | **1** | **0** | **0** | **14** | **0** | **0** | **0** | **15** |
+| M0 | 1 | 0 | 0 | 14 | 0 | 0 | 1 | 16 |
+| **All** | **1** | **0** | **0** | **14** | **0** | **0** | **1** | **16** |
 
 ## Entries, newest first
 
+### DL-016 · django-oscar's test suite runs on SQLite
+
+**spike** · M0 · T0.1 · 2026-11-05T11:25-06:00 · commit `pending`
+
+- **Context:** OQ-B1 had to establish whether the real backtest repo works without PostgreSQL.
+- **What:** Cloned v4.2.2 and ran its full suite with SQLite in memory through environment variables. Confirmed its BSD-style license text.
+- **Why:** The backtest needs a real repo with money logic that runs on a laptop.
+- **Impact:** django-oscar stays the backtest repo; the OpenFisca fallback is not triggered. The docs' --sqlite option is gone, so the harness sets DATABASE_ENGINE and DATABASE_NAME.
+- **Files:** `docs/OPEN_QUESTIONS.md`
+- **Requirements:** `FR-28`
+- **Decisions:** `D-014`
+- **Open questions:** `OQ-B1`
+- **Tests:** none
+- **Evidence:**
+
+```text
+$ DATABASE_ENGINE=django.db.backends.sqlite3 DATABASE_NAME=:memory: pytest tests -q -n 4
+7 failed, 1803 passed, 2 skipped, 3721 warnings, 104 subtests passed in 69.07s (0:01:09)
+FAILED: 3 checkout ThankYouView, 2 catalogue category moves, 2 concurrent order placement. None in offer or basket pricing.
+```
+
 ### DL-015 · Dev log tooling, progress tracking and their tests
 
-**feature** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `pending`
+**feature** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `121c203`
 
 - **Context:** The build must leave a resumable trail explaining every change.
 - **What:** tools/devlog_viz.py renders DEVLOG.md and an offline devlog.html with three views; tools/devlog_check.py enforces log rules; tools/finish_task.py logs, updates PROGRESS.md, commits and backfills hashes; tools/progress.py renders PROGRESS.md.
@@ -60,7 +82,7 @@ $ .venv/bin/pytest -q tests/tools
 
 ### DL-014 · Give the project its own git repo and generate billing-api from tracked source
 
-**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `pending`
+**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `121c203`
 
 - **Context:** The folder sits inside an unrelated personal repo (Life Lane), and billing-api needs its own history with paths at its repo root.
 - **What:** git init in Hatchathon/. Track billing-api source at demo/billing-api-src/; demo/build_billing_repo.py generates the gitignored demo/billing-api/ with planted history.
@@ -80,7 +102,7 @@ $ git rev-parse --show-toplevel
 
 ### DL-013 · billing-api uses FastAPI and SQLite
 
-**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `pending`
+**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `121c203`
 
 - **Context:** The stack was proposed, not confirmed.
 - **What:** Confirm FastAPI + SQLite.
@@ -99,7 +121,7 @@ Recorded as D-036 in docs/DECISIONS.md and marked resolved under OQ-N15 in docs/
 
 ### DL-012 · Recreate the baseline worktree every session
 
-**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `pending`
+**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `121c203`
 
 - **Context:** Cleanup and reuse were not discussed.
 - **What:** At SessionStart run git worktree remove --force, then recreate.
@@ -118,7 +140,7 @@ Recorded as D-035 in docs/DECISIONS.md and marked resolved under OQ-N9 in docs/O
 
 ### DL-011 · Frozen files are denied in every mode
 
-**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `pending`
+**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `121c203`
 
 - **Context:** FR-23 lists advisory as context only for declared rules; OQ-N8 left this open.
 - **What:** Deny frozen edits in advisory, guarded and strict.
@@ -137,7 +159,7 @@ Recorded as D-034 in docs/DECISIONS.md and marked resolved under OQ-N8 in docs/O
 
 ### DL-010 · Evaluation sizes: 10 tasks, up to 100 commits, 10 planted bugs
 
-**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `pending`
+**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `121c203`
 
 - **Context:** Sizes were not set.
 - **What:** 10 A/B tasks; replay up to 100 commits; plant 10 bugs. Report catch rate with no target.
@@ -156,7 +178,7 @@ Recorded as D-033 in docs/DECISIONS.md and marked resolved under OQ-N7 in docs/O
 
 ### DL-009 · Custom claude -p harness for A/B; try plugin eval once
 
-**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `pending`
+**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `121c203`
 
 - **Context:** OQ-N6 compared the two.
 - **What:** Build a harness around claude -p and try claude plugin eval once without depending on it.
@@ -175,7 +197,7 @@ Recorded as D-032 in docs/DECISIONS.md and marked resolved under OQ-N6 in docs/O
 
 ### DL-008 · Use the official mcp Python SDK over stdio
 
-**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `pending`
+**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `121c203`
 
 - **Context:** Only stdio and Python had been agreed.
 - **What:** Use FastMCP from the official mcp SDK.
@@ -194,7 +216,7 @@ Recorded as D-031 in docs/DECISIONS.md and marked resolved under OQ-N5 in docs/O
 
 ### DL-007 · Config keys app: and django_settings: locate the framework
 
-**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `pending`
+**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `121c203`
 
 - **Context:** The indexer needs the app object to list routes.
 - **What:** app: module:attribute for FastAPI; django_settings: for Django.
@@ -213,7 +235,7 @@ Recorded as D-030 in docs/DECISIONS.md and marked resolved under OQ-N4 in docs/O
 
 ### DL-006 · Side effects stay out of the MVP
 
-**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `pending`
+**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `121c203`
 
 - **Context:** OQ-N3 asked whether to compare DB and file writes.
 - **What:** Compare return values plus exception type and message; state the limit in the report footer.
@@ -232,7 +254,7 @@ Recorded as D-029 in docs/DECISIONS.md and marked resolved under OQ-N3 in docs/O
 
 ### DL-005 · Pinned tests live in tests/legacyguard/ and only appear on /legacyguard:pin
 
-**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `pending`
+**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `121c203`
 
 - **Context:** FR-25 proposed tests/guard/; the location was open.
 - **What:** Write tests/legacyguard/test_pinned_<id>.py only on explicit pin.
@@ -251,7 +273,7 @@ Recorded as D-028 in docs/DECISIONS.md and marked resolved under OQ-N2 in docs/O
 
 ### DL-004 · Keep the name legacyguard
 
-**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `pending`
+**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `121c203`
 
 - **Context:** The name was a working title.
 - **What:** Keep legacyguard.
@@ -270,7 +292,7 @@ Recorded as D-027 in docs/DECISIONS.md and marked resolved under OQ-N1 in docs/O
 
 ### DL-003 · Find the target interpreter from config, then auto-detect
 
-**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `pending`
+**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `121c203`
 
 - **Context:** The runner must use the target project's Python and dependencies.
 - **What:** Config key python:, else .venv, venv, env, then python3/python on PATH.
@@ -289,7 +311,7 @@ Recorded as D-026 in docs/DECISIONS.md and marked resolved under OQ-B4 in docs/O
 
 ### DL-002 · Compare against the session baseline, never the previous edit
 
-**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `pending`
+**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `121c203`
 
 - **Context:** The docs left the comparison point open, and how to treat a dirty tree.
 - **What:** SessionStart makes a worktree at HEAD under .legacyguard/baseline/ and copies in session-start contents of dirty or untracked in-scope files.
@@ -308,7 +330,7 @@ Recorded as D-025 in docs/DECISIONS.md and marked resolved under OQ-B3 in docs/O
 
 ### DL-001 · No automatic requested labeling; every difference wakes Claude
 
-**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `pending`
+**decision** · M0 · T0.0 · 2026-11-05T11:18-06:00 · commit `121c203`
 
 - **Context:** FR-16 left the labeling mechanism open.
 - **What:** Every behavior difference wakes Claude as intent unknown. The developer accepts an intended change with /legacyguard:waive.

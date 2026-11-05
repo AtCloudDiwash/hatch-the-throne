@@ -1,0 +1,9 @@
+{"hooks":{
+"SessionStart":[{"hooks":[{"type":"command","command":"python3","args":["${CLAUDE_PLUGIN_ROOT}/h.py","session"]}]}],
+"UserPromptSubmit":[{"hooks":[{"type":"command","command":"python3","args":["${CLAUDE_PLUGIN_ROOT}/h.py","prompt"]}]}],
+"PreToolUse":[{"matcher":"Edit|Write","hooks":[{"type":"command","command":"python3","args":["${CLAUDE_PLUGIN_ROOT}/h.py","pre"]}]}],
+"PostToolUse":[{"matcher":"Edit|Write","hooks":[
+ {"type":"command","command":"python3","args":["${CLAUDE_PLUGIN_ROOT}/h.py","rewake"],"asyncRewake":true,"timeout":60},
+ {"type":"command","command":"python3","args":["${CLAUDE_PLUGIN_ROOT}/h.py","async"],"async":true}]}],
+"Stop":[{"hooks":[{"type":"command","command":"python3","args":["${CLAUDE_PLUGIN_ROOT}/h.py","stop"]}]}]
+}}
