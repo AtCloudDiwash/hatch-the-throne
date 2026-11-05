@@ -184,3 +184,15 @@ Each entry below records a default chosen by the team for the one-pass M0–M8 b
 - **Context:** The project folder sits inside an unrelated personal git repository (`Life Lane`). billing-api must also be its own git repository, because the planted co-change history and the baseline worktree need paths such as `billing/fees.py` at the repository root.
 - **Decision:** `Hatchathon/` is its own git repository. billing-api's source is tracked at `demo/billing-api-src/`; `demo/build_billing_repo.py` generates `demo/billing-api/` (gitignored) with its planted history. A nested `.git` cannot be tracked by the outer repository without a submodule.
 - **Status:** Confirmed (default for one-pass build; revisit after demo)
+
+---
+
+# After the one-pass build
+
+## D-038 Session map: a view of the changed functions' radius, not a call graph
+- **Context:** After the build, the team asked for a map or tree showing what changed and its blast radius, as the developer's final reading output. Approved by the team on 2026-11-05 as milestone M9.
+- **Options:** terminal text only; a whole-repo graph; a per-session map limited to changed functions and their dependents.
+- **Decision:** One self-contained HTML file per session, `.legacyguard/reports/<session>.html`, written at Stop next to the Markdown report, plus `/legacyguard:map` and a text tree in `/legacyguard:impact`. It shows only this session's changed functions and their callers up to 3 hops, from the existing lookup tables. Edges are name matches: an edge is drawn solid only when one test runs both ends, and dashed otherwise. Colors map to the five finding statuses and to whether any test reaches a caller. No score, and never the word "safe".
+- **Reasoning:** The data already exists in `index.db` and `session.json`, so this is rendering with no new analysis. A whole-repo graph would reintroduce D-006. Marking guessed edges keeps a static guess from posing as proof (D-005).
+- **Trade-offs:** Name matching can show a wrong caller or miss a dynamic one. Scheduled jobs are not indexed, so only API routes are labeled as entry points.
+- **Status:** Confirmed (approved for M9)

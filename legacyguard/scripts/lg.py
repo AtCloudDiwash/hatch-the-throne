@@ -43,7 +43,12 @@ def cmd_impact(args) -> int:
     from guardlib import impact
     from indexer import db
     cfg = _cfg()
-    print(impact.impact_text(db.connect(cfg.root), cfg, args.symbol, args.depth))
+    conn = db.connect(cfg.root)
+    print(impact.impact_text(conn, cfg, args.symbol, args.depth))
+    if args.tree:
+        imp = impact.compute(conn, cfg, args.symbol, args.depth)
+        if imp and imp.callers:
+            print("\n" + impact.render_tree(imp))
     return 0
 
 
@@ -69,6 +74,7 @@ def _run() -> int:
     p = sub.add_parser("impact", help="who depends on a function")
     p.add_argument("symbol")
     p.add_argument("--depth", type=int, default=3)
+    p.add_argument("--tree", action="store_true", help="also print callers as a tree")
     p.set_defaults(fn=cmd_impact)
     try:
         import lg_more

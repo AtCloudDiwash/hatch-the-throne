@@ -61,7 +61,7 @@ def compute(conn, cfg, symbol: str, depth: int = HOPS) -> Impact | None:
                 key = (c["file"], c["qualname"])
                 if key in seen or _is_test(c["file"]) or key == (target["file"], target["qualname"]):
                     continue
-                seen[key] = {"qualname": c["qualname"], "file": c["file"], "hop": hop, "sources": ["names"]}
+                seen[key] = {"qualname": c["qualname"], "file": c["file"], "hop": hop, "sources": ["names"], "via": name}
                 if c["name"] not in done:
                     done.add(c["name"])
                     next_frontier.add(c["name"])
@@ -81,7 +81,8 @@ def compute(conn, cfg, symbol: str, depth: int = HOPS) -> Impact | None:
     handlers = {(target["file"], target["qualname"])} | set(seen)
     for r in conn.execute("SELECT method, path, handler_qualname, handler_file, source FROM routes"):
         if (r["handler_file"], r["handler_qualname"]) in handlers:
-            imp.routes.append({"route": f"{r['method']} {r['path']}", "sources": ["routes"]})
+            imp.routes.append({"route": f"{r['method']} {r['path']}", "sources": ["routes"],
+                               "handler_file": r["handler_file"], "handler_qualname": r["handler_qualname"]})
     imp.routes.sort(key=lambda r: r["route"])
     imp.tests = sorted({r["test_id"] for s in rows for r in conn.execute(
         "SELECT test_id FROM test_cover WHERE file = ? AND qualname = ?", (s["file"], s["qualname"]))})
@@ -122,3 +123,32 @@ def render(imp: Impact, limit: int = MAX_CHARS) -> str:
 def impact_text(conn, cfg, symbol: str, depth: int = HOPS) -> str:
     imp = compute(conn, cfg, symbol, depth)
     return render(imp) if imp else f"{symbol}: not found in the index [names]. Dynamic calls are not indexed."
+
+
+def render_tree(imp: Impact, max_lines: int = 40) -> str:
+    """The same radius as an indented tree: each caller sits under the function it calls. For the developer's terminal."""
+    route_of: dict[tuple, list[str]] = {}
+    for r in imp.routes:
+        route_of.setdefault((r["handler_file"], r["handler_qualname"]), []).append(r["route"])
+    children: dict[tuple, list[dict]] = {}
+    for c in imp.callers:
+        children.setdefault((c["hop"], c["via"]), []).append(c)
+
+    def routes(file, qualname) -> str:
+        found = route_of.get((file, qualname))
+        return f"  <- {', '.join(found)}" if found else ""
+
+    lines = [f"{imp.symbol}  {imp.file}{routes(imp.file, imp.symbol)}"]
+
+    def walk(name: str, hop: int, prefix: str) -> None:
+        kids = children.pop((hop, name), [])  # pop: a caller is listed once, under the first same-named function
+        for i, c in enumerate(kids):
+            last = i == len(kids) - 1
+            note = "  no test reaches it" if c.get("no_test") else ""
+            lines.append(f"{prefix}{'`- ' if last else '|- '}{c['qualname']}  {c['file']}  [{','.join(c['sources'])}]{note}{routes(c['file'], c['qualname'])}")
+            walk(c["qualname"].rsplit(".", 1)[-1], hop + 1, prefix + ("   " if last else "|  "))
+
+    walk(imp.symbol.rsplit(".", 1)[-1], 1, "")
+    if len(lines) > max_lines:
+        lines = lines[:max_lines] + [f"... {len(imp.callers) + 1 - max_lines} more, see the session map"]
+    return "\n".join(lines)

@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** Done: all milestones worked through; see docs/FINAL_REPORT.md
-- **Next step:** The team runs docs/MANUAL_CHECKS.md, starting with MC-1.
+- **Current milestone and task:** M9 / T9.2
+- **Next step:** HTML map at Stop and the map command.
 
 ## Status
 
@@ -54,6 +54,9 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T8.2 | M8 | done | [x] Live E2E-1 to E2E-8 | DL-068 | 5a50665 |
 | T8.3 | M8 | skipped | [-] Dry-run steps, backup video, names and roles | DL-071 | 87396d3 |
 | T8.4 | M8 | done | [x] Final report | DL-072 DL-073 DL-074 | 382d096 |
+| T9.1 | M9 | done | [x] Map data and impact text tree (FR-30) | DL-075 DL-076 |  |
+| T9.2 | M9 | pending | [ ] HTML session map, written at Stop, and map skill (FR-30) |  |  |
+| T9.3 | M9 | pending | [ ] Live check, browser check and docs for the map |  |  |
 
 ## Milestone summaries
 
@@ -638,6 +641,25 @@ E2E-8 offline: tests/test_session_start.
 Developer prompts per 10 edits: 0.212 (target at most 1): met
 Harmless wake-ups per 20 edits: 1.273 (target at most 1): MISSED
 Wrong blocks (denies on real commits): 0 (target 0): met
+(exit 0)
+```
+
+### T9.1 Map data and impact text tree (FR-30) (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_sessionmap.py -k 'callers_record or tree or model_for or edges_are or revert or untested_changed or no_changes or caller_cap or impact_command'; cd eval/work/mapdemo/billing-api && CLAUDE_PROJECT_DIR=$PWD ../../../../.venv/bin/python ../../../../legacyguard/scripts/lg.py impact compute_late_fee --tree | tail -10
+..........                                                               [100%]
+10 passed, 7 deselected in 9.98s
+compute_late_fee  billing/fees.py
+|- accrue_late_fee  billing/invoices.py  [names,tests]
+|  |- settle_invoice  billing/invoices.py  [names,tests]
+|  |  `- settle_invoice  billing/api/invoices.py  [names,tests]  <- POST /invoices/{invoice_id}/settle
+|  `- close_month  jobs/close_month.py  [names,history 71%]  no test reaches it
+|- projected_fee  jobs/close_month.py  [names,history 71%]  no test reaches it
+|- fee_for_balance  billing/fees.py  [names,tests]
+`- aging_bucket  reports/aging.py  [names]  no test reaches it
+   |- invoice_aging  billing/api/reports.py  [names]  no test reaches it  <- GET /reports/aging/{invoice_id}
+   `- aging_report  reports/aging.py  [names]  no test reaches it
 (exit 0)
 ```
 

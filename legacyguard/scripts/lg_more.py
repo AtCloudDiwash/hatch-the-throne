@@ -171,7 +171,21 @@ def cmd_backtest(args) -> int:
     return 0
 
 
+def cmd_map(args) -> int:
+    from guardlib import ledger, sessionmap
+    cfg = _cfg()
+    path = sessionmap.write(cfg, ledger.load(cfg.state_dir))
+    print(f"Wrote {path.relative_to(cfg.root)}. Open it in a browser: {path}")
+    if args.open:
+        import webbrowser
+        webbrowser.open(path.as_uri())
+    return 0
+
+
 def register(sub) -> None:
+    p = sub.add_parser("map", help="write this session's blast radius map")
+    p.add_argument("--open", action="store_true", help="also open it in the default browser")
+    p.set_defaults(fn=cmd_map)
     p = sub.add_parser("backtest", help="replay real commits and planted bugs (no Claude)")
     p.add_argument("--commits", type=int, default=0)
     p.add_argument("--prefix", nargs="*", default=["src/", "tests/"])

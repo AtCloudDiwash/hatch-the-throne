@@ -87,7 +87,7 @@ def main() -> int:
 
     subject = f"{a.task} {' '.join(ids)} {a.msg}"
     body = "\n".join(f"{e['id']} {e['type']}: {e['title']}" for e in entries)
-    message = f"{subject}\n\n{body}\n\nCo-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>\n"
+    message = f"{subject}\n\n{body}\n\nCo-Authored-By: Claude Fable 5.1 <noreply@anthropic.com>\n"
     subprocess.run(["git", "add", "-A"], cwd=ROOT, check=True)
     subprocess.run(["git", "commit", "-q", "-F", "-"], cwd=ROOT, input=message, text=True, check=True)
     sha = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=ROOT, capture_output=True, text=True, check=True).stdout.strip()

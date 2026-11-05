@@ -35,10 +35,14 @@ def _clean(text: str) -> str:
     return re.sub(r"\s+", " ", str(text)).replace("|", "\\|")
 
 
-def _line(f: dict) -> str:
-    note = STATE_NOTE.get(f["state"], f["state"])
+def outcome(f: dict) -> str:
     if f.get("last_decision") == "over_budget":
-        note = "not asked: prompt budget used up"
+        return "not asked: prompt budget used up"
+    return STATE_NOTE.get(f["state"], f["state"])
+
+
+def _line(f: dict) -> str:
+    note = outcome(f)
     return f"| {f['id']} | {f['status']} | {_clean(f['subject'])} | {_clean(f['evidence'])[:220]} | {note} |"
 
 

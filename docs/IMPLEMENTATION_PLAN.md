@@ -167,6 +167,14 @@ Runs split across teammates' plans over two days.
 - Dry-run the 2.5-minute pitch with a live run; record a backup video.
 - Fill product name, team roles, pitch lead (OPEN_QUESTIONS).
 
+## M9 Session map (approved 2026-11-05, after the one-pass run)
+
+| Task | Objective | Done when |
+| --- | --- | --- |
+| T9.1 | Map data and impact text tree (FR-30) | Model for billing-api's rounding edit has the changed function, its callers with test reach, edges marked observed or name-only, and the settle route; `/legacyguard:impact` prints a tree |
+| T9.2 | HTML map, written at Stop, plus `/legacyguard:map` (FR-30) | Stop writes the `.html` next to the `.md`; a map failure leaves the report intact; the file works offline |
+| T9.3 | Live check, browser check and docs | A live `claude -p` Stop writes the map; the map is checked in a browser in light and dark |
+
 ## Requirement → task traceability
 
 | Requirement | Tasks |
@@ -195,3 +203,4 @@ Runs split across teammates' plans over two days.
 | FR-27 | T2.1–T2.4 |
 | FR-28 | T7.1, T7.2 |
 | FR-29 | T7.3 |
+| FR-30 | T9.1, T9.2, T9.3 |

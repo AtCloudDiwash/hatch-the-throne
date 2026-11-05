@@ -100,6 +100,10 @@ flowchart LR
     DL073["DL-073 Three acceptance items need a person at a t…"]
     DL074["DL-074 Final report, with two corrections to earli…"]
   end
+  subgraph M9
+    DL075["DL-075 Add a session map as milestone M9"]
+    DL076["DL-076 Map model and a text tree of the blast radi…"]
+  end
   DL015 -->|caused| DL060
   DL058 -->|caused| DL060
   DL061 -.- DL058
@@ -133,9 +137,61 @@ flowchart LR
 | M6 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | M7 | 2 | 2 | 1 | 1 | 0 | 0 | 3 | 9 |
 | M8 | 2 | 2 | 1 | 1 | 1 | 1 | 0 | 8 |
-| **All** | **37** | **8** | **3** | **17** | **1** | **1** | **7** | **74** |
+| M9 | 1 | 0 | 0 | 1 | 0 | 0 | 0 | 2 |
+| **All** | **38** | **8** | **3** | **18** | **1** | **1** | **7** | **76** |
 
 ## Entries, newest first
+
+### DL-076 · Map model and a text tree of the blast radius
+
+**feature** · M9 · T9.1 · 2026-11-05T12:57-06:00 · commit `pending`
+
+- **Context:** FR-30: show what a change reaches, from data the guard already has.
+- **What:** guardlib/sessionmap.build joins the findings ledger with the impact tables: each changed function with its status, its callers up to 3 hops with whether any test reaches them, API routes, and edges. Impact callers now record which function they call, and routes record their handler. /legacyguard:impact also prints the radius as an indented tree.
+- **Why:** An edge is marked observed only when one test runs both functions; everything else is a name match and is drawn as a guess. That keeps a static guess from posing as proof.
+- **Impact:** For the rounding edit the model shows compute_late_fee as a behavior difference, projected_fee and aging_bucket as dependents no test reaches, and the settle route on its API handler. Callers are capped at 60, with the rest counted.
+- **Files:** `legacyguard/guardlib/sessionmap.py`, `legacyguard/guardlib/impact.py`, `legacyguard/scripts/lg.py`, `tests/test_sessionmap.py`
+- **Requirements:** `FR-30`, `FR-09`, `FR-22`
+- **Decisions:** `D-038`, `D-005`
+- **Open questions:** none
+- **Tests:** `tests/test_sessionmap.py::test_model_for_the_rounding_edit`, `tests/test_sessionmap.py::test_edges_are_solid_only_when_a_test_runs_both_ends`, `tests/test_sessionmap.py::test_text_tree`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_sessionmap.py -k 'callers_record or tree or model_for or edges_are or revert or untested_changed or no_changes or caller_cap or impact_command'; cd eval/work/mapdemo/billing-api && CLAUDE_PROJECT_DIR=$PWD ../../../../.venv/bin/python ../../../../legacyguard/scripts/lg.py impact compute_late_fee --tree | tail -10
+..........                                                               [100%]
+10 passed, 7 deselected in 9.98s
+compute_late_fee  billing/fees.py
+|- accrue_late_fee  billing/invoices.py  [names,tests]
+|  |- settle_invoice  billing/invoices.py  [names,tests]
+|  |  `- settle_invoice  billing/api/invoices.py  [names,tests]  <- POST /invoices/{invoice_id}/settle
+|  `- close_month  jobs/close_month.py  [names,history 71%]  no test reaches it
+|- projected_fee  jobs/close_month.py  [names,history 71%]  no test reaches it
+|- fee_for_balance  billing/fees.py  [names,tests]
+`- aging_bucket  reports/aging.py  [names]  no test reaches it
+   |- invoice_aging  billing/api/reports.py  [names]  no test reaches it  <- GET /reports/aging/{invoice_id}
+   `- aging_report  reports/aging.py  [names]  no test reaches it
+(exit 0)
+```
+
+### DL-075 · Add a session map as milestone M9
+
+**decision** · M9 · T9.1 · 2026-11-05T12:57-06:00 · commit `pending`
+
+- **Context:** After the one-pass run, the team asked for a map or tree of what changed and its blast radius, and approved building it with the words Build the map.
+- **What:** Recorded D-038 and FR-30, added M9 with tasks T9.1 to T9.3 to the plan, and extended the dev log map's lanes to M9.
+- **Why:** The one-pass approval covered M0 to M8 only, so new work needed its own approval and its own records.
+- **Impact:** The map shows only changed functions and their radius, never the whole repo, so it does not reintroduce the rejected call graph (D-006). Commits from here are co-authored by Claude Fable 5.1, the model now running this session.
+- **Files:** `docs/DECISIONS.md`, `docs/REQUIREMENTS.md`, `docs/IMPLEMENTATION_PLAN.md`, `tools/devlog_viz.py`, `tools/finish_task.py`
+- **Requirements:** `FR-30`
+- **Decisions:** `D-038`, `D-006`, `D-005`
+- **Open questions:** none
+- **Tests:** none
+- **Evidence:**
+
+```text
+User message in the build session, 2026-11-05: Build the map
+```
 
 ### DL-074 · Final report, with two corrections to earlier entries
 

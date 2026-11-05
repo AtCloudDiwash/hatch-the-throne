@@ -200,6 +200,12 @@ Terms:
 ### FR-29 Guard on/off comparison — Confirmed — MVP
 - Same tasks via `claude -p "$TASK" --plugin-dir ./legacyguard` vs. `claude -p "$TASK"`, on the team's plans. Count **Arrived**, **Turned back**, **Fell** (definitions in TESTING.md). Alternative to evaluate: `claude plugin eval` (OQ-N6).
 
+### FR-30 Session map — Confirmed — Post-MVP (M9)
+- **Problem:** The Markdown report lists findings, but a developer can't see what a change reaches.
+- **Behavior:** At Stop, and on `/legacyguard:map`, write `.legacyguard/reports/<session>.html`: one self-contained file, no network. It shows each function changed this session with its finding status, its callers up to 3 hops (FR-09), which callers no test reaches, and API routes that reach them. Clicking a node shows its evidence or the reason it is untested, and highlights what is connected. `/legacyguard:impact` also prints the same radius as a text tree.
+- **Constraints:** Only changed functions and their radius, never the whole repo (D-006, D-038). An edge is solid only when one test runs both ends; otherwise dashed, as a name match. Colors mean the five statuses or test reach, nothing else. A failure to build the map never blocks Stop or the Markdown report.
+- **Acceptance:** After the rounding edit on billing-api, the map shows `compute_late_fee` as a behavior difference with its counterexample, `projected_fee` and `aging_bucket` as dependents no test reaches, and the settle route.
+
 ---
 
 ## Non-functional requirements

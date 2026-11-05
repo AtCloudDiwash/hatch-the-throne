@@ -9,7 +9,7 @@ import re
 from collections import Counter
 from pathlib import Path
 
-MILESTONES = [f"M{i}" for i in range(9)]
+MILESTONES = [f"M{i}" for i in range(10)]
 TYPES = ["feature", "change", "fix", "decision", "fallback", "blocked", "spike"]
 
 
