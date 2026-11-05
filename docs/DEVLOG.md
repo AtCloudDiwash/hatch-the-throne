@@ -47,6 +47,7 @@ flowchart LR
   subgraph M3
     DL031["DL-031 Names table from tree-sitter, with incremen…"]
     DL032["DL-032 Test map from coverage contexts, plus a har…"]
+    DL033["DL-033 Routes from the framework; HTTP, DB and eve…"]
   end
 ```
 
@@ -57,14 +58,36 @@ flowchart LR
 | M0 | 1 | 0 | 0 | 14 | 0 | 0 | 4 | 19 |
 | M1 | 4 | 2 | 1 | 0 | 0 | 0 | 0 | 7 |
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| M3 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
-| **All** | **11** | **2** | **1** | **14** | **0** | **0** | **4** | **32** |
+| M3 | 3 | 0 | 0 | 0 | 0 | 0 | 0 | 3 |
+| **All** | **12** | **2** | **1** | **14** | **0** | **0** | **4** | **33** |
 
 ## Entries, newest first
 
+### DL-033 · Routes from the framework; HTTP, DB and event contracts as comparable items
+
+**feature** · M3 · T3.3 · 2026-11-05T11:44-06:00 · commit `pending`
+
+- **Context:** FR-06: map routes to handlers using the framework itself, and read contracts named in config.
+- **What:** routes.py imports the app in the target interpreter with blocks in place and walks its routes, falling back to decorators. contracts_parse.py turns openapi.yaml, SQL migrations and JSON Schemas into item maps. SQL runs in a private in-memory database to get the real resulting columns.
+- **Why:** Comparable item maps make every contract check the same operation, before versus after. Running the SQL is more accurate than regex alone; regex remains for statements and Django migrations.
+- **Impact:** Every billing-api route maps to its handler. FastAPI 0.16x nests included routers, which the walker handles.
+- **Files:** `legacyguard/indexer/routes.py`, `legacyguard/indexer/contracts.py`, `legacyguard/guardlib/contracts_parse.py`, `legacyguard/runner/lg_worker.py`
+- **Requirements:** `FR-06`
+- **Decisions:** `D-010`, `D-030`
+- **Open questions:** `OQ-N4`
+- **Tests:** `tests/test_index_parts.py::test_every_openapi_route_maps_to_a_handler`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_index_parts.py -k 'openapi or http or db_schema or dangerous or comment or event'
+...........                                                              [100%]
+11 passed, 9 deselected in 2.95s
+(exit 0)
+```
+
 ### DL-032 · Test map from coverage contexts, plus a harvest of real call arguments
 
-**feature** · M3 · T3.2 · 2026-11-05T11:44-06:00 · commit `pending`
+**feature** · M3 · T3.2 · 2026-11-05T11:44-06:00 · commit `98a84ce`
 
 - **Context:** FR-05 maps tests to functions. FR-14 needs replayable inputs from real tests, which must be captured when the suite runs.
 - **What:** coverage_map.py runs pytest once in the target's interpreter under coverage.py dynamic contexts with a small pytest plugin. The plugin records encodable arguments per function into .legacyguard/harvest.json. Values that cannot be stored, such as a database connection, are counted per parameter.

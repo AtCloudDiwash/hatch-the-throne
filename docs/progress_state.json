@@ -1,6 +1,6 @@
 {
- "current": "M3 / T3.3",
- "next": "Routes and contracts.",
+ "current": "M3 / T3.4",
+ "next": "Co-change.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -166,12 +166,17 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_index_parts.py -k 'map or harvest or failing or leaves or coverage'\n.......                                                                  [100%]\n7 passed, 13 deselected in 8.56s\n(exit 0)",
    "dl": [
     "DL-032"
-   ]
+   ],
+   "commit": "98a84ce"
   },
   "T3.3": {
    "milestone": "M3",
    "title": "Routes and contracts (FR-06)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_index_parts.py -k 'openapi or http or db_schema or dangerous or comment or event'\n...........                                                              [100%]\n11 passed, 9 deselected in 2.95s\n(exit 0)",
+   "dl": [
+    "DL-033"
+   ]
   },
   "T3.4": {
    "milestone": "M3",
