@@ -68,6 +68,7 @@ flowchart LR
     DL047["DL-047 Runner blocks network, databases, file writ…"]
     DL048["DL-048 Inputs from real tests first, then Hypothes…"]
     DL049["DL-049 Self-diff drops inputs where old code disag…"]
+    DL050["DL-050 Honest Untested results with a stated reason"]
   end
 ```
 
@@ -80,14 +81,36 @@ flowchart LR
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | M3 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | M4 | 6 | 2 | 0 | 0 | 0 | 0 | 0 | 8 |
-| M5 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
-| **All** | **26** | **4** | **1** | **14** | **0** | **0** | **4** | **49** |
+| M5 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
+| **All** | **27** | **4** | **1** | **14** | **0** | **0** | **4** | **50** |
 
 ## Entries, newest first
 
+### DL-050 · Honest Untested results with a stated reason
+
+**feature** · M5 · T5.5 · 2026-11-05T11:56-06:00 · commit `pending`
+
+- **Context:** FR-14 step 6 and the hard rule: DB- or network-dependent functions are Untested, never Verified pass.
+- **What:** Untested covers a connection parameter, any blocked attempt, every input raising, unbuildable signatures, constructor arguments, timeouts and new functions. Verified pass needs at least one input that returned a value.
+- **Why:** A pass with nothing actually executed would be a false claim, so an all-exceptions run does not count as verified.
+- **Impact:** Reports state why something was not checked.
+- **Files:** `legacyguard/runner/diff.py`
+- **Requirements:** `FR-14`, `FR-19`
+- **Decisions:** none
+- **Open questions:** none
+- **Tests:** `tests/test_runner.py::test_db_function_untested_with_reason`, `tests/test_runner.py::test_every_input_raising_is_untested_not_verified`, `tests/test_runner.py::test_db_attempt_swallowed_by_target_is_still_untested`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_runner.py -k 'db_ or conn_ or every_input or class_needing or new_function'
+......                                                                   [100%]
+6 passed, 37 deselected in 2.12s
+(exit 0)
+```
+
 ### DL-049 · Self-diff drops inputs where old code disagrees with itself
 
-**feature** · M5 · T5.4 · 2026-11-05T11:56-06:00 · commit `pending`
+**feature** · M5 · T5.4 · 2026-11-05T11:56-06:00 · commit `d65fb43`
 
 - **Context:** FR-14 step 4 and D-013: time, randomness and ordering must not raise false alarms.
 - **What:** Old code runs twice in separate processes; disagreeing inputs are dropped. If half or more are dropped, the function is Untested as non-deterministic. All runs use PYTHONHASHSEED=0.

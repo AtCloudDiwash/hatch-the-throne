@@ -1,6 +1,6 @@
 {
- "current": "M5 / T5.5",
- "next": "Untested classification.",
+ "current": "M5 / T5.6",
+ "next": "Wake-up hook, then live E2E-1.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -318,12 +318,17 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_runner.py -k 'nondeterministic or ordering'\n.....                                                                    [100%]\n5 passed, 38 deselected in 1.99s\n(exit 0)",
    "dl": [
     "DL-049"
-   ]
+   ],
+   "commit": "d65fb43"
   },
   "T5.5": {
    "milestone": "M5",
    "title": "Untested classification (FR-14)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_runner.py -k 'db_ or conn_ or every_input or class_needing or new_function'\n......                                                                   [100%]\n6 passed, 37 deselected in 2.12s\n(exit 0)",
+   "dl": [
+    "DL-050"
+   ]
   },
   "T5.6": {
    "milestone": "M5",
