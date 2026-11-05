@@ -1,6 +1,6 @@
 {
- "current": "M4 / T4.1",
- "next": "Baseline worktree and session state.",
+ "current": "M4 / T4.2",
+ "next": "Prompt context.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -216,12 +216,18 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_mcp_server.py; claude plugin validate ./legacyguard | tail -1; cat /private/tmp/claude-501/-Users-diwashkuskusmiya-Desktop-Life-Lane-Projects-Hatchathon/560ac7f3-e1fe-4a27-8afd-837aa682bbbd/scratchpad/skill.txt\n.                                                                        [100%]\n1 passed in 1.03s\n✔ Validation passed\n```\ncompute_late_fee (billing/fees.py)\ncallers  fee_for_balance() [names,tests]  accrue_late_fee() [names,tests]  projected_fee() [names,history 71%] no test reaches it  aging_bucket() [names] no test reaches it  settle_invoice() [names,tests]  close_month() \nroutes   GET /reports/aging/{invoice_id} [routes]  POST /invoices/{invoice_id}/settle [routes]\ntests    9 [tests]\nco-change db/rates.sql [history 82%]  jobs/close_month.py [history 71%]\n```\n(exit 0)\nLive claude -p (haiku), init event: MCP plugin:legacyguard:guard status=connected; tools=[mcp__plugin_legacyguard_guard__impact]; skills=[legacyguard:impact, legacyguard:index]. Claude called the tool and printed FR-09 output. SessionStart hook: exit 0, summary delivered.",
    "dl": [
     "DL-037"
-   ]
+   ],
+   "commit": "58736b8"
   },
   "T4.1": {
    "milestone": "M4",
    "title": "Baseline worktree and session state (FR-10)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'baseline or compact or git_repo'\n.....                                                                    [100%]\n5 passed, 42 deselected in 1.38s\n(exit 0)",
+   "dl": [
+    "DL-038",
+    "DL-039"
+   ]
   },
   "T4.2": {
    "milestone": "M4",
@@ -347,6 +353,7 @@
  "summaries": {
   "M0": "1. django-oscar runs on SQLite: 1,803 passed, 7 failed, 70 s, none of the failures in pricing code.\n2. Only 7.6% of 367 offer/basket functions return a value in isolation; 38.7% run at all.\n3. Every headless-testable hook behavior was confirmed on v2.1.318, so no fallback triggered.\n4. A/B estimate is about $10 notional for 20 Sonnet runs; plugin eval works but the custom harness stays.\n5. The prompt label needs a person, so it is MC-1 in MANUAL_CHECKS.md.",
   "M1": "1. The plugin validates and loads; all five hooks and the MCP server are wired in exec form.\n2. Hook runtime fails open, prints one JSON object, and clips context to 1,500 characters.\n3. A real clean install takes one session start; the symlink re-exec bug was found and fixed by that test.\n4. SessionStart warns about ANTHROPIC_API_KEY and gives Claude a summary.\n5. Allow is expressed by omitting permissionDecision, so the guard never auto-approves (a logged deviation from FR-12).",
-  "M2": "1. billing-api has 12 API paths, 6 migrations, 2 event schemas, 45 passing tests and about 2,400 lines (the plan said around 3,000).\n2. Five traps are documented in TRAPS.md; the repo's own tests stay green with the rounding trap applied, and a test proves that.\n3. The generator builds 24 commits with planted co-change: 82% with rates.sql and 71% with close_month.py.\n4. Ten A/B tasks exist, and each held-out check is proven to pass clean and fail on a bad edit.\n5. billing-api is generated from tracked source (D-037), so run the build script after cloning."
+  "M2": "1. billing-api has 12 API paths, 6 migrations, 2 event schemas, 45 passing tests and about 2,400 lines (the plan said around 3,000).\n2. Five traps are documented in TRAPS.md; the repo's own tests stay green with the rounding trap applied, and a test proves that.\n3. The generator builds 24 commits with planted co-change: 82% with rates.sql and 71% with close_month.py.\n4. Ten A/B tasks exist, and each held-out check is proven to pass clean and fail on a bad edit.\n5. billing-api is generated from tracked source (D-037), so run the build script after cloning.",
+  "M3": "1. The four lookup tables build on billing-api: 39 files, 15 routes from the framework, 163 contract items, 6 co-change pairs, 557 test-function pairs.\n2. Harvest captured Decimal(\"40.20\"), Decimal(\"0.025\") from a test that never asserts on the fee.\n3. Impact output reproduces the FR-09 example, under 1,500 characters, with a source on each item.\n4. Live claude -p: MCP server connected, Claude called impact, and the skill ran after adding allowed-tools.\n5. Coverage runs only on /legacyguard:index, not at each session start (logged)."
  }
 }

@@ -5,12 +5,14 @@ import json
 import subprocess
 import sys
 
+from guardlib import baseline
 from guardlib import config as cfgmod
 from indexer import contracts, coverage_map, db, history, names, routes
 
 
 def refresh(cfg, with_tests: bool = False) -> dict:
     """Incremental refresh of names, routes and contracts; history when HEAD moved; tests only on request."""
+    baseline.ensure_state_dir(cfg)
     conn = db.connect(cfg.root)
     try:
         report: dict = {"names": names.update(conn, cfg.root, cfg.scope)}

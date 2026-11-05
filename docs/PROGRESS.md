@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M4 / T4.1
-- **Next step:** Baseline worktree and session state.
+- **Current milestone and task:** M4 / T4.2
+- **Next step:** Prompt context.
 
 ## Status
 
@@ -28,8 +28,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T3.4 | M3 | done | [x] Co-change (FR-07) | DL-034 | 46abd2a |
 | T3.5 | M3 | done | [x] Incremental re-index (FR-08) | DL-035 | d684f19 |
 | T3.6 | M3 | done | [x] Impact library (FR-09) | DL-036 | 9e3b897 |
-| T3.7 | M3 | done | [x] MCP impact tool and index/impact skills (FR-21, FR-22) | DL-037 |  |
-| T4.1 | M4 | pending | [ ] Baseline worktree and session state (FR-10) |  |  |
+| T3.7 | M3 | done | [x] MCP impact tool and index/impact skills (FR-21, FR-22) | DL-037 | 58736b8 |
+| T4.1 | M4 | done | [x] Baseline worktree and session state (FR-10) | DL-038 DL-039 |  |
 | T4.2 | M4 | pending | [ ] UserPromptSubmit context (FR-11) |  |  |
 | T4.3 | M4 | pending | [ ] Virtual apply and symbol diff (FR-12) |  |  |
 | T4.4 | M4 | pending | [ ] Contract and test-integrity checks (FR-12, FR-17) |  |  |
@@ -80,6 +80,14 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 3. The generator builds 24 commits with planted co-change: 82% with rates.sql and 71% with close_month.py.
 4. Ten A/B tasks exist, and each held-out check is proven to pass clean and fail on a bad edit.
 5. billing-api is generated from tracked source (D-037), so run the build script after cloning.
+
+### M3
+
+1. The four lookup tables build on billing-api: 39 files, 15 routes from the framework, 163 contract items, 6 co-change pairs, 557 test-function pairs.
+2. Harvest captured Decimal("40.20"), Decimal("0.025") from a test that never asserts on the fee.
+3. Impact output reproduces the FR-09 example, under 1,500 characters, with a source on each item.
+4. Live claude -p: MCP server connected, Claude called impact, and the skill ran after adding allowed-tools.
+5. Coverage runs only on /legacyguard:index, not at each session start (logged).
 
 
 ## Evidence
@@ -306,5 +314,14 @@ co-change db/rates.sql [history 82%]  jobs/close_month.py [history 71%]
 ```
 (exit 0)
 Live claude -p (haiku), init event: MCP plugin:legacyguard:guard status=connected; tools=[mcp__plugin_legacyguard_guard__impact]; skills=[legacyguard:impact, legacyguard:index]. Claude called the tool and printed FR-09 output. SessionStart hook: exit 0, summary delivered.
+```
+
+### T4.1 Baseline worktree and session state (FR-10) (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'baseline or compact or git_repo'
+.....                                                                    [100%]
+5 passed, 42 deselected in 1.38s
+(exit 0)
 ```
 

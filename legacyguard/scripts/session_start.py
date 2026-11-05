@@ -51,8 +51,29 @@ def handle(event: dict):
     return hook_output("SessionStart", context=summary(cfg), system_message=" ".join(messages) or None)
 
 
-def start_session(cfg, event):  # replaced in T4.1
-    return None
+def start_session(cfg, event):
+    """New session: new baseline and ledger. Resume or compact of the same session keeps both (D-035, DL log)."""
+    from guardlib import baseline, ledger
+    from indexer.__main__ import refresh
+    session_id = event.get("session_id")
+    source = event.get("source", "startup")
+    baseline.ensure_state_dir(cfg)
+    current = ledger.load(cfg.state_dir)
+    if source in ("resume", "compact") and current.get("session_id") == session_id and baseline.baseline_dir(cfg).exists():
+        return None
+    notice = None
+    fresh = ledger.fresh(session_id)
+    try:
+        info = baseline.create(cfg)
+        fresh.update(baseline_commit=info["commit"], dirty_files=info["dirty_files"], baseline_ok=True)
+    except baseline.BaselineError as exc:
+        notice = f"LegacyGuard: no baseline ({exc}), so behavioral checks are off this session. Contract checks still run."
+    with ledger.locked(cfg.state_dir) as data:
+        data.clear()
+        data.update(fresh)
+    if fresh["baseline_ok"]:
+        refresh(cfg)
+    return notice
 
 
 if __name__ == "__main__":

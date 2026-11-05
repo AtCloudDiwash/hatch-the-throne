@@ -53,6 +53,10 @@ flowchart LR
     DL036["DL-036 Impact library returns sources per item"]
     DL037["DL-037 MCP impact tool plus /legacyguard:index and…"]
   end
+  subgraph M4
+    DL038["DL-038 Session baseline worktree and findings ledg…"]
+    DL039["DL-039 Compact and resume of the same session keep…"]
+  end
 ```
 
 ## Summary
@@ -63,13 +67,58 @@ flowchart LR
 | M1 | 4 | 2 | 1 | 0 | 0 | 0 | 0 | 7 |
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | M3 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
-| **All** | **16** | **2** | **1** | **14** | **0** | **0** | **4** | **37** |
+| M4 | 1 | 1 | 0 | 0 | 0 | 0 | 0 | 2 |
+| **All** | **17** | **3** | **1** | **14** | **0** | **0** | **4** | **39** |
 
 ## Entries, newest first
 
+### DL-039 · Compact and resume of the same session keep the baseline
+
+**change** · M4 · T4.1 · 2026-11-05T11:51-06:00 · commit `pending`
+
+- **Context:** D-035 says remove and recreate at each SessionStart, but SessionStart also fires on compaction and resume within one session.
+- **What:** Recreate only for a new session or a startup or clear source. A resume or compact with the same session ID and an existing baseline keeps both baseline and ledger.
+- **Why:** Recreating mid-session would make Claude's own edits the new baseline, silently hiding its regressions, and would reset the prompt budget.
+- **Impact:** Deviation from the literal wording of D-035 in docs/DECISIONS.md, and it serves that decision's purpose.
+- **Files:** `legacyguard/scripts/session_start.py`
+- **Requirements:** `FR-10`
+- **Decisions:** `D-035`, `D-025`
+- **Open questions:** `OQ-N9`
+- **Tests:** `tests/test_pre_edit.py::test_compact_keeps_baseline_and_ledger`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'baseline or compact or git_repo'
+.....                                                                    [100%]
+5 passed, 42 deselected in 1.38s
+(exit 0)
+```
+
+### DL-038 · Session baseline worktree and findings ledger
+
+**feature** · M4 · T4.1 · 2026-11-05T11:51-06:00 · commit `pending`
+
+- **Context:** D-025 and D-035: compare against the state at session start, including dirty files, and recreate it each session.
+- **What:** guardlib/baseline.py makes a detached worktree at HEAD and copies in dirty or untracked in-scope files. guardlib/ledger.py keeps session.json under a file lock, because hooks are separate processes. .legacyguard/.gitignore keeps runtime files out of git while config.yaml and waivers.json stay committable.
+- **Why:** A worktree gives importable old code. A lock keeps concurrent async checks from losing findings.
+- **Impact:** Uncommitted work present at start counts as baseline, not as Claude's change.
+- **Files:** `legacyguard/guardlib/baseline.py`, `legacyguard/guardlib/ledger.py`, `legacyguard/guardlib/waivers.py`, `legacyguard/scripts/session_start.py`
+- **Requirements:** `FR-10`, `FR-20`
+- **Decisions:** `D-025`, `D-035`, `D-021`
+- **Open questions:** `OQ-B3`, `OQ-N9`
+- **Tests:** `tests/test_pre_edit.py::test_baseline_includes_dirty_and_untracked_files`, `tests/test_pre_edit.py::test_baseline_recreated_each_session_and_ledger_reset`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'baseline or compact or git_repo'
+.....                                                                    [100%]
+5 passed, 42 deselected in 1.38s
+(exit 0)
+```
+
 ### DL-037 · MCP impact tool plus /legacyguard:index and /legacyguard:impact
 
-**feature** · M3 · T3.7 · 2026-11-05T11:46-06:00 · commit `pending`
+**feature** · M3 · T3.7 · 2026-11-05T11:46-06:00 · commit `58736b8`
 
 - **Context:** FR-21 and FR-22: Claude and the developer both need to query the index.
 - **What:** MCPServer over stdio exposes impact. Skills call scripts/lg.py with shell injection. scripts/mcp_launch.py starts the server under the guard's venv.

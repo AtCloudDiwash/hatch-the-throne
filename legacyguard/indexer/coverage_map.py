@@ -25,8 +25,8 @@ def clean_env(cfg) -> dict:
 
 
 def is_test_path(rel: str) -> bool:
-    parts = rel.split("/")
-    return "tests" in parts[:-1] or "test" in parts[:-1] or parts[-1].startswith("test_") or parts[-1] == "conftest.py" or parts[-1].endswith("_test.py")
+    from guardlib.checks import is_test_path as check
+    return check(rel) or rel.endswith("/conftest.py") or rel == "conftest.py"
 
 
 def run_suite(cfg, timeout: int = 600, extra_args: list[str] | None = None) -> tuple[int | None, str, Path]:
