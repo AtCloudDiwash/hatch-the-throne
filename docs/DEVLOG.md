@@ -27,6 +27,7 @@ flowchart LR
     DL016["DL-016 django-oscar's test suite runs on SQLite"]
     DL017["DL-017 Only 7.6% of oscar offer/basket functions r…"]
     DL018["DL-018 All testable hook behaviors confirmed on Cl…"]
+    DL019["DL-019 Headless runs are affordable, and plugin ev…"]
   end
 ```
 
@@ -34,14 +35,38 @@ flowchart LR
 
 | Milestone | feature | change | fix | decision | fallback | blocked | spike | Total |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| M0 | 1 | 0 | 0 | 14 | 0 | 0 | 3 | 18 |
-| **All** | **1** | **0** | **0** | **14** | **0** | **0** | **3** | **18** |
+| M0 | 1 | 0 | 0 | 14 | 0 | 0 | 4 | 19 |
+| **All** | **1** | **0** | **0** | **14** | **0** | **0** | **4** | **19** |
 
 ## Entries, newest first
 
+### DL-019 · Headless runs are affordable, and plugin eval works but stays optional
+
+**spike** · M0 · T0.4 · 2026-11-05T11:25-06:00 · commit `pending`
+
+- **Context:** OQ-N6 needed a usage estimate and a try of claude plugin eval.
+- **What:** Timed a small Sonnet task, read /usage in -p mode, and ran plugin eval once with a regex grader.
+- **Why:** M7 sizing must fit the plan. plugin eval starts in an empty directory, so the custom harness stays.
+- **Impact:** A/B estimate: about $10 notional for 20 runs. Found a harness trap: Claude used python -m pytest, which the allowlist did not cover, and misreported it as a sandbox block.
+- **Files:** `docs/OPEN_QUESTIONS.md`
+- **Requirements:** `FR-29`
+- **Decisions:** `D-032`, `D-015`
+- **Open questions:** `OQ-N6`
+- **Tests:** none
+- **Evidence:**
+
+```text
+$ claude -p <small task> --model sonnet --output-format json
+{"subtype":"success","num_turns":9,"duration_ms":25965,"total_cost_usd":0.1095}  cache_read=178028 cache_create=18598 output=1725
+$ claude -p /usage
+Current session: 8% used; Current week (all models): 10% used (unchanged after the runs)
+$ claude plugin eval . --ablation none --trust-plugin
+smoke score 1.00 (3 runs) $0.00; 1 case(s), 5s
+```
+
 ### DL-018 · All testable hook behaviors confirmed on Claude Code v2.1.318
 
-**spike** · M0 · T0.3 · 2026-11-05T11:25-06:00 · commit `pending`
+**spike** · M0 · T0.3 · 2026-11-05T11:25-06:00 · commit `fbb3000`
 
 - **Context:** OQ-B5: the design relied on asyncRewake, ask-to-deny under -p and Stop block, from a partly read reference.
 - **What:** One claude -p run with a throwaway plugin exercised every hook and token. Read the stream, the debug log and hook logs, and read the docs' async section in full.

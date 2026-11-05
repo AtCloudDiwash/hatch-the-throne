@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M0 / T0.4
-- **Next step:** Plan usage.
+- **Current milestone and task:** M1 / T1.1
+- **Next step:** Build the plugin skeleton.
 
 ## Status
 
@@ -12,8 +12,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T0.0 | M0 | done | [x] Setup: docs, progress, dev log tools, default decisions | DL-001 DL-002 DL-003 DL-004 DL-005 DL-006 DL-007 DL-008 DL-009 DL-010 DL-011 DL-012 DL-013 DL-014 DL-015 | 121c203 |
 | T0.1 | M0 | done | [x] django-oscar on SQLite (OQ-B1) | DL-016 | b9dcf7d |
 | T0.2 | M0 | done | [x] Runnable-function share (OQ-B1) | DL-017 | 702ea9c |
-| T0.3 | M0 | done | [x] Hook behavior check (OQ-B5, NFR-10) | DL-018 |  |
-| T0.4 | M0 | pending | [ ] Plan usage of headless runs (OQ-N6) |  |  |
+| T0.3 | M0 | done | [x] Hook behavior check (OQ-B5, NFR-10) | DL-018 | fbb3000 |
+| T0.4 | M0 | done | [x] Plan usage of headless runs (OQ-N6) | DL-019 |  |
 | T1.1 | M1 | pending | [ ] Manifest and wiring |  |  |
 | T1.2 | M1 | pending | [ ] Shared hook runtime |  |  |
 | T1.3 | M1 | pending | [ ] Bootstrap (FR-03) |  |  |
@@ -95,5 +95,16 @@ debug: Hooks: Found sync response from async_hook_86348: {"systemMessage":"LGTOK
 debug: Hook PostToolUse:Write error: status code 2 stderr: LGTOKEN-REWAKE-STDERR
 hooklog: stop active=False, then stop active=True
 Claude listed: SESSIONCTX, PROMPTCTX, PRECTX, DENYREASON, DENYCTX, ASKREASON, ASKCTX, REWAKE-STDERR, ASYNCSYS, ASYNCCTX; then STOPREASON
+```
+
+### T0.4 Plan usage of headless runs (OQ-N6) (done)
+
+```text
+$ claude -p <small task> --model sonnet --output-format json
+{"subtype":"success","num_turns":9,"duration_ms":25965,"total_cost_usd":0.1095}  cache_read=178028 cache_create=18598 output=1725
+$ claude -p /usage
+Current session: 8% used; Current week (all models): 10% used (unchanged after the runs)
+$ claude plugin eval . --ablation none --trust-plugin
+smoke score 1.00 (3 runs) $0.00; 1 case(s), 5s
 ```
 

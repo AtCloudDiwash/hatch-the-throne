@@ -1,6 +1,6 @@
 {
- "current": "M0 / T0.4",
- "next": "Plan usage.",
+ "current": "M1 / T1.1",
+ "next": "Build the plugin skeleton.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -53,12 +53,17 @@
    "evidence": "$ claude --version\n2.1.318 (Claude Code)\n$ claude -p \"$PROMPT\" --plugin-dir spikes/t03_hookspike --model haiku --permission-mode acceptEdits ... --debug-file debug.txt\ndebug: Hook PreToolUse returned permissionDecision: deny (reason: LGTOKEN-DENYREASON)\ndebug: Hook PreToolUse returned permissionDecision: ask (reason: LGTOKEN-ASKREASON)\nstream: permission_denied decision_reason_type=hook decision_reason=LGTOKEN-ASKREASON\ndebug: Hooks: Found sync response from async_hook_86348: {\"systemMessage\":\"LGTOKEN-ASYNCSYS\",...,\"additionalContext\":\"LGTOKEN-ASYNCCTX\"}\ndebug: Hook PostToolUse:Write error: status code 2 stderr: LGTOKEN-REWAKE-STDERR\nhooklog: stop active=False, then stop active=True\nClaude listed: SESSIONCTX, PROMPTCTX, PRECTX, DENYREASON, DENYCTX, ASKREASON, ASKCTX, REWAKE-STDERR, ASYNCSYS, ASYNCCTX; then STOPREASON",
    "dl": [
     "DL-018"
-   ]
+   ],
+   "commit": "fbb3000"
   },
   "T0.4": {
    "milestone": "M0",
    "title": "Plan usage of headless runs (OQ-N6)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ claude -p <small task> --model sonnet --output-format json\n{\"subtype\":\"success\",\"num_turns\":9,\"duration_ms\":25965,\"total_cost_usd\":0.1095}  cache_read=178028 cache_create=18598 output=1725\n$ claude -p /usage\nCurrent session: 8% used; Current week (all models): 10% used (unchanged after the runs)\n$ claude plugin eval . --ablation none --trust-plugin\nsmoke score 1.00 (3 runs) $0.00; 1 case(s), 5s",
+   "dl": [
+    "DL-019"
+   ]
   },
   "T1.1": {
    "milestone": "M1",
