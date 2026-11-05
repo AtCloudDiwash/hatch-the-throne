@@ -3,7 +3,7 @@
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
 - **Current milestone and task:** M7 / T7.3
-- **Next step:** A/B running; then finish T7.4 with its numbers.
+- **Next step:** A/B is running; then T7.4, T8.2, T8.3, T8.4.
 
 ## Status
 
@@ -49,8 +49,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T7.1 | M7 | done | [x] Backtest harness (FR-28) | DL-058 DL-061 | 35253d5 |
 | T7.2 | M7 | done | [x] Seeded bugs (FR-28) | DL-062 | 03e727b |
 | T7.3 | M7 | in_progress | [~] Guard on/off (FR-29) | DL-059 DL-060 | a1ba430 |
-| T7.4 | M7 | in_progress | [~] Budget check (D-013) | DL-063 DL-064 |  |
-| T8.1 | M8 | pending | [ ] Pin minimum Claude Code version (NFR-10) |  |  |
+| T7.4 | M7 | in_progress | [~] Budget check (D-013) | DL-063 DL-064 | 0389a9e |
+| T8.1 | M8 | done | [x] Pin minimum Claude Code version (NFR-10) | DL-065 DL-066 DL-067 |  |
 | T8.2 | M8 | pending | [ ] Live E2E-1 to E2E-8 |  |  |
 | T8.3 | M8 | pending | [ ] Dry-run steps, backup video, names and roles |  |  |
 | T8.4 | M8 | pending | [ ] Final report |  |  |
@@ -543,6 +543,19 @@ $ .venv/bin/pytest -q tests/test_runner.py -k guessed; python3 -c "import json;[
 _before_filter 1.432 0.4
 _broad_filter 1.273 0.3
  1.273 0.4
+(exit 0)
+```
+
+### T8.1 Pin minimum Claude Code version (NFR-10) (done)
+
+```text
+$ claude --version; claude plugin validate . | tail -1; claude plugin validate ./legacyguard | tail -1; .venv/bin/pytest -q tests/test_constraints.py; cat eval/results/latency.json | tr -d '\n ' | cut -c1-200
+2.1.318 (Claude Code)
+✔ Validation passed
+✔ Validation passed
+.........                                                                [100%]
+9 passed in 0.29s
+{"PreToolUsecontractbreak":{"median_s":0.097,"max_s":0.098,"runs":7},"PreToolUseriskcontext":{"median_s":0.097,"max_s":0.118,"runs":7},"UserPromptSubmit":{"median_s":0.098,"max_s":0.108,"runs":7}}
 (exit 0)
 ```
 

@@ -1,6 +1,6 @@
 {
  "current": "M7 / T7.3",
- "next": "A/B running; then finish T7.4 with its numbers.",
+ "next": "A/B is running; then T7.4, T8.2, T8.3, T8.4.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -432,12 +432,19 @@
    "dl": [
     "DL-063",
     "DL-064"
-   ]
+   ],
+   "commit": "0389a9e"
   },
   "T8.1": {
    "milestone": "M8",
    "title": "Pin minimum Claude Code version (NFR-10)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ claude --version; claude plugin validate . | tail -1; claude plugin validate ./legacyguard | tail -1; .venv/bin/pytest -q tests/test_constraints.py; cat eval/results/latency.json | tr -d '\\n ' | cut -c1-200\n2.1.318 (Claude Code)\n✔ Validation passed\n✔ Validation passed\n.........                                                                [100%]\n9 passed in 0.29s\n{\"PreToolUsecontractbreak\":{\"median_s\":0.097,\"max_s\":0.098,\"runs\":7},\"PreToolUseriskcontext\":{\"median_s\":0.097,\"max_s\":0.118,\"runs\":7},\"UserPromptSubmit\":{\"median_s\":0.098,\"max_s\":0.108,\"runs\":7}}\n(exit 0)",
+   "dl": [
+    "DL-065",
+    "DL-066",
+    "DL-067"
+   ]
   },
   "T8.2": {
    "milestone": "M8",

@@ -88,11 +88,18 @@ flowchart LR
     DL063["DL-063 Drop guessed inputs that old code rejects, …"]
     DL064["DL-064 Keep the filter only when both versions rej…"]
   end
+  subgraph M8
+    DL065["DL-065 Pin Claude Code v2.1.318 as the minimum"]
+    DL066["DL-066 Correction: DL-064 replaced DL-063"]
+    DL067["DL-067 Timeline lanes position dots per milestone;…"]
+  end
   DL015 -->|caused| DL060
   DL058 -->|caused| DL060
   DL061 -.- DL058
   DL062 -.- DL058
   DL064 -.- DL063
+  DL066 -.->|replaces| DL063
+  DL066 -.- DL064
 ```
 
 ## Summary
@@ -107,13 +114,87 @@ flowchart LR
 | M5 | 6 | 0 | 0 | 1 | 0 | 0 | 0 | 7 |
 | M6 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
 | M7 | 2 | 2 | 1 | 0 | 0 | 0 | 2 | 7 |
-| **All** | **35** | **6** | **2** | **15** | **0** | **0** | **6** | **64** |
+| M8 | 0 | 2 | 0 | 1 | 0 | 0 | 0 | 3 |
+| **All** | **35** | **8** | **2** | **16** | **0** | **0** | **6** | **67** |
 
 ## Entries, newest first
 
+### DL-067 · Timeline lanes position dots per milestone; titles drop backticks
+
+**change** · M8 · T8.1 · 2026-11-05T12:17-06:00 · commit `pending`
+
+- **Context:** Viewing devlog.html in a browser showed M4 to M8 looking empty until the box was scrolled, because all lanes shared one x-axis.
+- **What:** Each lane now places its dots from the left, in time order. Requirement titles drop raw backticks.
+- **Why:** A team member should see every milestone at a glance. Milestones run in order, so little ordering information is lost.
+- **Impact:** Checked in the in-app browser: timeline, map highlight (FR-14: 13 lit of 177 nodes), matrix (only FR-13 and FR-26 flagged, both Future), filters and the side panel all work offline.
+- **Files:** `tools/devlog_viz.py`
+- **Requirements:** none
+- **Decisions:** none
+- **Open questions:** none
+- **Tests:** `tests/tools/test_devlog_tools.py::test_viz_outputs_every_id`
+- **Evidence:**
+
+```text
+$ claude --version; claude plugin validate . | tail -1; claude plugin validate ./legacyguard | tail -1; .venv/bin/pytest -q tests/test_constraints.py; cat eval/results/latency.json | tr -d '\n ' | cut -c1-200
+2.1.318 (Claude Code)
+✔ Validation passed
+✔ Validation passed
+.........                                                                [100%]
+9 passed in 0.29s
+{"PreToolUsecontractbreak":{"median_s":0.097,"max_s":0.098,"runs":7},"PreToolUseriskcontext":{"median_s":0.097,"max_s":0.118,"runs":7},"UserPromptSubmit":{"median_s":0.098,"max_s":0.108,"runs":7}}
+(exit 0)
+```
+
+### DL-066 · Correction: DL-064 replaced DL-063
+
+**change** · M8 · T8.1 · 2026-11-05T12:17-06:00 · commit `pending`
+
+- **Context:** The log rules say a replacement must use links.supersedes. DL-064 used related, and past entries are never edited.
+- **What:** This entry records the relationship with the correct link type.
+- **Why:** Keeps the relationship map accurate without rewriting history.
+- **Impact:** The map shows the replacement with a dashed arrow.
+- **Files:** `docs/devlog.jsonl`
+- **Requirements:** none
+- **Decisions:** none
+- **Open questions:** none
+- **Tests:** none
+- **Supersedes:** `DL-063`
+- **Related:** `DL-064`
+- **Evidence:**
+
+```text
+DL-064 links.related = [DL-063] in docs/devlog.jsonl
+```
+
+### DL-065 · Pin Claude Code v2.1.318 as the minimum
+
+**decision** · M8 · T8.1 · 2026-11-05T12:17-06:00 · commit `pending`
+
+- **Context:** NFR-10 and OQ-B5: pin a version, and asyncRewake and exec form are recent.
+- **What:** Plugin README and OPEN_QUESTIONS state v2.1.318, the only version verified. Added a root marketplace.json, a constraints test (no Anthropic SDK or API host, key read only for the warning, no prompt hooks) and a latency measurement.
+- **Why:** Claiming a lower floor would rest on documentation and no observation.
+- **Impact:** Hooks measured about 0.1 s median through the real re-exec path, against limits of about 1 s and 2 s. The marketplace's owner and repo stay open (OQ-N12).
+- **Files:** `legacyguard/README.md`, `.claude-plugin/marketplace.json`, `tests/test_constraints.py`, `eval/measure_latency.py`, `eval/results/latency.json`
+- **Requirements:** `NFR-01`, `NFR-03`, `NFR-10`, `FR-01`
+- **Decisions:** `D-015`, `D-016`, `D-017`
+- **Open questions:** `OQ-B5`, `OQ-N12`
+- **Tests:** `tests/test_constraints.py::test_no_anthropic_sdk_or_api_host_anywhere_in_the_guard`
+- **Evidence:**
+
+```text
+$ claude --version; claude plugin validate . | tail -1; claude plugin validate ./legacyguard | tail -1; .venv/bin/pytest -q tests/test_constraints.py; cat eval/results/latency.json | tr -d '\n ' | cut -c1-200
+2.1.318 (Claude Code)
+✔ Validation passed
+✔ Validation passed
+.........                                                                [100%]
+9 passed in 0.29s
+{"PreToolUsecontractbreak":{"median_s":0.097,"max_s":0.098,"runs":7},"PreToolUseriskcontext":{"median_s":0.097,"max_s":0.118,"runs":7},"UserPromptSubmit":{"median_s":0.098,"max_s":0.108,"runs":7}}
+(exit 0)
+```
+
 ### DL-064 · Keep the filter only when both versions reject the guessed input
 
-**change** · M7 · T7.4 · 2026-11-05T12:15-06:00 · commit `pending`
+**change** · M7 · T7.4 · 2026-11-05T12:15-06:00 · commit `0389a9e`
 
 - **Context:** The broad filter cost a real catch.
 - **What:** An input is dropped only if it is guessed, old code raised, and new code raised too. If new code accepts what old code rejected, it stays as a difference.
@@ -139,7 +220,7 @@ _broad_filter 1.273 0.3
 
 ### DL-063 · Drop guessed inputs that old code rejects, first too broadly
 
-**change** · M7 · T7.4 · 2026-11-05T12:15-06:00 · commit `pending`
+**change** · M7 · T7.4 · 2026-11-05T12:15-06:00 · commit `0389a9e`
 
 - **Context:** T7.4: wake-ups were 1.43 per 20 edits, over target. Many compared two errors on values guessed for untyped parameters, such as get(request=0).
 - **What:** Dropped generated inputs for parameters with no hint or default whenever old code raised. Wake-ups fell to 1.27, but proved catches fell from 40% to 30%, losing B04.

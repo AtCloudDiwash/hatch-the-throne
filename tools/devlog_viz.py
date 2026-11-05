@@ -24,7 +24,7 @@ def parse_requirements(path: Path) -> list[dict]:
         return []
     out = []
     for m in re.finditer(r"^### (FR-\d+) (.+)$", path.read_text(), re.M):
-        out.append({"id": m.group(1), "title": m.group(2).split(" — ")[0].strip()})
+        out.append({"id": m.group(1), "title": m.group(2).split(" — ")[0].replace("`", "").strip()})
     return out
 
 
@@ -163,9 +163,10 @@ function panel(e){const a=$('aside');if(!e){a.innerHTML='<p class=note style="pa
  <dt>Files</dt><dd>${list(e.files)}</dd><dt>Requirements</dt><dd>${list(e.refs.requirements)}</dd><dt>Decisions</dt><dd>${list(e.refs.decisions)}</dd><dt>Open questions</dt><dd>${list(e.refs.open_questions)}</dd><dt>Tests</dt><dd>${list(e.refs.tests)}</dd>
  <dt>Caused by</dt><dd>${list(e.links.caused_by)}</dd><dt>Supersedes</dt><dd>${list(e.links.supersedes)}</dd><dt>Related</dt><dd>${list(e.links.related)}</dd><dt>Evidence</dt><dd><pre>${esc(e.evidence||'none')}</pre></dd></dl>`}
 const byId=id=>D.entries.find(e=>e.id===id);
-function timeline(){const es=visible(),idx=new Map(D.entries.map((e,i)=>[e.id,i])),w=Math.max(500,D.entries.length*18+40);
+function timeline(){const es=visible(),pos=new Map();let longest=0;for(const m of D.milestones){const lane=D.entries.filter(e=>e.milestone===m);lane.forEach((e,i)=>pos.set(e.id,i));longest=Math.max(longest,lane.length)}
+ const w=Math.max(300,longest*20+24);
  let h='<div class=box>';for(const m of D.milestones){if(!on.ms.has(m))continue;h+=`<div class=lane><b>${m}</b><div class=track style="width:${w}px">`;
-  for(const e of es.filter(e=>e.milestone===m))h+=`<button class="dot${sel===e.id?' sel':''}" data-id="${e.id}" aria-label="${esc(e.id+' '+e.title)}" style="left:${idx.get(e.id)*18+8}px;background:${color(e.type)}"></button>`;h+='</div></div>'}
+  for(const e of es.filter(e=>e.milestone===m))h+=`<button class="dot${sel===e.id?' sel':''}" data-id="${e.id}" aria-label="${esc(e.id+' '+e.title)}" style="left:${pos.get(e.id)*20+8}px;background:${color(e.type)}"></button>`;h+='</div></div>'}
  $('#view').innerHTML=h+'</div>';const tip=$('#tip');
  document.querySelectorAll('.dot').forEach(d=>{d.onmouseenter=ev=>{const e=byId(d.dataset.id);tip.textContent=e.id+' · '+e.title;tip.style.display='block';tip.style.left=Math.min(ev.clientX+12,innerWidth-330)+'px';tip.style.top=ev.clientY+14+'px'};d.onmouseleave=()=>tip.style.display='none';
   d.onclick=()=>{sel=d.dataset.id;panel(byId(sel));render()}})}

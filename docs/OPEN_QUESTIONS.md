@@ -57,6 +57,8 @@ Each item is labeled **measured**, **observed once**, or **inferred**.
 | Exec form with `args` and `${CLAUDE_PLUGIN_ROOT}` | Confirmed; `CLAUDE_PLUGIN_ROOT` and `CLAUDE_PLUGIN_DATA` are also in the hook environment |
 | SessionStart input lacks `permission_mode` | Observed once; the spec's common fields should not be assumed on every event |
 
+**Minimum Claude Code version (decided in T8.1): v2.1.318**, the only version every behavior here was observed on. Docs give lower floors for single features (`onFailure` v2.1.295), but these were not tested.
+
 **No M0 hook fallback is triggered.** Per the docs (inferred, not tested): in `-p` an async hook still running at teardown is killed, so a diff still in flight when Claude stops is covered only by the synchronous Stop audit. Also from the docs: an async hook's `systemMessage` goes to Claude, not the developer, so the D-013 "notice to the developer" must come from the Stop report and `/legacyguard:status`.
 
 **OQ-N6, plan usage (measured, one run each).** Small Sonnet coding task: 26 s, 9 turns, 196k cache-read and 18.6k cache-write tokens, 1.7k output, $0.11 notional on a subscription login. Hook spike on Haiku: 32 s, 8 turns, $0.007 notional. `/usage` works in `claude -p` and did not move visibly (session 8%, week 10% before and after). **Estimate (inferred):** an A/B task at 3–5× the small task costs about $0.5 notional, so 20 runs are about $10 notional, which fits one Max window. Runs use Sonnet to conserve the plan.
