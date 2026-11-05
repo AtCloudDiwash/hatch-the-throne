@@ -74,6 +74,7 @@ flowchart LR
   end
   subgraph M6
     DL053["DL-053 Stop audit reviews the whole session and bl…"]
+    DL054["DL-054 Session report with one honest status per f…"]
   end
 ```
 
@@ -87,14 +88,36 @@ flowchart LR
 | M3 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
 | M4 | 6 | 2 | 0 | 0 | 0 | 0 | 0 | 8 |
 | M5 | 6 | 0 | 0 | 1 | 0 | 0 | 0 | 7 |
-| M6 | 1 | 0 | 0 | 0 | 0 | 0 | 0 | 1 |
-| **All** | **29** | **4** | **1** | **15** | **0** | **0** | **4** | **53** |
+| M6 | 2 | 0 | 0 | 0 | 0 | 0 | 0 | 2 |
+| **All** | **30** | **4** | **1** | **15** | **0** | **0** | **4** | **54** |
 
 ## Entries, newest first
 
+### DL-054 · Session report with one honest status per finding
+
+**feature** · M6 · T6.2 · 2026-11-05T12:01-06:00 · commit `pending`
+
+- **Context:** FR-19: readable in 10 seconds, with every non-pass finding replayable or explained.
+- **What:** guardlib/report.py writes .legacyguard/reports/<session>.md: a table by severity, prompts used, wake-ups, pin suggestions and a limits footer, plus a one-line systemMessage. Outcome is a separate column, so a turned-back difference keeps its status.
+- **Why:** Keeping status separate from outcome preserves the five-status rule while still showing what happened. The footer states the side-effect limit from D-029, and the report never claims a change is safe.
+- **Impact:** The developer's view of async results, since async output does not reach them (OQ-B5 evidence).
+- **Files:** `legacyguard/guardlib/report.py`
+- **Requirements:** `FR-19`, `FR-20`
+- **Decisions:** `D-029`, `D-013`
+- **Open questions:** `OQ-N3`
+- **Tests:** `tests/test_stop_controls.py::test_report_contents`, `tests/test_stop_controls.py::test_every_non_pass_finding_has_input_or_reason`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_stop_controls.py -k 'report_contents or every_non_pass or environment'
+...                                                                      [100%]
+3 passed, 23 deselected in 5.69s
+(exit 0)
+```
+
 ### DL-053 · Stop audit reviews the whole session and blocks at most once
 
-**feature** · M6 · T6.1 · 2026-11-05T12:01-06:00 · commit `pending`
+**feature** · M6 · T6.1 · 2026-11-05T12:01-06:00 · commit `d588a4e`
 
 - **Context:** FR-18: Edit and Write hooks never see shell edits, so a final check must compare the working tree with the baseline.
 - **What:** guardlib/audit.py finds changed files by content, re-runs contract and test checks, runs the diff on functions not yet checked at their current code, and lists callers not updated. stop_audit.py blocks once when unresolved evidence remains, otherwise writes the report.
