@@ -58,6 +58,7 @@ flowchart LR
     DL039["DL-039 Compact and resume of the same session keep…"]
     DL040["DL-040 Blast-radius context for what the prompt na…"]
     DL041["DL-041 Virtual apply and symbol diff"]
+    DL042["DL-042 Contract and test-integrity checks"]
   end
 ```
 
@@ -69,14 +70,36 @@ flowchart LR
 | M1 | 4 | 2 | 1 | 0 | 0 | 0 | 0 | 7 |
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | M3 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
-| M4 | 3 | 1 | 0 | 0 | 0 | 0 | 0 | 4 |
-| **All** | **19** | **3** | **1** | **14** | **0** | **0** | **4** | **41** |
+| M4 | 4 | 1 | 0 | 0 | 0 | 0 | 0 | 5 |
+| **All** | **20** | **3** | **1** | **14** | **0** | **0** | **4** | **42** |
 
 ## Entries, newest first
 
+### DL-042 · Contract and test-integrity checks
+
+**feature** · M4 · T4.4 · 2026-11-05T11:51-06:00 · commit `pending`
+
+- **Context:** FR-12 step 4 and FR-17: dropped fields, dropped columns, retyped events and weakened tests must reach a person.
+- **What:** checks.py compares before and after for openapi.yaml, migrations (real SQL in memory, plus statement patterns), event schemas, route decorators, handler parameters, response models and serializer dict keys, and test files (deleted, assertion removed, weakened, skipped).
+- **Why:** Checking Python as well as the contract file catches a field dropped from code while openapi.yaml still promises it. Changing an expected value alone is not flagged as weakening, because it can be legitimate.
+- **Impact:** Each break names the exact item and contract file.
+- **Files:** `legacyguard/guardlib/checks.py`
+- **Requirements:** `FR-12`, `FR-17`
+- **Decisions:** `D-010`, `D-013`
+- **Open questions:** none
+- **Tests:** `tests/test_pre_edit.py::test_dropped_response_field_asks`, `tests/test_pre_edit.py::test_test_integrity_unit`, `tests/test_pre_edit.py::test_event_field_removed_or_retyped_asks`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'dropped or openapi or route_removed or migration or event or integrity or removed_assertion or new_test'
+...........                                                              [100%]
+11 passed, 36 deselected in 6.12s
+(exit 0)
+```
+
 ### DL-041 · Virtual apply and symbol diff
 
-**feature** · M4 · T4.3 · 2026-11-05T11:51-06:00 · commit `pending`
+**feature** · M4 · T4.3 · 2026-11-05T11:51-06:00 · commit `5658c0e`
 
 - **Context:** FR-12 step 3: judge an edit before it happens.
 - **What:** virtual.py applies an Edit or Write in memory and returns None when the tool would fail by itself. symbol_diff.py classifies added, deleted, renamed, visibility_changed, signature_changed and body_changed.
