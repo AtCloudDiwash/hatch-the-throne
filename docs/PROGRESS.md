@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M7 / T7.2
-- **Next step:** Record planted-bug results.
+- **Current milestone and task:** M7 / T7.3
+- **Next step:** Run the 20 A/B runs.
 
 ## Status
 
@@ -46,8 +46,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T6.3 | M6 | done | [x] Waive and mode skills (FR-24, FR-23) | DL-055 | f1634f9 |
 | T6.4 | M6 | done | [x] Pin (FR-25) | DL-056 | f36de53 |
 | T6.5 | M6 | done | [x] Status skill and remaining MCP tools (FR-21, FR-22) | DL-057 | f9483e9 |
-| T7.1 | M7 | done | [x] Backtest harness (FR-28) | DL-058 DL-061 | eb3db24 |
-| T7.2 | M7 | pending | [ ] Seeded bugs (FR-28) |  |  |
+| T7.1 | M7 | done | [x] Backtest harness (FR-28) | DL-058 DL-061 | 35253d5 |
+| T7.2 | M7 | done | [x] Seeded bugs (FR-28) | DL-062 |  |
 | T7.3 | M7 | in_progress | [~] Guard on/off (FR-29) | DL-059 DL-060 | a1ba430 |
 | T7.4 | M7 | pending | [ ] Budget check (D-013) |  |  |
 | T8.1 | M8 | pending | [ ] Pin minimum Claude Code version (NFR-10) |  |  |
@@ -504,6 +504,24 @@ $ python3 -c "import json;s=json.load(open('eval/results/backtest/replay.json'))
 {'edits': 377, 'prompts': 8, 'wake_ups': 24, 'denies': 0, 'prompt_rate_per_10_edits': 0.212, 'wake_up_rate_per_20_edits': 1.273, 'function_statuses': {'Verified pass': 21, 'Behavior difference — intent unknown': 27, 'Untested': 140}}
 ...                                                                      [100%]
 3 passed in 2.73s
+(exit 0)
+```
+
+### T7.2 Seeded bugs (FR-28) (done)
+
+```text
+$ python3 -c "import json;s=json.load(open('eval/results/backtest/planted.json'));print('any non-pass',s['catch_rate_any_non_pass'],'proved by execution',s['catch_rate_proved_by_execution']);[print(b['id'],b['what'],'|',[(f['status'],f['reason']) for f in b['functions']]) for b in s['bugs']]"
+any non-pass 0.9 proved by execution 0.4
+B01 Percentage benefit divides by 10, not 100 | [('Untested', 'needs a database')]
+B02 Percentage benefit loses its 100% cap | [('Untested', 'needs a database')]
+B03 Absolute benefit can exceed the value of the items | [('Untested', 'needs a database')]
+B04 Absolute shipping discount can exceed the charge | [('Behavior difference — intent unknown', '')]
+B05 Fixed-price shipping returns the price, not the discount | [('Behavior difference — intent unknown', '')]
+B06 Shipping percentage discount rounds to ten cents | [('Behavior difference — intent unknown', '')]
+B07 Benefit rounding helper rounds to ten cents | [('Behavior difference — intent unknown', '')]
+B08 Count condition needs one more item than configured | [('Untested', 'needs a database')]
+B09 Per-item shipping ignores quantity | [('Untested', 'needs a database')]
+B10 Fixed price with tax drops the tax | [('Verified pass', '')]
 (exit 0)
 ```
 

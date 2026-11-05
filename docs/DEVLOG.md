@@ -84,10 +84,12 @@ flowchart LR
     DL059["DL-059 A/B harness around claude -p with held-out …"]
     DL060["DL-060 Two wrong test expectations, and close-out …"]
     DL061["DL-061 Backtest on 100 real oscar commits: prompts…"]
+    DL062["DL-062 Planted oscar bugs: 9 of 10 flagged, 4 of 1…"]
   end
   DL015 -->|caused| DL060
   DL058 -->|caused| DL060
   DL061 -.- DL058
+  DL062 -.- DL058
 ```
 
 ## Summary
@@ -101,14 +103,46 @@ flowchart LR
 | M4 | 6 | 2 | 0 | 0 | 0 | 0 | 0 | 8 |
 | M5 | 6 | 0 | 0 | 1 | 0 | 0 | 0 | 7 |
 | M6 | 5 | 0 | 0 | 0 | 0 | 0 | 0 | 5 |
-| M7 | 2 | 0 | 1 | 0 | 0 | 0 | 1 | 4 |
-| **All** | **35** | **4** | **2** | **15** | **0** | **0** | **5** | **61** |
+| M7 | 2 | 0 | 1 | 0 | 0 | 0 | 2 | 5 |
+| **All** | **35** | **4** | **2** | **15** | **0** | **0** | **6** | **62** |
 
 ## Entries, newest first
 
+### DL-062 · Planted oscar bugs: 9 of 10 flagged, 4 of 10 proved by execution, 1 false pass
+
+**spike** · M7 · T7.2 · 2026-11-05T12:15-06:00 · commit `pending`
+
+- **Context:** FR-28: known-bad changes in pricing and offer code, chosen and committed before any run (DL-058).
+- **What:** Any status other than Verified pass: 90%. A counterexample proved by running: 40% (B04 to B07). Five were Untested because the functions need a database, which TESTING.md's definition counts as flagged. B10 got a Verified pass although the bug is real: recorded inputs all had zero tax, so the dropped tax changed nothing.
+- **Why:** Both rates are reported because the 90% alone would overstate it. An Untested is an honest non-answer and not a catch by evidence.
+- **Impact:** A Verified pass means no difference on the inputs tried, and B10 shows that limit concretely. It belongs in the demo's honest limits.
+- **Files:** `eval/results/backtest/planted.json`
+- **Requirements:** `FR-28`
+- **Decisions:** `D-033`
+- **Open questions:** `OQ-N7`
+- **Tests:** none
+- **Related:** `DL-058`
+- **Evidence:**
+
+```text
+$ python3 -c "import json;s=json.load(open('eval/results/backtest/planted.json'));print('any non-pass',s['catch_rate_any_non_pass'],'proved by execution',s['catch_rate_proved_by_execution']);[print(b['id'],b['what'],'|',[(f['status'],f['reason']) for f in b['functions']]) for b in s['bugs']]"
+any non-pass 0.9 proved by execution 0.4
+B01 Percentage benefit divides by 10, not 100 | [('Untested', 'needs a database')]
+B02 Percentage benefit loses its 100% cap | [('Untested', 'needs a database')]
+B03 Absolute benefit can exceed the value of the items | [('Untested', 'needs a database')]
+B04 Absolute shipping discount can exceed the charge | [('Behavior difference — intent unknown', '')]
+B05 Fixed-price shipping returns the price, not the discount | [('Behavior difference — intent unknown', '')]
+B06 Shipping percentage discount rounds to ten cents | [('Behavior difference — intent unknown', '')]
+B07 Benefit rounding helper rounds to ten cents | [('Behavior difference — intent unknown', '')]
+B08 Count condition needs one more item than configured | [('Untested', 'needs a database')]
+B09 Per-item shipping ignores quantity | [('Untested', 'needs a database')]
+B10 Fixed price with tax drops the tax | [('Verified pass', '')]
+(exit 0)
+```
+
 ### DL-061 · Backtest on 100 real oscar commits: prompts within target, wake-ups over it
 
-**spike** · M7 · T7.1 · 2026-11-05T12:15-06:00 · commit `pending`
+**spike** · M7 · T7.1 · 2026-11-05T12:15-06:00 · commit `35253d5`
 
 - **Context:** FR-28 and D-013: measure false alarms on commits presumed good.
 - **What:** Replayed 100 commits, 377 file edits. 8 prompts (0.21 per 10 edits, target at most 1), 24 wake-ups (1.27 per 20 edits, target at most 1), 0 denies (target 0). Of 188 changed functions: 21 Verified pass, 27 Behavior difference, 140 Untested.
