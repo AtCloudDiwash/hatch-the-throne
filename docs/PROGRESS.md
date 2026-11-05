@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M4 / T4.5
-- **Next step:** Decision policy.
+- **Current milestone and task:** M4 / T4.6
+- **Next step:** Frozen and scope rules.
 
 ## Status
 
@@ -32,8 +32,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T4.1 | M4 | done | [x] Baseline worktree and session state (FR-10) | DL-038 DL-039 | e6c6ef6 |
 | T4.2 | M4 | done | [x] UserPromptSubmit context (FR-11) | DL-040 | 7ca69c9 |
 | T4.3 | M4 | done | [x] Virtual apply and symbol diff (FR-12) | DL-041 | 5658c0e |
-| T4.4 | M4 | done | [x] Contract and test-integrity checks (FR-12, FR-17) | DL-042 |  |
-| T4.5 | M4 | pending | [ ] Decision policy, modes, budget (FR-12, FR-20, FR-23) |  |  |
+| T4.4 | M4 | done | [x] Contract and test-integrity checks (FR-12, FR-17) | DL-042 | 19961bb |
+| T4.5 | M4 | done | [x] Decision policy, modes, budget (FR-12, FR-20, FR-23) | DL-043 |  |
 | T4.6 | M4 | pending | [ ] Frozen and scope rules |  |  |
 | T5.1 | M5 | pending | [ ] Runner subprocesses (FR-14) |  |  |
 | T5.2 | M5 | pending | [ ] Network block (FR-14) |  |  |
@@ -349,6 +349,15 @@ $ .venv/bin/pytest -q tests/test_pre_edit.py -k 'virtual or symbol_diff or ident
 $ .venv/bin/pytest -q tests/test_pre_edit.py -k 'dropped or openapi or route_removed or migration or event or integrity or removed_assertion or new_test'
 ...........                                                              [100%]
 11 passed, 36 deselected in 6.12s
+(exit 0)
+```
+
+### T4.5 Decision policy, modes, budget (FR-12, FR-20, FR-23) (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'policy or fixture or fourth or waiver or mode_change or fast'
+................                                                         [100%]
+16 passed, 31 deselected in 6.91s
 (exit 0)
 ```
 

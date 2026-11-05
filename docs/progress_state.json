@@ -1,6 +1,6 @@
 {
- "current": "M4 / T4.5",
- "next": "Decision policy.",
+ "current": "M4 / T4.6",
+ "next": "Frozen and scope rules.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -257,12 +257,17 @@
    "evidence": "$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'dropped or openapi or route_removed or migration or event or integrity or removed_assertion or new_test'\n...........                                                              [100%]\n11 passed, 36 deselected in 6.12s\n(exit 0)",
    "dl": [
     "DL-042"
-   ]
+   ],
+   "commit": "19961bb"
   },
   "T4.5": {
    "milestone": "M4",
    "title": "Decision policy, modes, budget (FR-12, FR-20, FR-23)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'policy or fixture or fourth or waiver or mode_change or fast'\n................                                                         [100%]\n16 passed, 31 deselected in 6.91s\n(exit 0)",
+   "dl": [
+    "DL-043"
+   ]
   },
   "T4.6": {
    "milestone": "M4",

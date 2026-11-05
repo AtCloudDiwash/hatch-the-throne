@@ -59,6 +59,7 @@ flowchart LR
     DL040["DL-040 Blast-radius context for what the prompt na…"]
     DL041["DL-041 Virtual apply and symbol diff"]
     DL042["DL-042 Contract and test-integrity checks"]
+    DL043["DL-043 Decision policy, modes and prompt budget"]
   end
 ```
 
@@ -70,14 +71,36 @@ flowchart LR
 | M1 | 4 | 2 | 1 | 0 | 0 | 0 | 0 | 7 |
 | M2 | 4 | 0 | 0 | 0 | 0 | 0 | 0 | 4 |
 | M3 | 7 | 0 | 0 | 0 | 0 | 0 | 0 | 7 |
-| M4 | 4 | 1 | 0 | 0 | 0 | 0 | 0 | 5 |
-| **All** | **20** | **3** | **1** | **14** | **0** | **0** | **4** | **42** |
+| M4 | 5 | 1 | 0 | 0 | 0 | 0 | 0 | 6 |
+| **All** | **21** | **3** | **1** | **14** | **0** | **0** | **4** | **43** |
 
 ## Entries, newest first
 
+### DL-043 · Decision policy, modes and prompt budget
+
+**feature** · M4 · T4.5 · 2026-11-05T11:51-06:00 · commit `pending`
+
+- **Context:** D-013, D-018 and the TESTING.md fixture table define who gets interrupted and when.
+- **What:** policy.py decides allow, ask or deny from mode, prompts used and waiver. pre_edit.py applies it, records findings once, and sends context with every ask. Risk signals are context only, and sent once per symbol. A waiver holds only for the same code hash.
+- **Why:** A pure policy function can be tested directly against the fixture table. A guardrail that blocks good roads gets switched off, so only evidence can interrupt.
+- **Impact:** The fourth contract break in a session does not prompt and goes to the report.
+- **Files:** `legacyguard/guardlib/policy.py`, `legacyguard/scripts/pre_edit.py`, `tests/test_pre_edit.py`
+- **Requirements:** `FR-12`, `FR-20`, `FR-23`, `NFR-07`
+- **Decisions:** `D-013`, `D-018`
+- **Open questions:** none
+- **Tests:** `tests/test_pre_edit.py::test_policy_table`, `tests/test_pre_edit.py::test_fourth_break_in_a_session_does_not_prompt`, `tests/test_pre_edit.py::test_waiver_stops_applying_when_code_changes`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_pre_edit.py -k 'policy or fixture or fourth or waiver or mode_change or fast'
+................                                                         [100%]
+16 passed, 31 deselected in 6.91s
+(exit 0)
+```
+
 ### DL-042 · Contract and test-integrity checks
 
-**feature** · M4 · T4.4 · 2026-11-05T11:51-06:00 · commit `pending`
+**feature** · M4 · T4.4 · 2026-11-05T11:51-06:00 · commit `19961bb`
 
 - **Context:** FR-12 step 4 and FR-17: dropped fields, dropped columns, retyped events and weakened tests must reach a person.
 - **What:** checks.py compares before and after for openapi.yaml, migrations (real SQL in memory, plus statement patterns), event schemas, route decorators, handler parameters, response models and serializer dict keys, and test files (deleted, assertion removed, weakened, skipped).
