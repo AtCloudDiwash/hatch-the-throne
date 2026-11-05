@@ -1,6 +1,6 @@
 {
- "current": "M0 / T0.3",
- "next": "Hook behavior spike.",
+ "current": "M0 / T0.4",
+ "next": "Plan usage.",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -43,12 +43,17 @@
    "evidence": "$ python spikes/t02_runnable.py   (in the oscar checkout, DB dummy backend)\n{\"total_defs\": 367, \"returned_value\": 28, \"ran_including_app_exceptions\": 142, \"share_returned\": 0.076, \"share_ran\": 0.387,\n \"by_kind\": {\"model-method\": {\"noinstance\": 159, \"raises\": 33, \"db\": 4, \"ok\": 5}, \"plain-method\": {\"noinstance\": 35, \"raises\": 25, \"ok\": 18}, \"module-level\": {\"raises\": 18}, \"view/form-method\": {\"noinstance\": 24, \"ok\": 5, \"raises\": 38, \"db\": 3}}}",
    "dl": [
     "DL-017"
-   ]
+   ],
+   "commit": "702ea9c"
   },
   "T0.3": {
    "milestone": "M0",
    "title": "Hook behavior check (OQ-B5, NFR-10)",
-   "status": "pending"
+   "status": "done",
+   "evidence": "$ claude --version\n2.1.318 (Claude Code)\n$ claude -p \"$PROMPT\" --plugin-dir spikes/t03_hookspike --model haiku --permission-mode acceptEdits ... --debug-file debug.txt\ndebug: Hook PreToolUse returned permissionDecision: deny (reason: LGTOKEN-DENYREASON)\ndebug: Hook PreToolUse returned permissionDecision: ask (reason: LGTOKEN-ASKREASON)\nstream: permission_denied decision_reason_type=hook decision_reason=LGTOKEN-ASKREASON\ndebug: Hooks: Found sync response from async_hook_86348: {\"systemMessage\":\"LGTOKEN-ASYNCSYS\",...,\"additionalContext\":\"LGTOKEN-ASYNCCTX\"}\ndebug: Hook PostToolUse:Write error: status code 2 stderr: LGTOKEN-REWAKE-STDERR\nhooklog: stop active=False, then stop active=True\nClaude listed: SESSIONCTX, PROMPTCTX, PRECTX, DENYREASON, DENYCTX, ASKREASON, ASKCTX, REWAKE-STDERR, ASYNCSYS, ASYNCCTX; then STOPREASON",
+   "dl": [
+    "DL-018"
+   ]
   },
   "T0.4": {
    "milestone": "M0",

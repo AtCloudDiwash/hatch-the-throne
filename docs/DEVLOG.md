@@ -26,6 +26,7 @@ flowchart LR
     DL015["DL-015 Dev log tooling, progress tracking and thei…"]
     DL016["DL-016 django-oscar's test suite runs on SQLite"]
     DL017["DL-017 Only 7.6% of oscar offer/basket functions r…"]
+    DL018["DL-018 All testable hook behaviors confirmed on Cl…"]
   end
 ```
 
@@ -33,14 +34,42 @@ flowchart LR
 
 | Milestone | feature | change | fix | decision | fallback | blocked | spike | Total |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| M0 | 1 | 0 | 0 | 14 | 0 | 0 | 2 | 17 |
-| **All** | **1** | **0** | **0** | **14** | **0** | **0** | **2** | **17** |
+| M0 | 1 | 0 | 0 | 14 | 0 | 0 | 3 | 18 |
+| **All** | **1** | **0** | **0** | **14** | **0** | **0** | **3** | **18** |
 
 ## Entries, newest first
 
+### DL-018 · All testable hook behaviors confirmed on Claude Code v2.1.318
+
+**spike** · M0 · T0.3 · 2026-11-05T11:25-06:00 · commit `pending`
+
+- **Context:** OQ-B5: the design relied on asyncRewake, ask-to-deny under -p and Stop block, from a partly read reference.
+- **What:** One claude -p run with a throwaway plugin exercised every hook and token. Read the stream, the debug log and hook logs, and read the docs' async section in full.
+- **Why:** One combined run stayed inside the M0 budget of 2 trial tasks.
+- **Impact:** No fallback needed: the PostToolUse diff stays async with asyncRewake. Two design notes: async systemMessage reaches Claude and not the developer, and -p kills in-flight async hooks at teardown, so the Stop audit must catch what is still running.
+- **Files:** `spikes/t03_hookspike/h.py`, `spikes/t03_hookspike/hooks/hooks.json`, `docs/OPEN_QUESTIONS.md`, `docs/MANUAL_CHECKS.md`
+- **Requirements:** `FR-15`, `FR-18`
+- **Decisions:** `D-003`, `D-004`
+- **Open questions:** `OQ-B5`
+- **Tests:** none
+- **Evidence:**
+
+```text
+$ claude --version
+2.1.318 (Claude Code)
+$ claude -p "$PROMPT" --plugin-dir spikes/t03_hookspike --model haiku --permission-mode acceptEdits ... --debug-file debug.txt
+debug: Hook PreToolUse returned permissionDecision: deny (reason: LGTOKEN-DENYREASON)
+debug: Hook PreToolUse returned permissionDecision: ask (reason: LGTOKEN-ASKREASON)
+stream: permission_denied decision_reason_type=hook decision_reason=LGTOKEN-ASKREASON
+debug: Hooks: Found sync response from async_hook_86348: {"systemMessage":"LGTOKEN-ASYNCSYS",...,"additionalContext":"LGTOKEN-ASYNCCTX"}
+debug: Hook PostToolUse:Write error: status code 2 stderr: LGTOKEN-REWAKE-STDERR
+hooklog: stop active=False, then stop active=True
+Claude listed: SESSIONCTX, PROMPTCTX, PRECTX, DENYREASON, DENYCTX, ASKREASON, ASKCTX, REWAKE-STDERR, ASYNCSYS, ASYNCCTX; then STOPREASON
+```
+
 ### DL-017 · Only 7.6% of oscar offer/basket functions return a value in isolation
 
-**spike** · M0 · T0.2 · 2026-11-05T11:25-06:00 · commit `pending`
+**spike** · M0 · T0.2 · 2026-11-05T11:25-06:00 · commit `702ea9c`
 
 - **Context:** OQ-B1 asked what share of real functions the behavioral diff can call.
 - **What:** spikes/t02_runnable.py tried all 367 defs with the DB disabled, sockets blocked and naive inputs.

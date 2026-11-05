@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** M0 / T0.3
-- **Next step:** Hook behavior spike.
+- **Current milestone and task:** M0 / T0.4
+- **Next step:** Plan usage.
 
 ## Status
 
@@ -11,8 +11,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | --- | --- | --- | --- | --- | --- |
 | T0.0 | M0 | done | [x] Setup: docs, progress, dev log tools, default decisions | DL-001 DL-002 DL-003 DL-004 DL-005 DL-006 DL-007 DL-008 DL-009 DL-010 DL-011 DL-012 DL-013 DL-014 DL-015 | 121c203 |
 | T0.1 | M0 | done | [x] django-oscar on SQLite (OQ-B1) | DL-016 | b9dcf7d |
-| T0.2 | M0 | done | [x] Runnable-function share (OQ-B1) | DL-017 |  |
-| T0.3 | M0 | pending | [ ] Hook behavior check (OQ-B5, NFR-10) |  |  |
+| T0.2 | M0 | done | [x] Runnable-function share (OQ-B1) | DL-017 | 702ea9c |
+| T0.3 | M0 | done | [x] Hook behavior check (OQ-B5, NFR-10) | DL-018 |  |
 | T0.4 | M0 | pending | [ ] Plan usage of headless runs (OQ-N6) |  |  |
 | T1.1 | M1 | pending | [ ] Manifest and wiring |  |  |
 | T1.2 | M1 | pending | [ ] Shared hook runtime |  |  |
@@ -80,5 +80,20 @@ FAILED: 3 checkout ThankYouView, 2 catalogue category moves, 2 concurrent order 
 $ python spikes/t02_runnable.py   (in the oscar checkout, DB dummy backend)
 {"total_defs": 367, "returned_value": 28, "ran_including_app_exceptions": 142, "share_returned": 0.076, "share_ran": 0.387,
  "by_kind": {"model-method": {"noinstance": 159, "raises": 33, "db": 4, "ok": 5}, "plain-method": {"noinstance": 35, "raises": 25, "ok": 18}, "module-level": {"raises": 18}, "view/form-method": {"noinstance": 24, "ok": 5, "raises": 38, "db": 3}}}
+```
+
+### T0.3 Hook behavior check (OQ-B5, NFR-10) (done)
+
+```text
+$ claude --version
+2.1.318 (Claude Code)
+$ claude -p "$PROMPT" --plugin-dir spikes/t03_hookspike --model haiku --permission-mode acceptEdits ... --debug-file debug.txt
+debug: Hook PreToolUse returned permissionDecision: deny (reason: LGTOKEN-DENYREASON)
+debug: Hook PreToolUse returned permissionDecision: ask (reason: LGTOKEN-ASKREASON)
+stream: permission_denied decision_reason_type=hook decision_reason=LGTOKEN-ASKREASON
+debug: Hooks: Found sync response from async_hook_86348: {"systemMessage":"LGTOKEN-ASYNCSYS",...,"additionalContext":"LGTOKEN-ASYNCCTX"}
+debug: Hook PostToolUse:Write error: status code 2 stderr: LGTOKEN-REWAKE-STDERR
+hooklog: stop active=False, then stop active=True
+Claude listed: SESSIONCTX, PROMPTCTX, PRECTX, DENYREASON, DENYCTX, ASKREASON, ASKCTX, REWAKE-STDERR, ASYNCSYS, ASYNCCTX; then STOPREASON
 ```
 
