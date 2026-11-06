@@ -199,6 +199,7 @@ T10.1 was started on 2026-11-05 and set aside the same day at the team's request
 | --- | --- | --- |
 | T13.1 | The guard sets itself up in a Python repo and finds a usable Python (FR-32, FR-33) | A repo with no guard files gets a checked finding in one session, also when `python3` is 3.9 |
 | T13.2 | One zip with an installer (FR-34) | `sh install.sh` in an empty Claude config ends with the plugin enabled |
+| T13.3 | Install for real and check a signed-in session | Plain `claude` in a repo with no guard files runs all five hooks from the installed copy |
 
 ## Requirement → task traceability
 

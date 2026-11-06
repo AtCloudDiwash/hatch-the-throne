@@ -1,0 +1,4 @@
+# This is the guard's own source repo. The guard is installed for every session on this machine,
+# and it is switched off here so work on the guard is not checked by the guard under development.
+# To try it on itself, delete this line.
+enabled: false

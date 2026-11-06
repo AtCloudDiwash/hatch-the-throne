@@ -583,6 +583,13 @@
    "dl": [
     "DL-094"
    ]
+  },
+  "T13.3": {
+   "milestone": "M13",
+   "title": "Installed for real and checked in a signed-in session",
+   "status": "pending",
+   "evidence": "",
+   "dl": []
   }
  },
  "summaries": {
@@ -596,6 +603,6 @@
   "M9": "1. The guard now writes an offline session map at Stop, next to the Markdown report, and /legacyguard:map opens it.\n2. It shows changed functions with their status, callers up to three steps, which callers no test reaches, and API routes.\n3. Edges are solid only when one test runs both ends; name-only matches are dashed. No score, and it never says safe.\n4. 17 new tests (254 in total), a browser check in light and dark, and one live claude -p run where Stop wrote the map.\n5. Scheduled jobs are not indexed, so only routes are labeled as entry points; MC-8 is the manual check.",
   "M11": "1. The guard ran on Zulip's backend (1,684 files): indexed in about 2 seconds, with 47 modules runnable on this Mac.\n2. Three change requests went through Claude with the guard on. In one, Claude's edit broke emoji codes, the guard showed an example, and Claude fixed it (150 inputs then matched).\n3. Reports and maps now open with a plain story: what was asked, what broke, what fixed it, what was not checked.\n4. The real repo exposed three guard problems, all fixed: false routes from mock.patch, narrow generated inputs, and a wrong Untested reason.\n5. Zulip's tests and database layer cannot run here, so its maps have no test information; FR-13 is paused in git stash.",
   "M12": "1. The guard was installed on a second laptop and run on Pretix; it started but could not check anything.\n2. Cause one: that laptop had Python 3.9. The guard now says in plain words that it needs 3.10 or newer.\n3. Cause two: Pretix's settings write a throwaway key file on load and the guard refused it. Temp-folder writes are now allowed; repo writes stay blocked (D-041).\n4. Two noise sources fixed: slash commands were read as change requests, and a parameter defaulting to a settings value was fed numbers.\n5. On a local Pretix copy the same edit now gets Verified pass on 85 inputs. Pretix's tests were not run, so its map has no test information.",
-  "M13": "1. Install is now one zip and one command, run once; after that the guard loads in every Claude session.\n2. In a Python git repo with no guard files, the guard writes its own settings and reads the codebase at the first start.\n3. When the python3 command is 3.9, the guard finds a newer Python on the machine and uses it.\n4. Live check: on a Pretix copy with no setup, one Claude run ended with Verified pass on 85 inputs.\n5. Not done: the installed plugin was not run through a signed-in Claude session, and nothing is published to GitHub."
+  "M13": "1. Install is now one zip and one command, run once; after that the guard loads in every Claude session.\n2. In a Python git repo with no guard files, the guard writes its own settings and reads the codebase at the first start.\n3. When the python3 command is 3.9, the guard finds a newer Python on the machine and uses it.\n4. Installed on the team's Mac and checked live: plain `claude` on a Pretix copy with no setup ended with Verified pass on 85 inputs.\n5. The guard is switched off in its own source repo. Nothing is published to GitHub yet."
  }
 }
