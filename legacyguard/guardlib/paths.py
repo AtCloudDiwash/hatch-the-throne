@@ -54,9 +54,13 @@ def git_root(start: str) -> str | None:
 
 
 def find_root(cwd: str) -> str:
-    """Nearest ancestor holding .legacyguard/config.yaml, else the git root, else cwd."""
+    """Nearest ancestor holding .legacyguard/config.yaml, without leaving the git repo cwd is in; else that repo's top, else cwd.
+
+    The search stops at the first folder with a .git entry: a config above it belongs to a different repo, and a repo
+    cloned inside a guarded (or switched-off) one must be judged on its own.
+    """
     cur = Path(os.path.realpath(cwd))
     for candidate in (cur, *cur.parents):
-        if (candidate / ".legacyguard" / "config.yaml").exists():
+        if (candidate / ".legacyguard" / "config.yaml").exists() or (candidate / ".git").exists():
             return norm(str(candidate))
     return git_root(str(cur)) or norm(str(cur))

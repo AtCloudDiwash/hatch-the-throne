@@ -85,3 +85,15 @@ def test_enabled_false_keeps_the_guard_off_and_quiet(tmp_path, hook):
     r = hook("pre_edit", {"cwd": str(repo), "session_id": "s", "tool_name": "Edit",
                           "tool_input": {"file_path": str(repo / "app.py"), "old_string": "a + b", "new_string": "a - b"}})
     assert r.returncode == 0 and r.stdout == ""
+
+
+def test_repo_cloned_inside_a_switched_off_repo_is_judged_on_its_own(tmp_path, hook):
+    """DL-095: the nearest config used to win even across a git boundary, so the inner repo inherited 'off'."""
+    from guardlib.paths import find_root
+    outer = make(tmp_path / "outer", FLAT)
+    (outer / ".legacyguard").mkdir()
+    (outer / ".legacyguard" / "config.yaml").write_text("enabled: false\n")
+    inner = make(outer / "work" / "inner", FLAT)
+    assert find_root(str(inner / "tests")) == str(inner.resolve())
+    assert find_root(str(outer / "tests")) == str(outer.resolve())
+    assert "set itself up" in start(hook, inner)["systemMessage"]
