@@ -160,13 +160,40 @@ flowchart LR
 | M8 | 2 | 2 | 1 | 1 | 1 | 1 | 0 | 8 |
 | M9 | 3 | 0 | 0 | 1 | 0 | 0 | 0 | 4 |
 | M11 | 2 | 2 | 2 | 0 | 0 | 0 | 2 | 8 |
-| **All** | **44** | **10** | **10** | **18** | **1** | **1** | **9** | **93** |
+| **All** | **45** | **10** | **10** | **18** | **1** | **1** | **9** | **94** |
 
 ## Entries, newest first
 
+### DL-094 · One zip with an installer
+
+**feature** · M13 · T13.2 · 2026-11-06T00:19-06:00 · commit `this commit is the last one; see git log -1`
+
+- **Context:** The team asked for a download-and-use package and suggested Docker.
+- **What:** tools/build_package.py builds dist/legacyguard.zip with the plugin, its marketplace file, install.sh and a README. install.sh copies the plugin to ~/.legacyguard/package and registers it with Claude Code's plugin installer; running it again updates. Plugin version is 0.2.0.
+- **Why:** Claude Code and its hooks run on the developer's machine against the project's own interpreter, so a container adds steps. The plugin installer needs one command once (D-042).
+- **Impact:** Not verified: a signed-in Claude session using the installed plugin. The isolated test config is not signed in, and installing into the developer's real config needs their go-ahead. Nothing is published to GitHub (OQ-N12).
+- **Files:** `tools/build_package.py`, `packaging/install.sh`, `packaging/README.txt`, `tests/test_package.py`, `legacyguard/.claude-plugin/plugin.json`, `legacyguard/README.md`, `.gitignore`
+- **Requirements:** `FR-34`
+- **Decisions:** `D-042`, `D-017`
+- **Open questions:** `OQ-N12`
+- **Tests:** `test_zip_has_what_the_installer_needs`, `test_installer_stops_with_a_plain_message_when_claude_is_missing`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests/test_package.py 2>&1 | tail -1; python3 tools/build_package.py; python3 tools/devlog_check.py
+2 passed in 3.27s
+/Users/diwashkuskusmiya/Desktop/Life Lane/Projects/Hatchathon/dist/legacyguard.zip (90 KB, 60 files)
+devlog_check OK: 93 entries, every commit carries a known DL ID, links resolve, fixes have root causes
+(exit 0)
+In an empty Claude config (CLAUDE_CONFIG_DIR in the scratch folder): sh install.sh
+Successfully added marketplace: legacyguard
+Successfully installed plugin: legacyguard@legacyguard (scope: user)
+claude plugin list: legacyguard@legacyguard, Version 0.2.0, Status enabled
+```
+
 ### DL-093 · A project on Python 3.9 was reported as timed out
 
-**fix** · M13 · T13.1 · 2026-11-06T00:19-06:00 · commit `pending`
+**fix** · M13 · T13.1 · 2026-11-06T00:19-06:00 · commit `5af7559`
 
 - **Context:** Testing the 3.9 start on this Mac: a breaking edit to add(a, b) came back Untested, 'timed out', in under a second.
 - **What:** The worker reads the temp folder location before the write block goes in. A worker that stops without results is now reported as 'the check could not run in the project's Python' with its last error line; only a real timeout says timed out.
@@ -196,7 +223,7 @@ report: Verified pass, round_decimal, 85 inputs compared, 85 returned a value
 
 ### DL-092 · The guard finds a Python 3.10+ when python3 is older
 
-**feature** · M13 · T13.1 · 2026-11-06T00:19-06:00 · commit `pending`
+**feature** · M13 · T13.1 · 2026-11-06T00:19-06:00 · commit `5af7559`
 
 - **Context:** DL-089 only named the problem. The developer still had to install Python and change PATH.
 - **What:** bootstrap.find_python looks on PATH and in the usual install folders for python3.10 to 3.14 and builds the guard's environment with it. With none found, the notice says so in plain words.
@@ -225,7 +252,7 @@ report: Verified pass, round_decimal, 85 inputs compared, 85 returned a value
 
 ### DL-091 · The guard sets itself up in a Python repo
 
-**feature** · M13 · T13.1 · 2026-11-06T00:19-06:00 · commit `pending`
+**feature** · M13 · T13.1 · 2026-11-06T00:19-06:00 · commit `5af7559`
 
 - **Context:** The team asked that a developer can install once and use Claude Code right away, with no config file and no extra commands.
 - **What:** At SessionStart in a git repo with at least three tracked Python files and no config, guardlib/autosetup.py writes .legacyguard/config.yaml from repo facts (src layout, Django settings named in the pytest config or manage.py, an openapi file), then the session starts as usual. Other folders get no file and no message. enabled: false keeps a repo off.

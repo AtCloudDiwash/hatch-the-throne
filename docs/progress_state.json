@@ -1,6 +1,6 @@
 {
- "current": "T13.2",
- "next": "Build and test the install package",
+ "current": "Done for now: M0 to M9 and M11 to M13 complete; M10 (FR-13) paused in git stash",
+ "next": "Team: run install.sh on each laptop; decide the GitHub repo for the marketplace",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -572,14 +572,17 @@
     "DL-091",
     "DL-092",
     "DL-093"
-   ]
+   ],
+   "commit": "5af7559"
   },
   "T13.2": {
    "milestone": "M13",
    "title": "One zip with an installer",
-   "status": "pending",
-   "evidence": "",
-   "dl": []
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests/test_package.py 2>&1 | tail -1; python3 tools/build_package.py; python3 tools/devlog_check.py\n2 passed in 3.27s\n/Users/diwashkuskusmiya/Desktop/Life Lane/Projects/Hatchathon/dist/legacyguard.zip (90 KB, 60 files)\ndevlog_check OK: 93 entries, every commit carries a known DL ID, links resolve, fixes have root causes\n(exit 0)\nIn an empty Claude config (CLAUDE_CONFIG_DIR in the scratch folder): sh install.sh\nSuccessfully added marketplace: legacyguard\nSuccessfully installed plugin: legacyguard@legacyguard (scope: user)\nclaude plugin list: legacyguard@legacyguard, Version 0.2.0, Status enabled",
+   "dl": [
+    "DL-094"
+   ]
   }
  },
  "summaries": {

@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** T13.2
-- **Next step:** Build and test the install package
+- **Current milestone and task:** Done for now: M0 to M9 and M11 to M13 complete; M10 (FR-13) paused in git stash
+- **Next step:** Team: run install.sh on each laptop; decide the GitHub repo for the marketplace
 
 ## Status
 
@@ -62,8 +62,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T11.2 | M11 | done | [x] Session story in the report and the map (FR-31) | DL-083 | 0170810 |
 | T11.3 | M11 | done | [x] Zulip simulation: three change requests through Claude | DL-084 DL-085 DL-086 |  |
 | T12.1 | M12 | done | [x] First run on a second laptop with Pretix: four fixes | DL-087 DL-088 DL-089 DL-090 |  |
-| T13.1 | M13 | done | [x] The guard sets itself up and finds a usable Python | DL-091 DL-092 DL-093 |  |
-| T13.2 | M13 | pending | [ ] One zip with an installer |  |  |
+| T13.1 | M13 | done | [x] The guard sets itself up and finds a usable Python | DL-091 DL-092 DL-093 | 5af7559 |
+| T13.2 | M13 | done | [x] One zip with an installer | DL-094 |  |
 
 ## Milestone summaries
 
@@ -816,5 +816,19 @@ edit add(a, b) from a + b to a - b: exit 2, 'add(a=3, b=3) before 6 after 0', 79
 Live, one Sonnet run (about $0.09 notional) on a Pretix copy with no .legacyguard folder, plugin loaded from the installed package copy:
 config written with scope src/, source_roots [src], django_settings tests.settings
 report: Verified pass, round_decimal, 85 inputs compared, 85 returned a value
+```
+
+### T13.2 One zip with an installer (done)
+
+```text
+$ .venv/bin/pytest -q tests/test_package.py 2>&1 | tail -1; python3 tools/build_package.py; python3 tools/devlog_check.py
+2 passed in 3.27s
+/Users/diwashkuskusmiya/Desktop/Life Lane/Projects/Hatchathon/dist/legacyguard.zip (90 KB, 60 files)
+devlog_check OK: 93 entries, every commit carries a known DL ID, links resolve, fixes have root causes
+(exit 0)
+In an empty Claude config (CLAUDE_CONFIG_DIR in the scratch folder): sh install.sh
+Successfully added marketplace: legacyguard
+Successfully installed plugin: legacyguard@legacyguard (scope: user)
+claude plugin list: legacyguard@legacyguard, Version 0.2.0, Status enabled
 ```
 
