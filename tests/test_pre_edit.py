@@ -425,3 +425,11 @@ def test_pre_edit_is_fast(bill):
     t = time.time()
     edit(bill, *DROP_FIELD)
     assert time.time() - t < 1.0
+
+
+def test_slash_command_is_not_a_request(bill):
+    """DL-088: '/legacyguard:status' is the developer using the guard, not asking for a change."""
+    start(bill)
+    out, _ = prompt(bill, "/legacyguard:impact compute_late_fee")
+    assert out == {}
+    assert ledger.load(cfgmod.load_config(str(bill)).state_dir)["prompt_text"] == []

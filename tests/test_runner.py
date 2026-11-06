@@ -419,3 +419,65 @@ def test_a_module_that_does_not_exist_yet_is_still_a_new_function(svc):
     t = differ.Target("fresh.py", "g", "function", [{"name": "n", "annotation": "int", "default": None}], "h")
     r = differ.run(cfg, str(baseline.baseline_dir(cfg)), str(svc), [t], harvest={})[0]
     assert r.status == differ.UNTESTED and "no old version" in r.reason
+
+
+# ---- DL-087 scratch files: a temp-folder write is not a reason to refuse the whole check ----
+
+SCRATCH_MOD = '''
+import os
+import tempfile
+
+_dir = tempfile.mkdtemp()
+with open(os.path.join(_dir, "secret"), "w") as fh:  # what a settings module does at import
+    fh.write("x")
+
+
+def scratch(n):
+    with open(os.path.join(_dir, "note.txt"), "a") as fh:
+        fh.write("x")
+    return n
+
+
+def in_repo(n):
+    with open("out.txt", "w") as fh:
+        fh.write("x")
+    return n
+'''
+
+
+def _worker(tmp_path, root, names, protect=()):
+    one = {"args": [{"name": "n", "kind": "pos", "value": {"t": "v", "v": 1}}], "has_self": False}
+    req, res = tmp_path / "req.json", tmp_path / "res.json"
+    req.write_text(json.dumps({"root": str(root), "sys_path": [str(root)], "protect": [str(p) for p in protect],
+                               "functions": [{"module": "mod", "qualname": n, "inputs": [one]} for n in names]}))
+    subprocess.run([sys.executable, differ.WORKER, str(req), str(res)], check=True, capture_output=True)
+    return json.loads(res.read_text())
+
+
+def test_temp_folder_writes_run_but_repo_writes_stay_blocked(tmp_path):
+    root = tmp_path / "proj"
+    root.mkdir()
+    (root / "mod.py").write_text(SCRATCH_MOD)
+    out = _worker(tmp_path, root, ["scratch", "in_repo"])
+    assert out["mod:scratch"]["status"] == "ran" and out["mod:scratch"]["results"][0]["outcome"] == "return"
+    assert out["mod:in_repo"]["results"][0]["outcome"] == "blocked"
+    assert not (root / "out.txt").exists()
+
+
+def test_protected_folder_inside_temp_stays_blocked(tmp_path):
+    root, other = tmp_path / "proj", tmp_path / "repo"
+    root.mkdir()
+    other.mkdir()
+    (root / "mod.py").write_text("def leak(n):\n    open(%r, 'w').write('x')\n    return n\n" % str(other / "f.txt"))
+    out = _worker(tmp_path, root, ["leak"], protect=[other])
+    assert out["mod:leak"]["results"][0]["outcome"] == "blocked" and not (other / "f.txt").exists()
+
+
+def test_parameter_with_unreadable_default_keeps_its_default(tmp_path):
+    """DL-090: places_dict=settings.CURRENCY_PLACES got numbers and strings, which only proved that a number is not a table."""
+    sym = {"qualname": "round_decimal", "kind": "function", "params": [
+        {"name": "dec"}, {"name": "currency", "default": "None"}, {"name": "places_dict", "default": "settings.CURRENCY_PLACES"}]}
+    items, reason = input_lib.build(sym, None, 30, tmp_path)
+    assert reason is None and items
+    assert all("places_dict" not in [a["name"] for a in i["args"]] for i in items)
+    assert any("currency" in [a["name"] for a in i["args"]] for i in items)

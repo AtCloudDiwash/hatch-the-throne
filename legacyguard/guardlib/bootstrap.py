@@ -44,8 +44,15 @@ def manual_command(plugin_root: str | Path, base: Path | None = None) -> str:
     return f'python3 -m venv "{base / "venv"}" && "{venv_python(base)}" -m pip install -r "{Path(plugin_root) / "requirements.txt"}"'
 
 
-def ensure_venv(plugin_root: str | Path, base: Path | None = None, run=subprocess.run) -> bool:
+MIN_PYTHON = (3, 10)
+
+
+def ensure_venv(plugin_root: str | Path, base: Path | None = None, run=subprocess.run, version=None) -> bool:
     """Create the venv once. Returns True if it installed, False if it was already ready."""
+    version = tuple(version or sys.version_info[:3])
+    if version < MIN_PYTHON:
+        raise BootstrapError(f"LegacyGuard needs Python 3.10 or newer, and python3 here is {'.'.join(map(str, version))}. "
+                             "Install a newer Python, make the python3 command point to it, then start Claude Code again")
     base = base or data_dir()
     base.mkdir(parents=True, exist_ok=True)
     if is_ready(plugin_root, base):

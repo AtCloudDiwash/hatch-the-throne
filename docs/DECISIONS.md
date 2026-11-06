@@ -206,3 +206,11 @@ Each entry below records a default chosen by the team for the one-pass M0–M8 b
 - **Reasoning:** The findings table is exact but reads like a log. The same facts in order, in plain words, are what a developer wants first. The story adds no new judgment: every line maps to a finding with exactly one of the five statuses.
 - **Trade-offs:** On this Mac Zulip's test suite and database layer cannot run, so the map cannot say which callers tests reach, and only modules that import without the database can be compared by running them.
 - **Status:** Confirmed (approved for M11)
+
+## D-041 Temp-folder writes are allowed during the behavioral diff
+- **Context:** First run on Pretix (2026-11-05, M12, approved by the team's request to analyze and fix). Pretix's test settings create a temp folder and write a generated key and a log file there when Django loads. The runner refused every file write, so every function in the project came out `Untested`.
+- **Options:** keep refusing all writes; allow all writes while settings load; allow writes only inside the system temp folder.
+- **Decision:** A write is allowed when its real path is inside the system temp folder and not inside the guarded repo or the baseline copy. Every other write is still refused and still makes that input `Untested`.
+- **Reasoning:** Temp files are throwaway by definition and are not the developer's source or data. Constraint 10 (the guard writes only under `.legacyguard/`) is about the repo, and the repo stays protected even when it lives under a temp folder.
+- **Trade-offs:** A function whose only effect is a temp file now runs and is compared on its return value. Side effects are still not compared (D-029).
+- **Status:** Confirmed (approved for M12)

@@ -26,8 +26,11 @@ def handle(event: dict):
     if os.environ.get("ANTHROPIC_API_KEY"):
         messages.append(API_KEY)
     if _common.BOOT_ERROR:
-        messages.append(f"LegacyGuard could not install its dependencies ({_common.BOOT_ERROR}); the guard is inactive. "
-                        f"Install by hand: {bootstrap.manual_command(PLUGIN_ROOT)}")
+        if "needs Python" in str(_common.BOOT_ERROR):
+            messages.append(f"{_common.BOOT_ERROR}. Until then the guard is inactive.")
+        else:
+            messages.append(f"LegacyGuard could not install its dependencies ({_common.BOOT_ERROR}); the guard is inactive. "
+                            f"Install by hand: {bootstrap.manual_command(PLUGIN_ROOT)}")
         return hook_output("SessionStart", system_message=" ".join(messages))
 
     from guardlib import config as cfgmod

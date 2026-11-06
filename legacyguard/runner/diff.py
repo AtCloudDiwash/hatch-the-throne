@@ -120,7 +120,7 @@ def _reads_any(source: str, names: set[str]) -> bool:
 def _run_worker(cfg, py: str, root: str, sys_path: list[str], functions: list[dict], timeout: float) -> dict | None:
     with tempfile.TemporaryDirectory(prefix="lgrun") as tmp:
         req, res = Path(tmp) / "req.json", Path(tmp) / "res.json"
-        req.write_text(json.dumps({"root": root, "sys_path": sys_path, "functions": functions, "django_settings": cfg.raw.get("django_settings")}))
+        req.write_text(json.dumps({"root": root, "sys_path": sys_path, "protect": [str(cfg.root)], "functions": functions, "django_settings": cfg.raw.get("django_settings")}))
         env = clean_env(cfg)
         env.pop("PYTHONPATH", None)
         try:

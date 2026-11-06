@@ -18,6 +18,7 @@ import socket
 import sqlite3
 import subprocess
 import sys
+import tempfile
 import traceback
 import types
 
@@ -59,7 +60,8 @@ def install_blocks() -> None:
     file_block = _blocker("file write")
 
     def guarded_open(file, mode="r", *args, **kwargs):
-        if any(c in mode for c in "wax+") and str(file) not in (os.devnull,) and not GUARD_WRITES.get("allowed"):
+        if (any(c in mode for c in "wax+") and str(file) not in (os.devnull,) and not GUARD_WRITES.get("allowed")
+                and not _is_scratch(file)):
             file_block()
         return real_open(file, mode, *args, **kwargs)
 
@@ -72,6 +74,25 @@ def install_blocks() -> None:
 
 
 GUARD_WRITES = {"allowed": False}
+SCRATCH = {"temp": "", "protect": []}
+
+
+def _is_scratch(file) -> bool:
+    """True for a path in the system temp folder that is not inside the guarded repo (D-041).
+
+    Settings modules and libraries keep throwaway files there (a generated key, a log, a cache). Refusing those
+    made every function of such a project Untested, while the files that matter are the repo's own.
+    """
+    if not SCRATCH["temp"] or isinstance(file, int):
+        return False
+    try:
+        real = os.path.realpath(os.fspath(file))
+    except TypeError:
+        return False
+    if isinstance(real, bytes):
+        real = os.fsdecode(real)
+    real += os.sep
+    return real.startswith(SCRATCH["temp"]) and not any(real.startswith(p) for p in SCRATCH["protect"])
 
 
 def _alarm(signum, frame):
@@ -209,6 +230,8 @@ def main(request_path, result_path):
     for extra in reversed(request.get("sys_path") or []):
         sys.path.insert(0, extra)
     root_real = os.path.realpath(root) + os.sep
+    SCRATCH["protect"] = [root_real] + [os.path.realpath(p) + os.sep for p in request.get("protect") or []]
+    SCRATCH["temp"] = os.path.realpath(tempfile.gettempdir()) + os.sep
     setup_error = None
     django_settings = request.get("django_settings")
     if django_settings:

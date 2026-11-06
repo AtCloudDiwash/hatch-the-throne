@@ -158,9 +158,125 @@ flowchart LR
 | M8 | 2 | 2 | 1 | 1 | 1 | 1 | 0 | 8 |
 | M9 | 3 | 0 | 0 | 1 | 0 | 0 | 0 | 4 |
 | M11 | 2 | 2 | 2 | 0 | 0 | 0 | 2 | 8 |
-| **All** | **42** | **10** | **5** | **18** | **1** | **1** | **9** | **86** |
+| **All** | **42** | **10** | **9** | **18** | **1** | **1** | **9** | **90** |
 
 ## Entries, newest first
+
+### DL-090 · A parameter whose default is not a plain value keeps its default
+
+**fix** · M12 · T12.1 · 2026-11-05T23:38-06:00 · commit `this commit is the last one; see git log -1`
+
+- **Context:** With the write fix in place, the same Pretix edit raised a behavior difference on 23 of 23 inputs, all with a number passed as places_dict.
+- **What:** When a parameter has no type hint and its default is not a readable literal (settings.X, {}, a call), no values are generated for it and the default is used.
+- **Why:** A false alarm on the first real check would cost the developer's trust.
+- **Root cause:** A default that could not be read as a literal fell through to the generic guesses (money, small numbers, short text, None).
+- **Impact:** On a local Pretix copy the edit is now Verified pass on 85 inputs.
+- **Files:** `legacyguard/runner/inputs.py`, `tests/test_runner.py`
+- **Requirements:** `FR-14`
+- **Decisions:** `D-013`
+- **Open questions:** none
+- **Tests:** `test_parameter_with_unreadable_default_keeps_its_default`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1; python3 tools/devlog_check.py
+265 passed in 106.49s (0:01:46)
+✔ Validation passed
+devlog_check OK: 86 entries, every commit carries a known DL ID, links resolve, fixes have root causes
+(exit 0)
+Local Pretix copy (eval/work/pretix, baseline 68bd182f79), same edit Claude made to round_decimal:
+before the fixes: Untested, 'could not run: GuardBlocked: file write is blocked during the behavioral diff'
+after the write fix only: Behavior difference, 23 of 23 inputs, all with a number as places_dict
+after all fixes: Verified pass, 85 inputs compared, 85 returned a value
+Not run: Pretix's test suite, and a live Claude session on Pretix with the fixed guard.
+```
+
+### DL-089 · Old Python is named in plain words
+
+**fix** · M12 · T12.1 · 2026-11-05T23:38-06:00 · commit `this commit is the last one; see git log -1`
+
+- **Context:** On Python 3.9 the guard's setup failed with 'No matching distribution found for mcp<3,>=2.0', which says nothing about the cause.
+- **What:** Setup checks the Python version first and says LegacyGuard needs Python 3.10 or newer and which version it found. The session notice shows that sentence without the manual install command.
+- **Why:** It took several rounds to find the cause on the friend's laptop.
+- **Root cause:** The guard's libraries need Python 3.10, a fresh Mac ships 3.9, and setup only relayed pip's last error line.
+- **Impact:** none
+- **Files:** `legacyguard/guardlib/bootstrap.py`, `legacyguard/scripts/session_start.py`, `tests/test_bootstrap.py`
+- **Requirements:** `NFR-1`
+- **Decisions:** none
+- **Open questions:** none
+- **Tests:** `test_old_python_is_named_in_plain_words`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1; python3 tools/devlog_check.py
+265 passed in 106.49s (0:01:46)
+✔ Validation passed
+devlog_check OK: 86 entries, every commit carries a known DL ID, links resolve, fixes have root causes
+(exit 0)
+Local Pretix copy (eval/work/pretix, baseline 68bd182f79), same edit Claude made to round_decimal:
+before the fixes: Untested, 'could not run: GuardBlocked: file write is blocked during the behavioral diff'
+after the write fix only: Behavior difference, 23 of 23 inputs, all with a number as places_dict
+after all fixes: Verified pass, 85 inputs compared, 85 returned a value
+Not run: Pretix's test suite, and a live Claude session on Pretix with the fixed guard.
+```
+
+### DL-088 · Slash commands are not treated as change requests
+
+**fix** · M12 · T12.1 · 2026-11-05T23:38-06:00 · commit `this commit is the last one; see git log -1`
+
+- **Context:** Typing /legacyguard:status attached impact data for unrelated functions named status, and the report listed the command under 'You asked'.
+- **What:** The prompt hook returns nothing and stores nothing for a prompt that starts with a slash.
+- **Why:** Noise in Claude's context and a wrong line in the session story.
+- **Root cause:** The prompt hook matched every word of every prompt against function names, and a slash command's name contains ordinary words.
+- **Impact:** none
+- **Files:** `legacyguard/scripts/prompt_context.py`, `tests/test_pre_edit.py`
+- **Requirements:** `FR-11`, `FR-31`
+- **Decisions:** none
+- **Open questions:** none
+- **Tests:** `test_slash_command_is_not_a_request`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1; python3 tools/devlog_check.py
+265 passed in 106.49s (0:01:46)
+✔ Validation passed
+devlog_check OK: 86 entries, every commit carries a known DL ID, links resolve, fixes have root causes
+(exit 0)
+Local Pretix copy (eval/work/pretix, baseline 68bd182f79), same edit Claude made to round_decimal:
+before the fixes: Untested, 'could not run: GuardBlocked: file write is blocked during the behavioral diff'
+after the write fix only: Behavior difference, 23 of 23 inputs, all with a number as places_dict
+after all fixes: Verified pass, 85 inputs compared, 85 returned a value
+Not run: Pretix's test suite, and a live Claude session on Pretix with the fixed guard.
+```
+
+### DL-087 · Temp-folder writes no longer make a whole project Untested
+
+**fix** · M12 · T12.1 · 2026-11-05T23:38-06:00 · commit `this commit is the last one; see git log -1`
+
+- **Context:** On a friend's laptop the guard ran on Pretix and reported round_decimal as Untested: 'GuardBlocked: file write is blocked during the behavioral diff'.
+- **What:** The runner allows a write whose real path is inside the system temp folder and outside the guarded repo and baseline copy. All other writes are still refused.
+- **Why:** Without it no function in a project like Pretix can be checked by running it.
+- **Root cause:** Pretix's test settings write a generated key and open a log file in a temp folder when Django loads, and the runner refused every write, including during setup.
+- **Impact:** Functions that only touch temp files now run; side effects are still not compared (D-029).
+- **Files:** `legacyguard/runner/lg_worker.py`, `legacyguard/runner/diff.py`, `tests/test_runner.py`, `docs/DECISIONS.md`
+- **Requirements:** `FR-14`
+- **Decisions:** `D-041`
+- **Open questions:** none
+- **Tests:** `test_temp_folder_writes_run_but_repo_writes_stay_blocked`, `test_protected_folder_inside_temp_stays_blocked`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1; python3 tools/devlog_check.py
+265 passed in 106.49s (0:01:46)
+✔ Validation passed
+devlog_check OK: 86 entries, every commit carries a known DL ID, links resolve, fixes have root causes
+(exit 0)
+Local Pretix copy (eval/work/pretix, baseline 68bd182f79), same edit Claude made to round_decimal:
+before the fixes: Untested, 'could not run: GuardBlocked: file write is blocked during the behavioral diff'
+after the write fix only: Behavior difference, 23 of 23 inputs, all with a number as places_dict
+after all fixes: Verified pass, 85 inputs compared, 85 returned a value
+Not run: Pretix's test suite, and a live Claude session on Pretix with the fixed guard.
+```
 
 ### DL-086 · Zulip results written up for the developer and the team
 

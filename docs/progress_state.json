@@ -1,6 +1,6 @@
 {
- "current": "Done for now: M0 to M9 and M11 complete; M10 (FR-13) paused in git stash",
- "next": "The team reads eval/results/zulip/README.md, then MC-1 to MC-9. FR-13 resumes only when the team says so.",
+ "current": "Done for now: M0 to M9, M11 and M12 complete; M10 (FR-13) paused in git stash",
+ "next": "Copy the updated legacyguard folder to the second laptop and rerun the Pretix change",
  "tasks": {
   "T0.0": {
    "milestone": "M0",
@@ -550,6 +550,18 @@
     "DL-085",
     "DL-086"
    ]
+  },
+  "T12.1": {
+   "milestone": "M12",
+   "title": "First run on a second laptop with Pretix: four fixes",
+   "status": "done",
+   "evidence": "$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1; python3 tools/devlog_check.py\n265 passed in 106.49s (0:01:46)\n✔ Validation passed\ndevlog_check OK: 86 entries, every commit carries a known DL ID, links resolve, fixes have root causes\n(exit 0)\nLocal Pretix copy (eval/work/pretix, baseline 68bd182f79), same edit Claude made to round_decimal:\nbefore the fixes: Untested, 'could not run: GuardBlocked: file write is blocked during the behavioral diff'\nafter the write fix only: Behavior difference, 23 of 23 inputs, all with a number as places_dict\nafter all fixes: Verified pass, 85 inputs compared, 85 returned a value\nNot run: Pretix's test suite, and a live Claude session on Pretix with the fixed guard.",
+   "dl": [
+    "DL-087",
+    "DL-088",
+    "DL-089",
+    "DL-090"
+   ]
   }
  },
  "summaries": {
@@ -561,6 +573,7 @@
   "M6": "1. The Stop audit catches shell-made contract changes, rounding changes and frozen-file edits, and blocks at most once per finding.\n2. The report has one status per finding, an outcome column, prompts x of 3, wake-ups, pin suggestions and a limits footer.\n3. Waive needs a reason and lapses when the code changes; waive, pin, mode and index can't be invoked by Claude.\n4. Pin generates a test proven to fail on the bad version and pass on the good one.\n5. All six skills and three MCP tools exist; plugin validate passes.",
   "M5": "1. Old code twice and new code once run in separate processes on the same inputs, with network, database, file writes and subprocesses blocked.\n2. Offline on billing-api: compute_late_fee(balance=Decimal(\"40.20\"), rate=Decimal(\"0.025\")) gives before 1.01, after 1.00, and the revert records Verified pass.\n3. Self-diff removes false alarms from time, random and ordering; a test caught a random function passing on one input, which is now Untested.\n4. DB-dependent functions come out Untested with a reason, including when the target swallows the block.\n5. Two live Sonnet runs avoided the trap unaided, so the guard stayed quiet; the live wake-and-revert loop is tested in E2E-1.",
   "M9": "1. The guard now writes an offline session map at Stop, next to the Markdown report, and /legacyguard:map opens it.\n2. It shows changed functions with their status, callers up to three steps, which callers no test reaches, and API routes.\n3. Edges are solid only when one test runs both ends; name-only matches are dashed. No score, and it never says safe.\n4. 17 new tests (254 in total), a browser check in light and dark, and one live claude -p run where Stop wrote the map.\n5. Scheduled jobs are not indexed, so only routes are labeled as entry points; MC-8 is the manual check.",
-  "M11": "1. The guard ran on Zulip's backend (1,684 files): indexed in about 2 seconds, with 47 modules runnable on this Mac.\n2. Three change requests went through Claude with the guard on. In one, Claude's edit broke emoji codes, the guard showed an example, and Claude fixed it (150 inputs then matched).\n3. Reports and maps now open with a plain story: what was asked, what broke, what fixed it, what was not checked.\n4. The real repo exposed three guard problems, all fixed: false routes from mock.patch, narrow generated inputs, and a wrong Untested reason.\n5. Zulip's tests and database layer cannot run here, so its maps have no test information; FR-13 is paused in git stash."
+  "M11": "1. The guard ran on Zulip's backend (1,684 files): indexed in about 2 seconds, with 47 modules runnable on this Mac.\n2. Three change requests went through Claude with the guard on. In one, Claude's edit broke emoji codes, the guard showed an example, and Claude fixed it (150 inputs then matched).\n3. Reports and maps now open with a plain story: what was asked, what broke, what fixed it, what was not checked.\n4. The real repo exposed three guard problems, all fixed: false routes from mock.patch, narrow generated inputs, and a wrong Untested reason.\n5. Zulip's tests and database layer cannot run here, so its maps have no test information; FR-13 is paused in git stash.",
+  "M12": "1. The guard was installed on a second laptop and run on Pretix; it started but could not check anything.\n2. Cause one: that laptop had Python 3.9. The guard now says in plain words that it needs 3.10 or newer.\n3. Cause two: Pretix's settings write a throwaway key file on load and the guard refused it. Temp-folder writes are now allowed; repo writes stay blocked (D-041).\n4. Two noise sources fixed: slash commands were read as change requests, and a parameter defaulting to a settings value was fed numbers.\n5. On a local Pretix copy the same edit now gets Verified pass on 85 inputs. Pretix's tests were not run, so its map has no test information."
  }
 }

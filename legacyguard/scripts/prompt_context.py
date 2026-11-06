@@ -43,6 +43,8 @@ def handle(event: dict):
     from guardlib import impact, ledger
     from indexer import db
     prompt = event.get("prompt") or ""
+    if prompt.lstrip().startswith("/"):
+        return None  # a slash command is the developer using a tool, not a change request; its words are not code names
     with ledger.locked(cfg.state_dir) as data:
         data["prompt_text"] = (data["prompt_text"] + [prompt])[-MAX_PROMPTS_STORED:]
     if not db.exists(cfg.root):

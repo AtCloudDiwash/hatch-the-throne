@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** Done for now: M0 to M9 and M11 complete; M10 (FR-13) paused in git stash
-- **Next step:** The team reads eval/results/zulip/README.md, then MC-1 to MC-9. FR-13 resumes only when the team says so.
+- **Current milestone and task:** Done for now: M0 to M9, M11 and M12 complete; M10 (FR-13) paused in git stash
+- **Next step:** Copy the updated legacyguard folder to the second laptop and rerun the Pretix change
 
 ## Status
 
@@ -61,6 +61,7 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T11.1 | M11 | done | [x] Zulip setup: what runs here, and fixes it exposed | DL-079 DL-080 DL-081 DL-082 | 4bbbf17 |
 | T11.2 | M11 | done | [x] Session story in the report and the map (FR-31) | DL-083 | 0170810 |
 | T11.3 | M11 | done | [x] Zulip simulation: three change requests through Claude | DL-084 DL-085 DL-086 |  |
+| T12.1 | M12 | done | [x] First run on a second laptop with Pretix: four fixes | DL-087 DL-088 DL-089 DL-090 |  |
 
 ## Milestone summaries
 
@@ -135,6 +136,14 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 3. Reports and maps now open with a plain story: what was asked, what broke, what fixed it, what was not checked.
 4. The real repo exposed three guard problems, all fixed: false routes from mock.patch, narrow generated inputs, and a wrong Untested reason.
 5. Zulip's tests and database layer cannot run here, so its maps have no test information; FR-13 is paused in git stash.
+
+### M12
+
+1. The guard was installed on a second laptop and run on Pretix; it started but could not check anything.
+2. Cause one: that laptop had Python 3.9. The guard now says in plain words that it needs 3.10 or newer.
+3. Cause two: Pretix's settings write a throwaway key file on load and the guard refused it. Temp-folder writes are now allowed; repo writes stay blocked (D-041).
+4. Two noise sources fixed: slash commands were read as change requests, and a parameter defaulting to a settings value was fed numbers.
+5. On a local Pretix copy the same edit now gets Verified pass on 85 inputs. Pretix's tests were not run, so its map has no test information.
 
 
 ## Evidence
@@ -767,5 +776,20 @@ random strings compared: 200000 differences: 0
 z3 before the fix: "untested because: new function, so there is no old version to compare"
 z3 after the fix:  "could not run: ModuleNotFoundError: No module named icu"
 Plan usage: 5 Sonnet runs (z1, z2, z3 three times), about $0.47 notional.
+```
+
+### T12.1 First run on a second laptop with Pretix: four fixes (done)
+
+```text
+$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1; python3 tools/devlog_check.py
+265 passed in 106.49s (0:01:46)
+✔ Validation passed
+devlog_check OK: 86 entries, every commit carries a known DL ID, links resolve, fixes have root causes
+(exit 0)
+Local Pretix copy (eval/work/pretix, baseline 68bd182f79), same edit Claude made to round_decimal:
+before the fixes: Untested, 'could not run: GuardBlocked: file write is blocked during the behavioral diff'
+after the write fix only: Behavior difference, 23 of 23 inputs, all with a number as places_dict
+after all fixes: Verified pass, 85 inputs compared, 85 returned a value
+Not run: Pretix's test suite, and a live Claude session on Pretix with the fixed guard.
 ```
 

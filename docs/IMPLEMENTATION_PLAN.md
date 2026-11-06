@@ -187,6 +187,12 @@ T10.1 was started on 2026-11-05 and set aside the same day at the team's request
 | T11.2 | Session story in the report and map (FR-31) | Story for the rounding edit reads asked, broke, fixed |
 | T11.3 | Run change requests through `claude -p` on Zulip with the guard on | Report, map and code change kept for each request; results written up honestly |
 
+## M12 First run on a second laptop with Pretix (approved 2026-11-05)
+
+| Task | Objective | Done when |
+| --- | --- | --- |
+| T12.1 | Fix what the first Pretix run on a friend's laptop exposed | The same edit on a local Pretix copy is compared by running it; each fix has a test |
+
 ## Requirement → task traceability
 
 | Requirement | Tasks |

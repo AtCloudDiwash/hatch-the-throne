@@ -58,3 +58,12 @@ def test_reexec_switches_into_venv_even_though_python_is_a_symlink(tmp_path, rep
                        env={"PATH": os.environ["PATH"], "CLAUDE_PLUGIN_DATA": str(data)})
     assert r.returncode == 0, r.stderr
     assert r.stdout.strip() == os.path.realpath(data / "venv") or r.stdout.strip() == str(data / "venv")
+
+
+def test_old_python_is_named_in_plain_words(tmp_path):
+    """DL-089: Python 3.9 used to surface as 'No matching distribution found for mcp'."""
+    calls = []
+    fake_run.base = tmp_path
+    with pytest.raises(bootstrap.BootstrapError, match=r"needs Python 3\.10 or newer.*3\.9\.6"):
+        bootstrap.ensure_venv(PLUGIN, tmp_path, run=fake_run(calls), version=(3, 9, 6))
+    assert calls == []

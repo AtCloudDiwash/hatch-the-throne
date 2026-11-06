@@ -80,6 +80,7 @@ def _strategy_for(annotation: str | None, default: str | None, st):
             return st.floats(-1e6, 1e6, allow_nan=False, allow_infinity=False)
         if isinstance(value, str) and value != "not-a-literal":
             return st.one_of(st.just(value), st.text("abcdefgh", max_size=8))
+        return None  # a default we cannot read a type from (settings.X, {}, a call): only the default is known to be valid
     if ann:
         return None  # a type we cannot build
     return st.one_of(money, st.integers(-100, 100), st.text("abcxyz", max_size=4), st.none())
