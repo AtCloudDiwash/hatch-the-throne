@@ -5,8 +5,6 @@ import os
 import _common
 from _common import PLUGIN_ROOT, hook_output, log_error, run_hook
 
-SETUP = ("LegacyGuard is installed but inactive here: no .legacyguard/config.yaml. "
-         "To guard this repo, add that file (see the plugin README), then run /legacyguard:index.")
 API_KEY = ("LegacyGuard: ANTHROPIC_API_KEY is set, so Claude Code bills that key per token instead of your plan. "
            "The guard never uses it. Unset it to stay on your plan.")
 
@@ -37,10 +35,19 @@ def handle(event: dict):
     from guardlib.paths import find_root
     root = find_root(event.get("cwd") or os.getcwd())
     try:
-        cfg = cfgmod.load_config(root)
-    except cfgmod.ConfigMissing:
-        messages.append(SETUP)
-        return hook_output("SessionStart", system_message=" ".join(messages))
+        try:
+            cfg = cfgmod.load_config(root)
+        except cfgmod.ConfigMissing:
+            # First use here: a Python git repo gets its config written from what the repo says (FR-32).
+            # Any other folder is left alone and gets no message, because the plugin is installed for every session.
+            from guardlib import autosetup
+            found = autosetup.setup(root)
+            if found is None:
+                return hook_output("SessionStart", system_message=" ".join(messages) or None)
+            messages.append(autosetup.notice(found))
+            cfg = cfgmod.load_config(root)
+    except cfgmod.ConfigDisabled:
+        return hook_output("SessionStart", system_message=" ".join(messages) or None)
     except cfgmod.ConfigError as exc:
         messages.append(f"LegacyGuard is inactive: .legacyguard/config.yaml is invalid ({exc}).")
         return hook_output("SessionStart", system_message=" ".join(messages))

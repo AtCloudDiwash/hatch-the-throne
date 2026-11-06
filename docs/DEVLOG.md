@@ -141,6 +141,8 @@ flowchart LR
   DL084 -.- DL080
   DL084 -.- DL083
   DL046 -->|caused| DL085
+  DL092 -.- DL089
+  DL087 -->|caused| DL093
 ```
 
 ## Summary
@@ -158,9 +160,96 @@ flowchart LR
 | M8 | 2 | 2 | 1 | 1 | 1 | 1 | 0 | 8 |
 | M9 | 3 | 0 | 0 | 1 | 0 | 0 | 0 | 4 |
 | M11 | 2 | 2 | 2 | 0 | 0 | 0 | 2 | 8 |
-| **All** | **42** | **10** | **9** | **18** | **1** | **1** | **9** | **90** |
+| **All** | **44** | **10** | **10** | **18** | **1** | **1** | **9** | **93** |
 
 ## Entries, newest first
+
+### DL-093 · A project on Python 3.9 was reported as timed out
+
+**fix** · M13 · T13.1 · 2026-11-06T00:19-06:00 · commit `pending`
+
+- **Context:** Testing the 3.9 start on this Mac: a breaking edit to add(a, b) came back Untested, 'timed out', in under a second.
+- **What:** The worker reads the temp folder location before the write block goes in. A worker that stops without results is now reported as 'the check could not run in the project's Python' with its last error line; only a real timeout says timed out.
+- **Why:** A wrong Untested reason hides a guard bug behind the project.
+- **Root cause:** DL-087 called tempfile.gettempdir() after the write block was installed. On Python 3.9 that call writes a probe file through open(), so the worker blocked itself and exited; the runner treated any missing result as a timeout.
+- **Impact:** DL-087 shipped this to one laptop in a zip; that laptop's project runs on 3.12, where it does not happen.
+- **Files:** `legacyguard/runner/lg_worker.py`, `legacyguard/runner/diff.py`, `tests/test_runner.py`
+- **Requirements:** `FR-14`
+- **Decisions:** `D-041`
+- **Open questions:** none
+- **Tests:** `test_worker_runs_when_the_project_python_is_3_9`, `test_worker_that_cannot_start_is_not_called_a_timeout`
+- **Caused by:** `DL-087`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1
+278 passed in 101.25s (0:01:41)
+✔ Validation passed
+(exit 0)
+Started by /usr/bin/python3 (3.9.6) with an empty guard environment on a fresh 3-file git repo, PATH=/usr/bin:/bin:
+session start: config written, guard environment built with Python 3.12.14, 6 s
+edit add(a, b) from a + b to a - b: exit 2, 'add(a=3, b=3) before 6 after 0', 79 of 87 inputs differ
+Live, one Sonnet run (about $0.09 notional) on a Pretix copy with no .legacyguard folder, plugin loaded from the installed package copy:
+config written with scope src/, source_roots [src], django_settings tests.settings
+report: Verified pass, round_decimal, 85 inputs compared, 85 returned a value
+```
+
+### DL-092 · The guard finds a Python 3.10+ when python3 is older
+
+**feature** · M13 · T13.1 · 2026-11-06T00:19-06:00 · commit `pending`
+
+- **Context:** DL-089 only named the problem. The developer still had to install Python and change PATH.
+- **What:** bootstrap.find_python looks on PATH and in the usual install folders for python3.10 to 3.14 and builds the guard's environment with it. With none found, the notice says so in plain words.
+- **Why:** A Mac's python3 is 3.9 even when a newer one is installed, and hooks start with python3.
+- **Impact:** none
+- **Files:** `legacyguard/guardlib/bootstrap.py`, `tests/test_bootstrap.py`
+- **Requirements:** `FR-33`
+- **Decisions:** `D-042`
+- **Open questions:** none
+- **Tests:** `test_old_python_uses_a_newer_one_found_on_the_machine`, `test_old_python_with_no_newer_one_is_named_in_plain_words`
+- **Related:** `DL-089`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1
+278 passed in 101.25s (0:01:41)
+✔ Validation passed
+(exit 0)
+Started by /usr/bin/python3 (3.9.6) with an empty guard environment on a fresh 3-file git repo, PATH=/usr/bin:/bin:
+session start: config written, guard environment built with Python 3.12.14, 6 s
+edit add(a, b) from a + b to a - b: exit 2, 'add(a=3, b=3) before 6 after 0', 79 of 87 inputs differ
+Live, one Sonnet run (about $0.09 notional) on a Pretix copy with no .legacyguard folder, plugin loaded from the installed package copy:
+config written with scope src/, source_roots [src], django_settings tests.settings
+report: Verified pass, round_decimal, 85 inputs compared, 85 returned a value
+```
+
+### DL-091 · The guard sets itself up in a Python repo
+
+**feature** · M13 · T13.1 · 2026-11-06T00:19-06:00 · commit `pending`
+
+- **Context:** The team asked that a developer can install once and use Claude Code right away, with no config file and no extra commands.
+- **What:** At SessionStart in a git repo with at least three tracked Python files and no config, guardlib/autosetup.py writes .legacyguard/config.yaml from repo facts (src layout, Django settings named in the pytest config or manage.py, an openapi file), then the session starts as usual. Other folders get no file and no message. enabled: false keeps a repo off.
+- **Why:** On the second laptop the hand-written config and the index command were two of the steps that went wrong.
+- **Impact:** The guard now switches itself on in every Python git repo the developer opens (D-042).
+- **Files:** `legacyguard/guardlib/autosetup.py`, `legacyguard/guardlib/config.py`, `legacyguard/scripts/session_start.py`, `tests/test_autosetup.py`, `tests/test_session_start.py`, `docs/DECISIONS.md`, `docs/REQUIREMENTS.md`
+- **Requirements:** `FR-32`
+- **Decisions:** `D-042`
+- **Open questions:** none
+- **Tests:** `test_flat_repo_gets_a_config_and_starts_guarded`, `test_src_layout_prefers_pytest_settings_over_manage_py`, `test_enabled_false_keeps_the_guard_off_and_quiet`
+- **Evidence:**
+
+```text
+$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1
+278 passed in 101.25s (0:01:41)
+✔ Validation passed
+(exit 0)
+Started by /usr/bin/python3 (3.9.6) with an empty guard environment on a fresh 3-file git repo, PATH=/usr/bin:/bin:
+session start: config written, guard environment built with Python 3.12.14, 6 s
+edit add(a, b) from a + b to a - b: exit 2, 'add(a=3, b=3) before 6 after 0', 79 of 87 inputs differ
+Live, one Sonnet run (about $0.09 notional) on a Pretix copy with no .legacyguard folder, plugin loaded from the installed package copy:
+config written with scope src/, source_roots [src], django_settings tests.settings
+report: Verified pass, round_decimal, 85 inputs compared, 85 returned a value
+```
 
 ### DL-090 · A parameter whose default is not a plain value keeps its default
 

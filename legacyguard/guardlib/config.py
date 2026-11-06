@@ -11,7 +11,7 @@ import yaml
 
 MODES = ("advisory", "guarded", "strict")
 DEFAULTS = {
-    "scope": ".", "language": "python", "mode": "guarded", "python": None, "app": None, "django_settings": None,
+    "enabled": True, "scope": ".", "language": "python", "mode": "guarded", "python": None, "app": None, "django_settings": None,
     "source_roots": [], "contracts": {}, "frozen": [],
     "behavioral_diff": {"network": "blocked", "max_inputs": 500, "timeout_s": 60, "self_diff": True, "env": {}},
     "alarm_budget": {"max_prompts_per_session": 3, "may_interrupt": ["frozen", "contract_break", "behavior_difference"],
@@ -25,6 +25,10 @@ class ConfigMissing(Exception):
 
 class ConfigError(Exception):
     pass
+
+
+class ConfigDisabled(ConfigError):
+    """enabled: false. The developer switched the guard off in this repo."""
 
 
 @dataclass
@@ -75,6 +79,8 @@ def load_config(root: str) -> Config:
             merged[key].update(value)
         elif value is not None:
             merged[key] = value
+    if merged["enabled"] is False:
+        raise ConfigDisabled("switched off by enabled: false in .legacyguard/config.yaml")
     if merged["mode"] not in MODES:
         raise ConfigError(f"mode must be one of {', '.join(MODES)}, got {merged['mode']!r}")
     if not isinstance(merged["scope"], str):

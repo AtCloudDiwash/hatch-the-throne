@@ -117,20 +117,27 @@ def _reads_any(source: str, names: set[str]) -> bool:
     return found
 
 
-def _run_worker(cfg, py: str, root: str, sys_path: list[str], functions: list[dict], timeout: float) -> dict | None:
+FAILED = "__failed__"
+
+
+def _run_worker(cfg, py: str, root: str, sys_path: list[str], functions: list[dict], timeout: float) -> dict:
     with tempfile.TemporaryDirectory(prefix="lgrun") as tmp:
         req, res = Path(tmp) / "req.json", Path(tmp) / "res.json"
         req.write_text(json.dumps({"root": root, "sys_path": sys_path, "protect": [str(cfg.root)], "functions": functions, "django_settings": cfg.raw.get("django_settings")}))
         env = clean_env(cfg)
         env.pop("PYTHONPATH", None)
         try:
-            subprocess.run([py, "-B", str(WORKER), str(req), str(res)], cwd=root, env=env, capture_output=True, text=True, timeout=timeout)
-        except (subprocess.TimeoutExpired, OSError):
-            return None
+            done = subprocess.run([py, "-B", str(WORKER), str(req), str(res)], cwd=root, env=env, capture_output=True, text=True, timeout=timeout)
+        except subprocess.TimeoutExpired:
+            return {FAILED: "timed out"}
+        except OSError as exc:
+            return {FAILED: f"could not start the project's Python ({py}): {exc}"}
         try:
             return json.loads(res.read_text())
         except (OSError, ValueError):
-            return None
+            # The worker stopped before it wrote results. Saying "timed out" here would be a wrong reason.
+            last = (done.stderr or "").strip().splitlines()[-1:] or [f"exit code {done.returncode}"]
+            return {FAILED: f"the check could not run in the project's Python ({py}): {last[0][:200]}"}
 
 
 def _key(o: dict) -> str:
@@ -267,7 +274,11 @@ def run(cfg, baseline_root: str, work_root: str, targets: list[Target], harvest:
             fb = pool.submit(_run_worker, cfg, py, baseline_root, paths_for(baseline_root), specs, deadline) if use_self else None
             a, n = fa.result(), fn.result()
             b = fb.result() if fb else None
+        failed = next((x[FAILED] for x in (a, n, b) if x and FAILED in x), None)
         for key, (t, items) in runnable.items():
+            if failed:
+                results[t.qualname] = Result(t.file, t.qualname, UNTESTED, t.code_hash, inputs_tried=len(items), reason=failed)
+                continue
             results[t.qualname] = compare_one(t, items, a.get(key) if a else None, b.get(key) if b else None, n.get(key) if n else None, use_self)
     return [results[t.qualname] for t in targets]
 

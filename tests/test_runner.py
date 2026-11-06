@@ -481,3 +481,36 @@ def test_parameter_with_unreadable_default_keeps_its_default(tmp_path):
     assert reason is None and items
     assert all("places_dict" not in [a["name"] for a in i["args"]] for i in items)
     assert any("currency" in [a["name"] for a in i["args"]] for i in items)
+
+
+OLD_PYTHON = "/usr/bin/python3"
+
+
+def _is_older_than_3_10(path):
+    try:
+        r = subprocess.run([path, "-c", "import sys; print(int(sys.version_info < (3, 10)))"], capture_output=True, text=True, timeout=10)
+        return r.stdout.strip() == "1"
+    except OSError:
+        return False
+
+
+@pytest.mark.skipif(not _is_older_than_3_10(OLD_PYTHON), reason="needs a Python older than 3.10 on this machine")
+def test_worker_runs_when_the_project_python_is_3_9(tmp_path):
+    """DL-093: a project on Python 3.9 came out 'timed out' because finding the temp folder tripped the write block."""
+    root = tmp_path / "proj"
+    root.mkdir()
+    (root / "mod.py").write_text("def twice(n):\n    return n * 2\n")
+    one = {"args": [{"name": "n", "kind": "pos", "value": {"t": "v", "v": 4}}], "has_self": False}
+    req, res = tmp_path / "req.json", tmp_path / "res.json"
+    req.write_text(json.dumps({"root": str(root), "sys_path": [str(root)], "functions": [{"module": "mod", "qualname": "twice", "inputs": [one]}]}))
+    r = subprocess.run([OLD_PYTHON, differ.WORKER, str(req), str(res)], capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+    assert json.loads(res.read_text())["mod:twice"]["results"][0]["outcome"] == "return"
+
+
+def test_worker_that_cannot_start_is_not_called_a_timeout(svc):
+    """DL-093: the reason must say the check could not run, and why."""
+    cfg = cfgmod.load_config(str(svc))
+    assert differ._run_worker(cfg, sys.executable, str(svc), [], [], 20) == {}
+    bad = differ._run_worker(cfg, str(svc / "no-such-python"), str(svc), [], [], 20)
+    assert "could not start" in bad[differ.FAILED]

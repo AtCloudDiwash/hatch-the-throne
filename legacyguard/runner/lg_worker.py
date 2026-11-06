@@ -219,6 +219,8 @@ def main(request_path, result_path):
     GUARD_WRITES["allowed"] = True
     with open(request_path) as fh:
         request = json.load(fh)
+    # Before the blocks go in: on Python 3.9 finding the temp folder writes a probe file through open().
+    SCRATCH["temp"] = os.path.realpath(tempfile.gettempdir()) + os.sep
     GUARD_WRITES["allowed"] = False
     install_blocks()
     if HERE in sys.path:
@@ -231,7 +233,6 @@ def main(request_path, result_path):
         sys.path.insert(0, extra)
     root_real = os.path.realpath(root) + os.sep
     SCRATCH["protect"] = [root_real] + [os.path.realpath(p) + os.sep for p in request.get("protect") or []]
-    SCRATCH["temp"] = os.path.realpath(tempfile.gettempdir()) + os.sep
     setup_error = None
     django_settings = request.get("django_settings")
     if django_settings:

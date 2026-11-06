@@ -214,3 +214,11 @@ Each entry below records a default chosen by the team for the one-pass M0–M8 b
 - **Reasoning:** Temp files are throwaway by definition and are not the developer's source or data. Constraint 10 (the guard writes only under `.legacyguard/`) is about the repo, and the repo stays protected even when it lives under a temp folder.
 - **Trade-offs:** A function whose only effect is a temp file now runs and is compared on its return value. Side effects are still not compared (D-029).
 - **Status:** Confirmed (approved for M12)
+
+## D-042 Install once; the guard sets itself up in each Python repo
+- **Context:** Getting the guard running on a second laptop took many manual steps: copy a folder, start Claude with `--plugin-dir` from the right folder, write a config file, run an index command, and fix the Python version. The team asked for a download-and-use install and suggested Docker (2026-11-06, M13).
+- **Options:** (a) a Docker image holding Claude Code, the guard and the project; (b) Claude Code's plugin installer with a local package, plus setup the guard does by itself; (c) the same from a GitHub marketplace.
+- **Decision:** (b) now, (c) when the team names a GitHub repo (OQ-N12). The package is one zip with `install.sh`. In a Python git repo with no config the guard writes `.legacyguard/config.yaml` from what the repo states and starts. It looks for a Python 3.10+ already on the machine when `python3` is older.
+- **Reasoning:** Claude Code and its hooks run on the developer's machine against the developer's checkout and the project's own interpreter. A container would need a second sign-in, the repo mounted, and the project's libraries installed inside it, which is more steps, not fewer. The plugin installer is the supported path (D-017) and needs one command once.
+- **Trade-offs:** The guard now switches itself on in every Python git repo the developer opens. The off switch is `enabled: false` in that repo's config. Detection is by file facts only, so an unusual layout may need the config edited. The project's own libraries still have to be installed (a `.venv`), or code that needs them is `Untested`.
+- **Status:** Confirmed (approved for M13). Publishing to GitHub is still open (OQ-N12).

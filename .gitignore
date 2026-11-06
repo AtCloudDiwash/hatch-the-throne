@@ -10,3 +10,4 @@ eval/work/
 eval/results/raw/
 *.egg-info/
 demo/.billing-venv/
+dist/

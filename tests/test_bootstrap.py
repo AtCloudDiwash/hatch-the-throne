@@ -60,10 +60,23 @@ def test_reexec_switches_into_venv_even_though_python_is_a_symlink(tmp_path, rep
     assert r.stdout.strip() == os.path.realpath(data / "venv") or r.stdout.strip() == str(data / "venv")
 
 
-def test_old_python_is_named_in_plain_words(tmp_path):
+def test_old_python_with_no_newer_one_is_named_in_plain_words(tmp_path):
     """DL-089: Python 3.9 used to surface as 'No matching distribution found for mcp'."""
     calls = []
     fake_run.base = tmp_path
     with pytest.raises(bootstrap.BootstrapError, match=r"needs Python 3\.10 or newer.*3\.9\.6"):
-        bootstrap.ensure_venv(PLUGIN, tmp_path, run=fake_run(calls), version=(3, 9, 6))
+        bootstrap.ensure_venv(PLUGIN, tmp_path, run=fake_run(calls), version=(3, 9, 6), finder=lambda: None)
     assert calls == []
+
+
+def test_old_python_uses_a_newer_one_found_on_the_machine(tmp_path):
+    """FR-33: the python3 command is 3.9 but a 3.12 is installed, so the guard's environment is built with that."""
+    calls = []
+    fake_run.base = tmp_path
+    assert bootstrap.ensure_venv(PLUGIN, tmp_path, run=fake_run(calls), version=(3, 9, 6), finder=lambda: "/x/python3.12") is True
+    assert calls[0][:3] == ["/x/python3.12", "-m", "venv"]
+
+
+def test_find_python_returns_only_3_10_or_newer():
+    found = bootstrap.find_python()
+    assert found is None or bootstrap._python_version(found) >= (3, 10)

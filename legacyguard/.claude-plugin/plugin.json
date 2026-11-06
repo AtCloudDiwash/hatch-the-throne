@@ -1,6 +1,6 @@
 {
   "name": "legacyguard",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Guardrails for Claude Code on a Python backend: contract checks before writes and old-versus-new behavioral diffs after them.",
   "author": { "name": "LegacyGuard team" },
   "license": "MIT",

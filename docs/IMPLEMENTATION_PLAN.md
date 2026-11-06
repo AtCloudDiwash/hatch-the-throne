@@ -193,6 +193,13 @@ T10.1 was started on 2026-11-05 and set aside the same day at the team's request
 | --- | --- | --- |
 | T12.1 | Fix what the first Pretix run on a friend's laptop exposed | The same edit on a local Pretix copy is compared by running it; each fix has a test |
 
+## M13 Install once, no setup per project (approved 2026-11-06)
+
+| Task | Objective | Done when |
+| --- | --- | --- |
+| T13.1 | The guard sets itself up in a Python repo and finds a usable Python (FR-32, FR-33) | A repo with no guard files gets a checked finding in one session, also when `python3` is 3.9 |
+| T13.2 | One zip with an installer (FR-34) | `sh install.sh` in an empty Claude config ends with the plugin enabled |
+
 ## Requirement → task traceability
 
 | Requirement | Tasks |
@@ -223,4 +230,7 @@ T10.1 was started on 2026-11-05 and set aside the same day at the team's request
 | FR-29 | T7.3 |
 | FR-30 | T9.1, T9.2, T9.3 |
 | FR-31 | T11.2, T11.3 |
+| FR-32 | T13.1 |
+| FR-33 | T13.1 |
+| FR-34 | T13.2 |
 | FR-13 | T10.1 (paused) |

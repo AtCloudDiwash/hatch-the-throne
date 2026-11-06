@@ -7,9 +7,10 @@ def out(result):
     return json.loads(result.stdout) if result.stdout else {}
 
 
-def test_missing_config_gives_setup_message(tmp_path, hook):
+def test_folder_that_is_not_a_python_repo_is_left_alone(tmp_path, hook):
+    """The plugin is installed for every session, so a folder it does not guard gets no message and no files."""
     o = out(hook("session_start", {"cwd": str(tmp_path), "session_id": "s", "source": "startup"}))
-    assert "config.yaml" in o["systemMessage"]
+    assert o == {} and not (tmp_path / ".legacyguard").exists()
 
 
 def test_invalid_config_gives_parse_error_and_does_not_block(repo, hook):

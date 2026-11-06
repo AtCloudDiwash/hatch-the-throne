@@ -212,6 +212,23 @@ Terms:
 - **Constraints:** Built only from the ledger; no model call. Every line corresponds to a finding. Plain sentences; never "safe".
 - **Acceptance:** After the rounding edit and its revert on billing-api, the story reads: asked, broke (with the 40.20 example), fixed (with the re-run count).
 
+### FR-32 First-use setup per repo — Confirmed — Post-MVP (M13)
+- **Problem:** A developer had to write `.legacyguard/config.yaml` by hand and run an index command before the guard did anything.
+- **Behavior:** At SessionStart in a git repo with at least three tracked Python files and no config, the guard writes `.legacyguard/config.yaml` from what the repo states: `src/` layout, the Django settings module named in the pytest config (else `manage.py`), an `openapi` file. It then starts as usual (baseline, index). The developer gets one notice saying what it watches, and whether a `.venv` was found.
+- **Constraints:** An existing config is never overwritten. Any other folder gets no file and no message. `enabled: false` in the config keeps the guard off and quiet in that repo. Writes stay under `.legacyguard/`.
+- **Acceptance:** A fresh Python git repo with no guard files: one `claude` session produces a config, an index, and a checked finding for an edit.
+
+### FR-33 Finds a new enough Python — Confirmed — Post-MVP (M13)
+- **Problem:** A Mac's `python3` is 3.9 and the guard's libraries need 3.10. Setup failed with a pip error.
+- **Behavior:** When the `python3` that starts a hook is older than 3.10, the guard looks for a 3.10+ interpreter already on the machine (PATH and the usual install folders) and builds its environment with that. If there is none, the notice says so in plain words.
+- **Acceptance:** Started by Python 3.9 with a 3.12 installed, the guard's environment is 3.12 and a breaking edit is reported.
+
+### FR-34 One-file install — Confirmed — Post-MVP (M13)
+- **Problem:** Using the guard meant copying a folder and starting Claude with `--plugin-dir` from the right place every time.
+- **Behavior:** `tools/build_package.py` builds `dist/legacyguard.zip`. Its `install.sh` copies the plugin to `~/.legacyguard/package` and registers it through Claude Code's own plugin installer, so the guard loads in every session. Running it again updates.
+- **Constraints:** No Docker, no API key, nothing downloaded besides the guard's Python libraries on first use.
+- **Acceptance:** In an empty Claude config, `sh install.sh` ends with the plugin listed as installed and enabled.
+
 ---
 
 ## Non-functional requirements

@@ -2,8 +2,8 @@
 
 Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after an interruption, read this file and `docs/devlog.jsonl`, then continue from the first task not marked done.
 
-- **Current milestone and task:** Done for now: M0 to M9, M11 and M12 complete; M10 (FR-13) paused in git stash
-- **Next step:** Copy the updated legacyguard folder to the second laptop and rerun the Pretix change
+- **Current milestone and task:** T13.2
+- **Next step:** Build and test the install package
 
 ## Status
 
@@ -62,6 +62,8 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 | T11.2 | M11 | done | [x] Session story in the report and the map (FR-31) | DL-083 | 0170810 |
 | T11.3 | M11 | done | [x] Zulip simulation: three change requests through Claude | DL-084 DL-085 DL-086 |  |
 | T12.1 | M12 | done | [x] First run on a second laptop with Pretix: four fixes | DL-087 DL-088 DL-089 DL-090 |  |
+| T13.1 | M13 | done | [x] The guard sets itself up and finds a usable Python | DL-091 DL-092 DL-093 |  |
+| T13.2 | M13 | pending | [ ] One zip with an installer |  |  |
 
 ## Milestone summaries
 
@@ -144,6 +146,14 @@ Rendered from `docs/progress_state.json` by `tools/progress.py`. To resume after
 3. Cause two: Pretix's settings write a throwaway key file on load and the guard refused it. Temp-folder writes are now allowed; repo writes stay blocked (D-041).
 4. Two noise sources fixed: slash commands were read as change requests, and a parameter defaulting to a settings value was fed numbers.
 5. On a local Pretix copy the same edit now gets Verified pass on 85 inputs. Pretix's tests were not run, so its map has no test information.
+
+### M13
+
+1. Install is now one zip and one command, run once; after that the guard loads in every Claude session.
+2. In a Python git repo with no guard files, the guard writes its own settings and reads the codebase at the first start.
+3. When the python3 command is 3.9, the guard finds a newer Python on the machine and uses it.
+4. Live check: on a Pretix copy with no setup, one Claude run ended with Verified pass on 85 inputs.
+5. Not done: the installed plugin was not run through a signed-in Claude session, and nothing is published to GitHub.
 
 
 ## Evidence
@@ -791,5 +801,20 @@ before the fixes: Untested, 'could not run: GuardBlocked: file write is blocked 
 after the write fix only: Behavior difference, 23 of 23 inputs, all with a number as places_dict
 after all fixes: Verified pass, 85 inputs compared, 85 returned a value
 Not run: Pretix's test suite, and a live Claude session on Pretix with the fixed guard.
+```
+
+### T13.1 The guard sets itself up and finds a usable Python (done)
+
+```text
+$ .venv/bin/pytest -q tests 2>&1 | tail -1; claude plugin validate ./legacyguard | tail -1
+278 passed in 101.25s (0:01:41)
+✔ Validation passed
+(exit 0)
+Started by /usr/bin/python3 (3.9.6) with an empty guard environment on a fresh 3-file git repo, PATH=/usr/bin:/bin:
+session start: config written, guard environment built with Python 3.12.14, 6 s
+edit add(a, b) from a + b to a - b: exit 2, 'add(a=3, b=3) before 6 after 0', 79 of 87 inputs differ
+Live, one Sonnet run (about $0.09 notional) on a Pretix copy with no .legacyguard folder, plugin loaded from the installed package copy:
+config written with scope src/, source_roots [src], django_settings tests.settings
+report: Verified pass, round_decimal, 85 inputs compared, 85 returned a value
 ```
 

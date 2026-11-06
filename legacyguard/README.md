@@ -6,15 +6,21 @@ It makes no model calls and needs no API key. It runs on your Claude Code plan. 
 
 ## Install
 
+From the download package (`dist/legacyguard.zip`, built by `tools/build_package.py`): unzip it and run `sh install.sh` once. After that the guard loads in every Claude Code session. Run it again to update.
+
 ```bash
-claude --plugin-dir ./legacyguard                    # development
-/plugin marketplace add <owner>/<repo>               # from a GitHub marketplace
-/plugin install legacyguard --marketplace <owner>/<repo>
+claude --plugin-dir ./legacyguard                    # development, without installing
 ```
+
+It needs git and a Python 3.10 or newer somewhere on the machine. If the `python3` command is older, the guard finds a newer one by itself.
 
 ## Set up a repo
 
-Add `.legacyguard/config.yaml`, then run `/legacyguard:index` once.
+Nothing to do. The first time Claude Code starts in a git repo with Python code, the guard writes `.legacyguard/config.yaml` from what the repo says (a `src/` folder, the Django settings named in the pytest config, an `openapi` file) and reads the codebase. Edit that file to change anything; it is never overwritten. To switch the guard off in one repo, add `enabled: false` to it.
+
+`/legacyguard:index` is optional: it also runs the test suite once, so the map can say which tests reach a function.
+
+A hand-written config looks like this:
 
 ```yaml
 scope: ./
